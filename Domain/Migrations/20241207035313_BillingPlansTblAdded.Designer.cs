@@ -4,6 +4,7 @@ using Domain.DbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241207035313_BillingPlansTblAdded")]
+    partial class BillingPlansTblAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,53 +24,6 @@ namespace Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Entity.Settings.BillingPlans", b =>
-                {
-                    b.Property<long>("BillingPlanId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BillingPlanId"));
-
-                    b.Property<Guid>("BillingPlanKey")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BillingPlanName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("DeletedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("EntryBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("EntryDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("LastModifyBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("total_row")
-                        .HasColumnType("int");
-
-                    b.HasKey("BillingPlanId");
-
-                    b.ToTable("BillingPlans");
-                });
 
             modelBuilder.Entity("Domain.Entity.Settings.User", b =>
                 {
@@ -127,7 +83,7 @@ namespace Domain.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }

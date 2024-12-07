@@ -5,6 +5,7 @@ namespace Domain.Entity.Settings
 {
     public class BillingPlans
     {
+        [Key]
         public long BillingPlanId { get; set; }
         public Guid BillingPlanKey { get; set; }
         public int LanguageId { get; set; }

@@ -1,4 +1,5 @@
 using Domain.DbContex;
+using Domain.Services;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,11 @@ builder.Services.Configure<CircuitOptions>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // Add this line to register Razor Pages services
 builder.Services.AddServerSideBlazor();
- 
+
+
+
+builder.Services.AddScoped<BillingPlanService>();
+builder.Services.AddScoped<DbConnectionDapper>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
