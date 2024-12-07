@@ -1,7 +1,13 @@
+using Domain.DbContex;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Enable detailed exceptions for development
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+ 
 builder.Services.Configure<CircuitOptions>(options =>
 {
     options.DetailedErrors = true;
