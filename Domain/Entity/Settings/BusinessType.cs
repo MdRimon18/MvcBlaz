@@ -1,6 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Domain.Entity.Inventory
+namespace Domain.Entity.Settings
 {
     public class BusinessType
     {
@@ -21,4 +26,3 @@ namespace Domain.Entity.Inventory
         public int total_row { get; set; }
     }
 }
-

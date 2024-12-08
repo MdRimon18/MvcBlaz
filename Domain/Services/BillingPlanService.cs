@@ -1,13 +1,7 @@
 ﻿using Dapper;
-using Domain.Entity.Settings;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Domain.DbContex;
+using Domain.Entity.Settings;
+using System.Data;
 
 namespace Domain.Services
 {
@@ -18,10 +12,10 @@ namespace Domain.Services
 
         public BillingPlanService(DbConnectionDapper db)
         {
-            _db = db.GetConnection();
+            _db = db.GetDbConnection();
 
         }
-        public async Task<IEnumerable<BillingPlans>> Get(long? BillingPlanId, string? BillingPlanKey, string? BillingPlanName, long? LanguageId, int? PageNumber, int? PageSize)
+        public async Task<IEnumerable<BillingPlans>> Get(long? BillingPlanId, string? BillingPlanKey,string? BillingPlanName, long? LanguageId,int? PageNumber, int? PageSize)
         {
             try
             {
@@ -78,8 +72,8 @@ namespace Domain.Services
                 parameters.Add("@Status", billingPlan.Status);
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("BillingPlan_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
-
-                return (long)parameters.Get<int>("@SuccessOrFailId");
+ 
+                return   (long)parameters.Get<int>("@SuccessOrFailId");
             }
             catch (Exception ex)
             {
@@ -88,7 +82,7 @@ namespace Domain.Services
                 return 0;
             }
         }
-
+ 
         public async Task<bool> Delete(long BillingPlanId)
         {
             var billingPlan = await (Get(BillingPlanId, null, null, null, 1, 1));
@@ -98,7 +92,7 @@ namespace Domain.Services
             {
                 deleteObj.DeletedDate =DateTime.UtcNow;
                 deleteObj.Status = "Deleted";
-                DeletedSatatus = await SaveOrUpdate(deleteObj);
+                DeletedSatatus = await SaveOrUpdate(deleteObj); 
             }
 
             return DeletedSatatus > 0;

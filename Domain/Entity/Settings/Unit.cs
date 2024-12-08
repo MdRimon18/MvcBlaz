@@ -1,6 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Pms.Models.Entity.Inventory
+namespace Domain.Entity.Settings
 {
     public class Unit
     {
@@ -17,6 +22,6 @@ namespace Pms.Models.Entity.Inventory
         public DateTime? DeletedDate { get; set; }
         public long? DeletedBy { get; set; }
         public string? Status { get; set; }
-        public int total_row { get; set; }  
+        public int total_row { get; set; }
     }
 }
