@@ -4,7 +4,7 @@ using Domain.Entity.Settings;
 using Domain.CommonServices;
 using Domain.DbContex;
 
-namespace TradeDomainApp.Services.Inventory
+namespace Domain.Services.Inventory
 {
     public class CountryServiceV2
     {

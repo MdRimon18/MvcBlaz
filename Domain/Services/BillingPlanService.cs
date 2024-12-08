@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Domain.DbContex;
+using Domain.Entity;
 using Domain.Entity.Settings;
 using System.Data;
 
@@ -71,6 +72,17 @@ namespace Domain.Services
                 parameters.Add("@DeletedBy", billingPlan.DeletedBy);
                 parameters.Add("@Status", billingPlan.Status);
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                if (billingPlan.BillingPlanId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(billingPlan);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(billingPlan);
+                }
+              
+                
                 await _db.ExecuteAsync("BillingPlan_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
  
                 return   (long)parameters.Get<int>("@SuccessOrFailId");
@@ -90,8 +102,7 @@ namespace Domain.Services
             long DeletedSatatus = 0;
             if (deleteObj != null)
             {
-                deleteObj.DeletedDate =DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
                 DeletedSatatus = await SaveOrUpdate(deleteObj); 
             }
 
