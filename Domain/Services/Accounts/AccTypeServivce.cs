@@ -4,7 +4,7 @@ using Domain.Entity.Settings;
 using System.Data;
  
 
-namespace Pms.Data.Repository.Accounts
+namespace Domain.Services.Accounts
 {
     public class AccTypeServivce
     {

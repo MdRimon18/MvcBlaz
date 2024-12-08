@@ -3,7 +3,7 @@ using Domain.DbContex;
 using Domain.Entity.Accounts;
 using System.Data;
  
-namespace TradeApp.Services.Accounts
+namespace Domain.Services.Accounts
 {
     public class AccHeadService
     {

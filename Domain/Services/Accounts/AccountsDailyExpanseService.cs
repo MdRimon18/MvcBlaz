@@ -5,7 +5,7 @@ using System.Data;
  
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace TradeApp.Services.Accounts
+namespace Domain.Services.Accounts
 {
     public class AccountsDailyExpanseService
     {
