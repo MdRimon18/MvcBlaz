@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace BlazorInMvc.Controllers.Mvc
+namespace BlazorInMvc.Controllers.Mvc.Products
 {
-    public class UnitController : Controller
+    public class ProductSettingsController : Controller
     {
         public IActionResult Index(bool isPartial = false)
         {

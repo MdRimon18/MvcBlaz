@@ -1,0 +1,32 @@
+﻿@using Domain.Entity.Settings
+@model Unit
+<h5 class="mb-4 text-dark dark__text-light">Unit Entry</h5>
+<form>
+    <div class="row gx-2">
+        <!-- Event Title -->
+        <div class="col-12 mb-3">
+            <label class="form-label text-dark dark__text-light" for="event-name">Unit Name</label>
+            <input class="form-control shadow-none bg-white dark__bg-1100 text-dark dark__text-light"
+                   id="event-name"
+                   type="text"
+                   placeholder="Unit Name" />
+        </div>
+
+
+        <!-- Divider -->
+        <div class="col-12">
+            <div class="border-bottom border-dashed my-3"></div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-12 text-end">
+            <button type="button" class="btn btn-primary btn-sm me-2">Save</button>
+            <button type="button" class="btn btn-primary btn-sm me-2">Update</button>
+            <button type="button" class="btn btn-secondary btn-sm me-2">Refresh</button>
+            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+            @*  <button type="button" class="btn btn-danger btn-sm">
+                        <i class="fa fa-trash me-1"></i> 
+                    </button> *@
+        </div>
+    </div>
+</form>

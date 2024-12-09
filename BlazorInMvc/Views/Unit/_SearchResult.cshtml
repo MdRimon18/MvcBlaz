@@ -1,0 +1,40 @@
+﻿@using Domain.Entity.Settings
+@model List<Unit>
+<!-- Left Section: List -->
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0 text-dark dark__text-light">Unit List <strong>(@Model.Count)</strong></h5>
+        <button class="btn btn-sm btn-outline-primary">New</button>
+    </div>
+
+    <!-- Search -->
+    <div class="input-group input-search-width mb-3">
+        <input class="form-control form-control-sm shadow-none form-rounded w-95"
+               type="search"
+               placeholder="Search by name"
+           aria-label="search" id="unitSearch" />
+        <button class="btn btn-sm btn-outline-primary">
+            @*  <i class="fa fa-search"></i> *@
+            Search
+        </button>
+    </div>
+
+
+    <!-- Items List -->
+<div class="list-group" id="unitList">
+        @foreach (var unit in Model)
+    {
+        <p class="d-flex justify-content-between align-items-center border-bottom py-2 mb-0">
+            <span class="text-dark dark__text-light">@unit.UnitName</span>
+            <button class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-edit me-1"></i>
+            </button>
+        </p>
+    }
+         
+         
+    </div>
+
+ 
+

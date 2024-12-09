@@ -47,11 +47,11 @@ app.MapControllerRoute(
 
 
 // Map Blazor Hub for server-side Blazor
-app.MapBlazorHub();
+//app.MapBlazorHub();
 
 // Map fallback to the _Host.cshtml for Blazor
-app.MapFallbackToPage("/_Host");
-// Map routes for MVC controllers
+//app.MapFallbackToPage("/_Host");
+
 
 
 
