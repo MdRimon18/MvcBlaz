@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Domain.CommonServices;
 using Domain.DbContex;
+using Domain.Entity;
 using Domain.Entity.Settings;
+using Domain.Services.Shared;
 using System.Data;
 
 
@@ -59,13 +61,15 @@ namespace Domain.Services.Inventory
         {
             try
             {
+                EntityHelper.SetCreateAuditFields(unit);
+                unit.BranchId = CompanyInfo.BranchId;
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@UnitId", dbType: DbType.Int64, direction: ParameterDirection.Output);
                 parameters.Add("@branchId", unit.BranchId);
                 parameters.Add("@unitName", unit.UnitName);
-                parameters.Add("@entryDateTime", unit.EntryDateTime);
-                parameters.Add("@entryBy", unit.EntryBy);
+                ParameterHelper.AddAuditParameters(unit, parameters);
+
                 await _db.ExecuteAsync("Unit_Insert_SP", parameters, commandType: CommandType.StoredProcedure);
 
 
@@ -83,16 +87,18 @@ namespace Domain.Services.Inventory
 
         public async Task<bool> Update(Unit unit)
         {
+       
+            EntityHelper.SetUpdateAuditFields(unit);
+
             var parameters = new DynamicParameters();
             parameters.Add("@unitId", unit.UnitId);
             parameters.Add("@branchId", unit.BranchId);
             parameters.Add("@unitName", unit.UnitName);
-            parameters.Add("@lastModifyDate", unit.LastModifyDate);
-            parameters.Add("@lastModifyBy", unit.LastModifyBy);
-            parameters.Add("@deletedDate", unit.DeletedDate);
-            parameters.Add("@DeletedBy", unit.DeletedBy);
-            parameters.Add("@Status", unit.Status);
+            ParameterHelper.AddAuditParameters(unit, parameters);
+
             parameters.Add("@success", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+           
             await _db.ExecuteAsync("Unit_Update_SP",
                   parameters, commandType: CommandType.StoredProcedure);
 
@@ -108,9 +114,7 @@ namespace Domain.Services.Inventory
             bool isDeleted = false;
             if (deleteObj != null)
             {
-                deleteObj.DeletedBy = UserInfo.UserId;
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
                 isDeleted = await Update(deleteObj);
             }
 

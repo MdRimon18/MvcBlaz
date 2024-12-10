@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0 text-dark dark__text-light">Unit List <strong>(@Model.Count)</strong></h5>
-        <button class="btn btn-sm btn-outline-primary">New</button>
+    
     </div>
 
     <!-- Search -->
@@ -27,14 +27,30 @@
     {
         <p class="d-flex justify-content-between align-items-center border-bottom py-2 mb-0">
             <span class="text-dark dark__text-light">@unit.UnitName</span>
-            <button class="btn btn-sm btn-outline-primary">
+            <button class="btn btn-sm btn-outline-primary" onclick="LoadEditModeDataUnit('@unit.UnitId')">
                 <i class="fa fa-edit me-1"></i>
             </button>
         </p>
     }
          
-         
     </div>
 
- 
 
+
+<script>
+    function LoadEditModeDataUnit(id) {
+        $.ajax({
+            url: '/Unit/LoadEditModeData', // Your action URL
+            type: 'GET', // Use GET method
+            data: { id: id }, // Send the ID as a query string parameter
+            success: function (result) {
+                // On success, replace the content of a container with the returned partial view
+                $('#AddContainer').html(result);
+            },
+            error: function (xhr, status, error) {
+                console.log('Error:', error);
+                alert('An error occurred while loading the data. Please try again.');
+            }
+        });
+    }
+</script>

@@ -1,31 +1,10 @@
 ﻿
 <button class="btn btn-falcon-default btn-sm" type="button" data-spa="product-category">Product Category</button>
 <button class="btn btn-falcon-primary btn-sm ms-2" type="button" data-spa="sub-category">Sub<span class="d-none d-sm-inline"> Category</span></button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button"  onclick="Render('Unit/Index')">Units</button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button" onclick="Render('ProductSize/Index')">Size</button>
+<button class="btn btn-falcon-default btn-sm ms-2" type="button" onclick="RenderProductSettings('Unit/Index')">Units</button>
+<button class="btn btn-falcon-default btn-sm ms-2" type="button" onclick="RenderProductSettings('ProductSize/Index')">Size</button>
 <button class="btn btn-falcon-default btn-sm ms-2" type="button" data-spa="color">Color</button>
 <button class="btn btn-falcon-default btn-sm ms-2" type="button" data-spa="product-serial">Product Serial</button>
 <div id="ProductSettingsContainer">
     <!-- Partial views will be dynamically loaded here -->
 </div>
-
-<script src="~/assets/js/jquery-3.6.0.min.js"></script>
-<script>
-        function Render(route) {
-        const containerSelector = '#ProductSettingsContainer'; // Target container
-
-        // Generic fetch and render function
-        $.ajax({
-            url: `/${route}`, // Build the URL dynamically based on the route
-            type: 'GET', // Use GET method to fetch partial view
-            success: function (result) {
-                $(containerSelector).html(result); // Update the container with the fetched content
-            },
-            error: function (xhr, status, error) {
-                console.error(`Error rendering content from route: ${route}.`, error);
-                showDangerToast('Failed to load content.'); // Display a toast or error message
-            }
-        });
-    }
-
-</script>

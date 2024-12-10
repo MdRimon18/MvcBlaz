@@ -58,6 +58,15 @@ namespace Domain.Services
         {
             try
             {
+                if (billingPlan.BillingPlanId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(billingPlan);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(billingPlan);
+                }
+
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@BillingPlanId", billingPlan.BillingPlanId);
@@ -73,15 +82,7 @@ namespace Domain.Services
                 parameters.Add("@Status", billingPlan.Status);
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                if (billingPlan.BillingPlanId > 0)
-                {
-                    EntityHelper.SetUpdateAuditFields(billingPlan);
-                }
-                else
-                {
-                    EntityHelper.SetCreateAuditFields(billingPlan);
-                }
-              
+                
                 
                 await _db.ExecuteAsync("BillingPlan_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
  
