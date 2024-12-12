@@ -26,9 +26,6 @@
         <p>No component specified or invalid component name.</p>
     } *@
 </div>
-
-
- 
 <div class="row g-3">
     <div class="col-lg-6">
         <div class="card h-100" dir="ltr">
@@ -98,4 +95,24 @@
     </div>
 </div>
 
+
+@* @section Scripts
+ {
+    <script>
+        $(document).ready(function () {
+            // Load content dynamically using AJAX (for SPA behavior)
+            $.ajax({
+                url: '@Url.Action("Privacy", "Home")',  // Action for content load
+                type: 'GET',
+                success: function (result) {
+                    // Replace content inside MainContainer with the response
+                    $('#privacyContainer').html(result);
+                },
+                error: function () {
+                    alert('Error loading content');
+                }
+            });
+        });
+    </script>
+} *@
  

@@ -28,7 +28,7 @@ namespace BlazorInMvc.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return PartialView("Privacy");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,5 +1,6 @@
 ﻿using Domain.CommonServices;
 using Domain.Entity.Settings;
+using Domain.Interface;
 using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,12 @@ namespace BlazorInMvc.Controllers.Mvc.Products
     public class UnitController : Controller
     {
         private readonly UnitService _unitService;
-        public UnitController(UnitService unitService)
+        private readonly IViewRenderService _viewRenderService;
+        public UnitController(UnitService unitService,
+            IViewRenderService viewRenderService)
         {
             _unitService = unitService;
+            _viewRenderService = viewRenderService;
         }
             
         
@@ -37,41 +41,75 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             return units.ToList(); // Convert and return as List<Unit>
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> SaveOrUpdate(Unit model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //            try
+        //            {
+        //                if (model.UnitId>0)
+        //                {
+        //                    var saveResult = await _unitService.Update(model);
+
+        //                }
+        //                else
+        //                {
+        //                    var UpdateResult = await _unitService.Save(model);
+
+
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return PartialView("AddForm", model);
+
+        //            }
+
+        //        var list = await FetchModelList();
+        //        return PartialView("_SearchResult", list);
+        //    }
+
+
+        //    Response.StatusCode = 400; // Indicate validation error with HTTP 400 status
+
+        //    return PartialView("AddForm", model);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveOrUpdate(Unit model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                    try
-                    {
-                        if (model.UnitId>0)
-                        {
-                            var saveResult = await _unitService.Update(model);
-
-                        }
-                        else
-                        {
-                            var UpdateResult = await _unitService.Save(model);
-
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        return PartialView("AddForm", model);
-
-                    }
-
-                var list = await FetchModelList();
-                return PartialView("_SearchResult", list);
+                Response.StatusCode = 400;
+                // Return the AddForm partial view with validation errors
+                return PartialView("AddForm", model); // Returning partial view directly
             }
 
+            try
+            {
+                if (model.UnitId > 0)
+                {
+                    await _unitService.Update(model);
+                }
+                else
+                {
+                    await _unitService.Save(model);
+                }
 
-            Response.StatusCode = 400; // Indicate validation error with HTTP 400 status
-
-            return PartialView("AddForm", model);
+                var list = await FetchModelList();
+                // Return the _SearchResult partial view with the updated list
+                return PartialView("_SearchResult", list); // Returning partial view directly
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                // In case of an error, render the AddForm partial view again
+                return PartialView("AddForm", model); // Returning partial view directly
+            }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> LoadEditModeData(long id)

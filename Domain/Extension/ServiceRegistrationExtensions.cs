@@ -4,7 +4,10 @@ using Domain.Services.Accounts;
 using Domain.Services.Inventory;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
-    
+using Domain.Interface;
+using Domain.Services.Shared;
+using Microsoft.AspNetCore.Http;
+
 
 public static class ServiceRegistrationExtensions
 {
@@ -60,5 +63,8 @@ public static class ServiceRegistrationExtensions
         //services.AddSingleton<ProductRepositoyWithSp>();
         //services.AddSingleton<TaskRepository>();
         //services.AddSingleton<FileUploadService>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IViewRenderService, ViewRenderService>();
+
     }
 }

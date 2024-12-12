@@ -1,8 +1,20 @@
 ﻿@using Domain.CommonServices
 @using Domain.Entity.Settings
 @model Unit
-<h5 class="mb-4 text-dark dark__text-light">@(Model.UnitId > 0 ? "Update" : "New") Unit</h5>
-<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateUnit">
+<div class="row">
+    <div class="col-6">
+        <h5 class="mb-4 text-dark dark__text-light">@(Model.UnitId > 0 ? "Update" : "New") Unit</h5>
+    </div>
+    @if (Model.UnitId > 0){
+        <div class="col-6 text-end">
+            <button class="btn btn-sm btn-outline-primary" onclick="AddUnitNewForm()">New</button>
+        </div>
+    }
+  
+</div>
+
+
+<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateUnit" id="UnitForm">
     @Html.AntiForgeryToken()
     <div class="row gx-2">
         <!-- Event Title -->
@@ -12,7 +24,7 @@
                    asp-for="UnitName"
                    type="text"
                    placeholder="Unit Name" />
-            <span class="text-danger" asp-validation-for="UnitName"></span>
+            
         </div>
 
 
@@ -27,10 +39,13 @@
             <input type="hidden" asp-for="UnitId" />
             
             <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.UnitId>0 ? "Update" : "Save")</button>
-            <button type="button" onclick="AddUnitNewForm()" class="btn btn-secondary btn-sm me-2">Refresh</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="AddUnitNewForm()">New</button>
+            <button type="button" onclick="OnRefresh()" class="btn btn-secondary btn-sm me-2">Refresh</button>
+            
             @if (Model.UnitId > 0){
-                <button type="button" onclick="OnDelete('@Model.UnitId')" class="btn btn-danger btn-sm">Delete</button>
+                <button type="button" onclick="OnDeleteUnit('@Model.UnitId')"
+                        class="btn btn-danger btn-sm">
+                    Delete
+                </button>
             }
            
             @*  <button type="button" class="btn btn-danger btn-sm">
@@ -42,6 +57,7 @@
 
 
 <script>
+   
     $(document).ready(function () {
        
         $('form[name="SaveOrUpdateUnit"]').submit(function (e) {
@@ -81,6 +97,9 @@
 
 
 <script>
+    function OnRefresh(){
+        $('#UnitForm')[0].reset();
+    }
     function AddUnitNewForm() {
 
         $.ajax({
@@ -97,53 +116,48 @@
         });
     }
 
-
+   
 </script>
-
-
+ 
 <script>
-    function OnDelete(id) {
-
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'mr-2 btn btn-danger'
-            },
-            buttonsStyling: false,
-            animation: false,
-            allowOutsideClick: false
-        });
-        swalWithBootstrapButtons.fire({
-            title: `Are you sure want to Delete with Id ${id}?`,
+    function OnDeleteUnit(id) {
+        Swal.fire({
+            title: `Are you sure you want to delete the item with ID ${id}?`,
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
+            cancelButtonText: 'No, cancel!'
         }).then((result) => {
-            if (result.value) {
-                swalWithBootstrapButtons.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                ).then((success) => {
-                    $.ajax({
-                        url: '/Unit/Delete', // Your action URL
-                        type: 'POST',
-                        data: { id: id }, // Convert the object to a JSON string
-                        success: function (response) {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Unit/Delete', // Your action URL
+                    type: 'POST',
+                    data: { id: id }, // Data sent to the server
+                    success: function (response) {
+                        // Success message
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        ).then(() => {
+                            // Reload content or execute additional actions
                             $('#SearchResultContainer').html(response);
-                            AddUnitNewForm();
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('Error:', error);
-                            alert('An error occurred while deleting the pipeline. Please try again.');
-                        }
-                    });
+                            AddUnitNewForm(); // Optional additional call
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('Error:', textStatus, errorThrown);
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting. Please try again.',
+                            'error'
+                        );
+                    }
                 });
             }
         });
     }
-
 </script>
