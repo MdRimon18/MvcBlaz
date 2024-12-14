@@ -2184,7 +2184,10 @@
     <script>
             function RenderProductSettings(route) {
             const containerSelector = '#ProductSettingsContainer'; // Target container
+             const loaderSelector = '#ProductSettingsLoader'; // Loader container
 
+        // Show the loader
+        $(loaderSelector).show();
             // Generic fetch and render function
             $.ajax({
                 url: `/${route}`, // Build the URL dynamically based on the route
@@ -2195,6 +2198,10 @@
                 error: function (xhr, status, error) {
                     console.error(`Error rendering content from route: ${route}.`, error);
                     showDangerToast('Failed to load content.'); // Display a toast or error message
+                },
+                complete: function () {
+                    // Hide the loader
+                    $(loaderSelector).hide();
                 }
             });
         }
