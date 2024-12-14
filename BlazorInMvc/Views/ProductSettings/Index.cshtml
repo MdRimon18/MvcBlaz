@@ -1,10 +1,25 @@
 ﻿
-<button class="btn btn-falcon-default btn-sm" type="button" data-spa="product-category">Product Category</button>
-<button class="btn btn-falcon-primary btn-sm ms-2" type="button" data-spa="sub-category">Sub<span class="d-none d-sm-inline"> Category</span></button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button" onclick="RenderProductSettings('Unit/Index')">Units</button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button" onclick="RenderProductSettings('ProductSize/Index')">Size</button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button" data-spa="color">Color</button>
-<button class="btn btn-falcon-default btn-sm ms-2" type="button" data-spa="product-serial">Product Serial</button>
+<button class="btn btn-falcon-primary btn-sm toggle-button" type="button" data-spa="product-category">Product Category</button>
+<button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" data-spa="sub-category">Sub<span class="d-none d-sm-inline"> Category</span></button>
+<button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" onclick="RenderProductSettings('Unit/Index')">Units</button>
+<button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" onclick="RenderProductSettings('ProductSize/Index')">Size</button>
+<button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" data-spa="color">Color</button>
+<button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" data-spa="product-serial">Product Serial</button>
 <div id="ProductSettingsContainer">
     <!-- Partial views will be dynamically loaded here -->
 </div>
+<script>
+    document.querySelectorAll('.toggle-button').forEach(button => {
+        button.addEventListener('click', function () {
+            // Reset all toggle buttons to default
+            document.querySelectorAll('.toggle-button').forEach(btn => {
+                btn.classList.remove('btn-falcon-primary');
+                btn.classList.add('btn-falcon-default');
+            });
+
+            // Set the clicked button to primary
+            this.classList.remove('btn-falcon-default');
+            this.classList.add('btn-falcon-primary');
+        });
+    });
+</script>
