@@ -2208,7 +2208,22 @@
 
     </script>
  
+    @* selected Button higlighting *@
+    <script>
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.addEventListener('click', function () {
+                // Reset all toggle buttons to default
+                document.querySelectorAll('.toggle-button').forEach(btn => {
+                    btn.classList.remove('btn-falcon-primary');
+                    btn.classList.add('btn-falcon-default');
+                });
 
+                // Set the clicked button to primary
+                this.classList.remove('btn-falcon-default');
+                this.classList.add('btn-falcon-primary');
+            });
+        });
+    </script>
 
 @* 
     <script>

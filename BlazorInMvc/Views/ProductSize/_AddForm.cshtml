@@ -1,6 +1,6 @@
 ﻿@using Domain.CommonServices
 @using Domain.Entity.Settings
-@model Unit
+@model ProductSze
 <div class="row" id="ProductSettingsLoader" style="display: none;">
     <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
         <div class="spinner-border text-primary" role="status">
@@ -10,9 +10,9 @@
 </div>
 <div class="row">
     <div class="col-6">
-        <h5 class="mb-4 text-dark dark__text-light">@(Model.UnitId > 0 ? "Update" : "New") Unit</h5>
+        <h5 class="mb-4 text-dark dark__text-light">@(Model.ProductSizeId > 0 ? "Update" : "New") Size</h5>
     </div>
-    @if (Model.UnitId > 0){
+    @if (Model.ProductSizeId > 0){
         <div class="col-6 text-end">
             <button class="btn btn-sm btn-outline-primary" onclick="AddUnitNewForm()">New</button>
         </div>
@@ -21,17 +21,17 @@
 </div>
 
 
-<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateUnit" id="UnitForm">
+<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProductSize" id="ProductSizeForm">
     @Html.AntiForgeryToken()
     <div class="row gx-2">
         <!-- Event Title -->
         <div class="col-12 mb-3">
-            <label class="form-label text-dark dark__text-light" for="event-name">Unit Name</label>
+            <label class="form-label text-dark dark__text-light" for="event-name">Size Name</label>
             <input class="form-control shadow-none bg-white dark__bg-1100 text-dark dark__text-light"
-                   asp-for="UnitName"
+                   asp-for="ProductSizeName"
                    type="text"
-                   placeholder="Unit Name" />
-            
+                   placeholder="Size Name" />
+            <span class="text-danger" asp-validation-for="ProductSizeName"></span>
         </div>
 
 
@@ -42,14 +42,15 @@
 
         <!-- Buttons -->
         <div class="col-12 text-end">
-            <input type="hidden" asp-for="BranchId" />
-            <input type="hidden" asp-for="UnitId" />
+             
+            <input type="hidden" asp-for="ProductSizeId" />
             
-            <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.UnitId>0 ? "Update" : "Save")</button>
+            <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.ProductSizeId > 0 ? "Update" : "Save")</button>
             <button type="button" onclick="OnRefresh()" class="btn btn-secondary btn-sm me-2">Refresh</button>
             
-            @if (Model.UnitId > 0){
-                <button type="button" onclick="OnDeleteUnit('@Model.UnitId')"
+            @if (Model.ProductSizeId > 0)
+            {
+                <button type="button" onclick="OnDeleteProductSize('@Model.ProductSizeId')"
                         class="btn btn-danger btn-sm">
                     Delete
                 </button>
@@ -61,13 +62,15 @@
         </div>
     </div>
 </form>
-
+<div data-product-size-name="@Model.ProductSizeName">
+    <!-- Existing form content -->
+</div>
 
 <script>
    
     $(document).ready(function () {
        
-        $('form[name="SaveOrUpdateUnit"]').submit(function (e) {
+        $('form[name="SaveOrUpdateProductSize"]').submit(function (e) {
             
             e.preventDefault(); // Prevent the default form submission
              const loaderSelector = '#ProductSettingsLoader';
@@ -81,8 +84,10 @@
                 data: $(this).serialize(),
                 success: function (result) {
                     // Check if Model.Id is not an empty GUID correctly in JavaScript
-                    var modelId = '@Model.UnitId';
+                    console.log(result)
+                    var modelId = '@Model.ProductSizeId';
                     if (modelId !== '0') {
+                        
                         showSuccessToast('@MessageManager.UpdateSuccess');
                     } else {
                         showSuccessToast('@MessageManager.SaveSuccess');
@@ -93,14 +98,23 @@
 
 
                 },
-                error: function (xhr) {
+                    error: function (xhr) {
                     if (xhr.status === 400) {
                         showDangerToast('@MessageManager.SaveFaild');
+                        $('#AddContainer').html(xhr.responseText); // Show validation errors
+                    } else if (xhr.status === 409) { // Conflict
+                        // Parse the response if necessary to extract additional data
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(xhr.responseText, 'text/html');
+                        const productSizeName = doc.querySelector('[data-product-size-name]').dataset.productSizeName;
+
+                        showDangerToast(`${productSizeName} @MessageManager.Exist`);
                         $('#AddContainer').html(xhr.responseText);
                     } else {
                         showDangerToast('@MessageManager.SaveFaild');
                     }
-                },
+                }
+                ,
                 complete: function () {
                     // Hide the loader
                     $(loaderSelector).hide();
@@ -114,12 +128,12 @@
 
 <script>
     function OnRefresh(){
-        $('#UnitForm')[0].reset();
+        $('#ProductSizeForm')[0].reset();
     }
     function AddUnitNewForm() {
 
         $.ajax({
-            url: '/Unit/AddNewForm', // Your action URL
+            url: '/ProductSize/AddNewForm', // Your action URL
             type: 'GET', // Use GET method
             //   data:, // Send the model object as query string parameters
             success: function (result) {
@@ -136,7 +150,7 @@
 </script>
  
 <script>
-    function OnDeleteUnit(id) {
+    function OnDeleteProductSize(id) {
         Swal.fire({
             title: `Are you sure you want to delete the item with ID ${id}?`,
             text: "You won't be able to revert this!",
@@ -149,7 +163,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/Unit/Delete', // Your action URL
+                    url: '/ProductSize/Delete', // Your action URL
                     type: 'POST',
                     data: { id: id }, // Data sent to the server
                     success: function (response) {
