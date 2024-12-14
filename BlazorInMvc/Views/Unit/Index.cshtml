@@ -1,22 +1,35 @@
 ﻿@using Domain.CommonServices
 @using Domain.ViewModel
 @model UnitsViewModel
+
+
 <div class="row g-0 bg-light dark__bg-1000 mt-3">
-    <div class="col-md-4 col-lg-4 border-end p-3">
-    <div id="SearchResultContainer">
-        @await Html.PartialAsync("_SearchResult",Model.UnitList)
-    </div>
+    <div class="row">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
     </div>
 
- 
-    <!-- Right Section: Form -->
-    
-    <div class="col-md-8 col-lg-8 p-4">
-        <div id="AddContainer">
-            @await Html.PartialAsync("AddForm",Model.Unit)
+    <div class="row">
+        <div class="col-md-4 col-lg-4 border-end p-3">
+            <div id="SearchResultContainer">
+                @await Html.PartialAsync("_SearchResult", Model.UnitList)
+            </div>
         </div>
-       
+
+
+        <!-- Right Section: Form -->
+
+        <div class="col-md-8 col-lg-8 p-4">
+            <div id="AddContainer">
+                @await Html.PartialAsync("AddForm", Model.Unit)
+            </div>
+
+        </div>
     </div>
+    
 </div>
 
  
