@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Domain.Entity.Settings
-
+        
 {
     public class Products
     {
@@ -86,5 +86,21 @@ namespace Domain.Entity.Settings
         public string UnitName {  get; set; }
         [NotMapped] 
         public int total_row { get; set; } = 0;
+
+
+        public List<Unit> UnitList { get; set; }
+        public List<Suppliers> SupplierList { get; set; }
+        public List<Currency> CurrencyList { get; set; }
+        public List<ShippingBy> ShippingByList { get; set; }
+        public List<Colors> ColorList { get; set; }
+        public List<CountryV2> CountryList { get; set; }
+        public List<StatusSetting> StatusSettingList { get; set; }
+        public List<StatusSetting> ImportStatusSettingList { get; set; }
+        public List<ProductSubCategory> ProductSubCategoryList { get; set; }
+        public List<Brands> BrandList { get; set; }
+        public List<ProductCategories> ProductCategoryList { get; set; }
+        public List<ProductSze> ProductSizeList { get; set; }
+        public List<Warehouse> WarehouseList { get; set; }
+        public IEnumerable<BodyPart> BodyParts { get; set; }
     }
 }

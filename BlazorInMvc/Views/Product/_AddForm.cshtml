@@ -1,0 +1,522 @@
+﻿@using Domain.CommonServices
+@using Domain.Entity.Settings
+@model Products
+<div class="row" id="ProductSettingsLoader" style="display: none;">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <h5 class="mb-4 text-dark dark__text-light">@(Model.ProductId > 0 ? "Update" : "New") Size</h5>
+    </div>
+    @if (Model.ProductId > 0)
+    {
+        <div class="col-6 text-end">
+            <button class="btn btn-sm btn-outline-primary" onclick="AddUnitNewForm()">New</button>
+        </div>
+    }
+  
+</div>
+
+<div class="row g-0">
+    <div class="col-lg-9 pe-lg-2">
+        <div class="card mb-3">
+            @*   <div class="card-header ">
+                <h6 class="fw-semi-bold mb-0">Basic information</h6>
+
+            </div> *@
+
+            <div class="card-header ">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" id="basic_info_tab" data-bs-toggle="tab" href="#tab_basic_info" role="tab" aria-controls="tab_basic_info" aria-selected="true">Basic</a></li>
+                    <li class="nav-item"><a class="nav-link" id="ecommerce_tab" data-bs-toggle="tab" href="#tab_ecommerce" role="tab" aria-controls="tab_ecommerce" aria-selected="false">Advanced</a></li>
+                    <li class="nav-item"><a class="nav-link" id="image_tab" data-bs-toggle="tab" href="#tab_image" role="tab" aria-controls="tab_image" aria-selected="false">Add Images</a></li>
+                    <li class="nav-item"><a class="nav-link" id="product_specification_tab" data-bs-toggle="tab" href="#tab_product_specification" role="tab" aria-controls="tab_product_specification" aria-selected="false">Product Specification</a></li>
+
+                    @*  <li class="nav-item"><a class="nav-link" id="Weight_tab" data-bs-toggle="tab" href="#tab_Weight" role="tab" aria-controls="tab_Weight" aria-selected="false">Weight</a></li> *@
+                </ul>
+            </div>
+            <div class="tab-content border border-top-0 p-3 card-body bg-body-tertiary" id="myTabContent">
+                <div class="tab-pane fade show active" id="tab_basic_info" role="tabpanel" aria-labelledby="basic_info_tab">
+
+
+                    <div class="row gx-2">
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="ProdName" class="form-label fw-semi-bold">Name/Model</label> <span class="error-star">*</span>
+                                <input asp-for="ProdName" type="text" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Name/Model" />
+                                <span asp-validation-for="ProdName" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="ProductCode" class="form-label fw-semi-bold">Product Code<span class="error-star">*</span></label>
+                                <input asp-for="ProductCode" type="text" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Product Code" />
+                                <span asp-validation-for="ProductCode" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="SerialNmbrOrUPC" class="form-label fw-semi-bold">Serial Number/UPC</label>
+                                <input asp-for="SerialNmbrOrUPC" type="text" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Serial Number/UPC" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="Sku" class="form-label fw-semi-bold">SKU<span class="error-star">*</span></label>
+                                <input asp-for="Sku" type="text" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="SKU" />
+                                <span asp-validation-for="Sku" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="OpeningQnty" class="form-label fw-semi-bold">Opening Quantity</label> <span class="error-star">*</span>
+                                <input asp-for="OpeningQnty" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Opening Quantity" />
+                                <span asp-validation-for="OpeningQnty" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="AlertQnty" class="form-label fw-semi-bold">Alert Quantity</label>
+                                <input asp-for="AlertQnty" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Alert Quantity" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="BuyingPrice" class="form-label fw-semi-bold">Buying Price</label> <span class="error-star">*</span>
+                                <input asp-for="BuyingPrice" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Buying Price" />
+                                <span asp-validation-for="BuyingPrice" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="SellingPrice" class="form-label fw-semi-bold">Selling Price</label> <span class="error-star">*</span>
+                                <input asp-for="SellingPrice" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Selling Price" />
+                                <span asp-validation-for="SellingPrice" class="text-left invalid-message-color"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="VatPercent" class="form-label fw-semi-bold">VAT (%)</label>
+                                <input asp-for="VatPercent" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="VAT in %" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="VatAmount" class="form-label fw-semi-bold">VAT Amount</label>
+                                <input asp-for="VatAmount" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="VAT Amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="DiscountPercentg" class="form-label fw-semi-bold">Discount(%)</label>
+                                <input asp-for="DiscountPercentg" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Discount (%)" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label for="DiscountAmount" class="form-label fw-semi-bold">Discount Amount</label>
+                                <input asp-for="DiscountAmount" type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Discount Amount" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="d-grid gap-2 d-md-block mt-4">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+                            <button type="reset" class="btn btn-outline-primary btn-sm">Refresh</button>
+                            <button type="button" class="btn btn-outline-danger btn-sm">Delete</button>
+                        </div>
+                    </div>
+
+
+                </div>
+              
+
+                <div class="tab-pane fade" id="tab_ecommerce" role="tabpanel" aria-labelledby="ecommerce_tab">
+                <div class="row gx-2">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Manufacturar Name</label>
+                            <input asp-for="ManufacturarName" type="text" class="form-control form-control-sm form-rounded" placeholder="Manufacturar Name" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Bar Code</label>
+                            <input asp-for="BarCode" type="text" class="form-control form-control-sm form-rounded" placeholder="Bar Code" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Link to Supplier</label>
+                            <select asp-for="SupplirLinkId"  class="form-control form-control-sm form-rounded">
+                                <option value="">Select Link to Supplier</option>
+                                                @foreach (var sp in Model.SupplierList)
+                                                {
+                                                    <option value="@sp.SupplierId">@sp.SupplrName</option>
+                                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Imported From</label>
+                            <input asp-for="ImportedForm" type="text" class="form-control form-control-sm form-rounded" placeholder="Imported From" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Import Status</label>
+                            <select asp-for="ImportStatusId"   class="form-control form-control-sm form-rounded">
+                                <option value="">Select Status</option>
+                                                @* @foreach (var s in Model.ImportStatusList)
+                                                {
+                                                    <option value="@s.ProductSizeId">@s.ProductSizeName</option>
+                                                } *@
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Warrenty Length/Year</label>
+                            <input asp-for="WarrentYear" type="number" class="form-control form-control-sm form-rounded" placeholder="Warrent Year" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Warrenty Policy</label>
+                            <textarea asp-for="WarrentyPolicy" class="form-control form-control-sm form-rounded" rows="2" placeholder="Warrenty Policy"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Color</label>
+                            <select asp-for="ColorId"   class="form-control form-control-sm form-rounded">
+                   
+                                <option value="">Select Color</option>
+                                                @foreach (var c in Model.ColorList)
+                                                {
+                                                    <option value="@c.ColorId">@c.ColorIdName</option>
+                                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Size</label>
+                            <select asp-for="SizeId"   class="form-control form-control-sm form-rounded">
+                                <option value="">Select Size</option>
+                                                @foreach (var s in Model.ProductSizeList)
+                                                {
+                                                    <option value="@s.ProductSizeId">@s.ProductSizeName</option>
+                                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Height</label>
+                            <input asp-for="ProductHieght" type="text" class="form-control form-control-sm form-rounded" placeholder="Height" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Weight</label>
+                            <input asp-for="ItemWeight" type="number" class="form-control form-control-sm form-rounded" placeholder="Weight" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Shipping Name</label>
+                            <select asp-for="ShippingById"   class="form-control form-control-sm form-rounded">
+                                <option value="">Select Shipping Name</option>
+                                                @foreach (var ship in Model.ShippingByList)
+                                                {
+                                                    <option value="@ship.ShippingById">@ship.ShippingByName</option>
+                                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semi-bold">Remarks</label>
+                            <textarea asp-for="Remarks" class="form-control form-control-sm form-rounded" rows="2" placeholder="Remarks"></textarea>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+             
+            </div>
+        </div>
+    </div>
+
+   
+        <div class="col-lg-3 ps-lg-2">
+            <div class="sticky-sidebar">
+                <!-- Product Selection Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row gx-2">
+                            <!-- Product Category -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="product-category">Select category<span class="error-star">*</span></label>
+                                <div class="form-group">
+                                    <input asp-for="ProdCtgId" class="form-control" placeholder="Search for categories..." />
+                                    <span asp-validation-for="ProdCtgId" class="text-danger"></span>
+                                </div>
+                            </div>
+                    
+                            <!-- Subcategory -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="product-subcategory">Select sub-category:</label>
+                                <select asp-for="ProdSubCtgId" class="form-select">
+                                    <option value="">Select Product Sub Category</option>
+                                    @foreach (var item in Model.ProductSubCategoryList)
+                                    {
+                                        <option value="@item.ProdSubCtgId">@item.ProdSubCtgName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Brand -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="BrandName">Select Brand Name:</label>
+                                <select asp-for="BrandId" class="form-select">
+                                    <option value="">Select Brand Name</option>
+                                    @foreach (var item in Model.BrandList)
+                                    {
+                                        <option value="@item.BrandId">@item.BrandName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Unit Type -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label fw-semi-bold">Unit Type<span class="error-star">*</span></label>
+                                    <select asp-for="UnitId" class="form-select">
+                                        <option value="">Select Unit Type</option>
+                                        @foreach (var item in Model.UnitList)
+                                        {
+                                            <option value="@item.UnitId">@item.UnitName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="UnitId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Final Price -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="final-price">Final price:</label>
+                                <input asp-for="FinalPrice" class="form-control" type="number" disabled />
+                            </div>
+
+                            <!-- Previous Price -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="previous-price">Previous price:</label>
+                                <input asp-for="PreviousPrice" class="form-control" type="number" />
+                            </div>
+
+                            <!-- Currency -->
+                            <div class="col-12">
+                                <label class="form-label fw-semi-bold" for="price-currency">Currency:</label>
+                                <select asp-for="CurrencyId" class="form-select">
+                                    <option value="">Select Currency</option>
+                                    @foreach (var item in Model.CurrencyList)
+                                    {
+                                        <option value="@item.CurrencyId">@item.CurrencyShortName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CurrencyId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Status Card -->
+                <div class="card mb-3">
+                    <div class="card-header bg-body-tertiary">
+                        <h6 class="mb-0 fw-semi-bold">Stock status</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="form-check-input p-2" type="radio" name="StockStatus" value="InStock" id="in-stock" />
+                            <label class="form-check-label fs-9 fw-normal text-700" for="in-stock">In stock (10 Pcs)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input p-2" type="radio" name="StockStatus" value="Unavailable" id="unavailable" />
+                            <label class="form-check-label fs-9 fw-normal text-700" for="unavailable">Unavailable</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input p-2" type="radio" name="StockStatus" value="TBA" id="to-be-announced" />
+                            <label class="form-check-label fs-9 fw-normal text-700" for="to-be-announced">To be announced</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+
+@* <form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProduct" id="ProductForm">
+    @Html.AntiForgeryToken()
+   
+</form> *@
+<div data-product-name="@Model.ProdName">
+    <!-- Existing form content -->
+</div>
+
+<script>
+   
+    $(document).ready(function () {
+       
+        $('form[name="SaveOrUpdateProduct"]').submit(function (e) {
+            
+            e.preventDefault(); // Prevent the default form submission
+             const loaderSelector = '#ProductSettingsLoader';
+              $(loaderSelector).show();
+                const submitButton = $(this).find('button[type="submit"]');
+                   submitButton.prop('disabled', true);
+            $.ajax({
+                
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    // Check if Model.Id is not an empty GUID correctly in JavaScript
+                    console.log(result)
+                    var modelId = '@Model.ProductId';
+                    if (modelId !== '0') {
+                        
+                        showSuccessToast('@MessageManager.UpdateSuccess');
+                    } else {
+                        showSuccessToast('@MessageManager.SaveSuccess');
+                        AddUnitNewForm();
+                    }
+
+                    $('#SearchResultContainer').html(result);
+
+
+                },
+                    error: function (xhr) {
+                    if (xhr.status === 400) {
+                        showDangerToast('@MessageManager.SaveFaild');
+                        $('#AddContainer').html(xhr.responseText); // Show validation errors
+                    } else if (xhr.status === 409) { // Conflict
+                        // Parse the response if necessary to extract additional data
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(xhr.responseText, 'text/html');
+                        const ProdName = doc.querySelector('[data-product-name]').dataset.ProdName;
+
+                        showDangerToast(`${ProdName} @MessageManager.Exist`);
+                        $('#AddContainer').html(xhr.responseText);
+                    } else {
+                        showDangerToast('@MessageManager.SaveFaild');
+                    }
+                }
+                ,
+                complete: function () {
+                    // Hide the loader
+                    $(loaderSelector).hide();
+                    submitButton.prop('disabled', false);
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    function OnRefresh(){
+        $('#ProductForm')[0].reset();
+    }
+    function AddUnitNewForm() {
+
+        $.ajax({
+            url: '/ProductSize/AddNewForm', // Your action URL
+            type: 'GET', // Use GET method
+            //   data:, // Send the model object as query string parameters
+            success: function (result) {
+
+                $('#AddContainer').html(result);
+            },
+            error: function (xhr, status, error) {
+                showDangerToast('Form Reset Faild');
+            }
+        });
+    }
+
+   
+</script>
+ 
+<script>
+    function OnDeleteProductSize(id) {
+        Swal.fire({
+            title: `Are you sure you want to delete the item with ID ${id}?`,
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/ProductSize/Delete', // Your action URL
+                    type: 'POST',
+                    data: { id: id }, // Data sent to the server
+                    success: function (response) {
+                        // Success message
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        ).then(() => {
+                            // Reload content or execute additional actions
+                            $('#SearchResultContainer').html(response);
+                            AddUnitNewForm(); // Optional additional call
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('Error:', textStatus, errorThrown);
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting. Please try again.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+</script>

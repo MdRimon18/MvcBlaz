@@ -66,5 +66,8 @@ public static class ServiceRegistrationExtensions
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IViewRenderService, ViewRenderService>();
 
+
+
+        services.AddScoped<BodyPartService>();
     }
 }

@@ -1,0 +1,32 @@
+﻿@using Domain.ViewModel
+ @model ProductViewModel
+
+
+<div class="row g-0 bg-light dark__bg-1000 mt-3">
+
+
+    <div class="row">
+        <div class="col-md-3 col-lg-3 border-end p-3">
+            <div id="SearchResultContainer">
+                @await Html.PartialAsync("_SearchResult", Model.ProductList)
+            </div>
+        </div>
+
+
+        <!-- Right Section: Form -->
+
+        <div class="col-md-9 col-lg-9 p-4">
+            <div id="AddContainer">
+                @await Html.PartialAsync("_AddForm", Model.Product)
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+

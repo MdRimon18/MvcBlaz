@@ -122,10 +122,10 @@ namespace Domain.Services.Inventory
 				parameters.Add("@RackNumber", _products.RackNumber);
 				parameters.Add("@BatchNumber", _products.BatchNumber);
 				parameters.Add("@PolicyId", _products.PolicyId);
-                parameters.Add("@ProductCode", _products.ProductCode);
-                parameters.Add("@ProductHieght", _products.ProductHieght);
-                parameters.Add("@BrandId", _products.BrandId);
-                parameters.Add("@EntryDateTime", _products.EntryDateTime);
+				parameters.Add("@ProductCode", _products.ProductCode);
+				parameters.Add("@ProductHieght", _products.ProductHieght);
+				parameters.Add("@BrandId", _products.BrandId);
+				parameters.Add("@EntryDateTime", _products.EntryDateTime);
 				parameters.Add("@EntryBy", _products.EntryBy);
 				parameters.Add("@LastModifyDate", _products.LastModifyDate);
 				parameters.Add("@LastModifyBy", _products.LastModifyBy);
