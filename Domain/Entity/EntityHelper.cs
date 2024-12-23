@@ -28,6 +28,7 @@ namespace Domain.Entity
             entity.DeletedBy = UserInfo.UserId;
             entity.Status = "Deleted";
         }
+      
     }
 
 }

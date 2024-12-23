@@ -3,6 +3,7 @@
 using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
+using Domain.Entity;
 
 namespace Domain.Services.Inventory
 {
@@ -58,6 +59,16 @@ namespace Domain.Services.Inventory
         {
             try
             {
+                if (colors.ColorId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(colors);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(colors);
+                }
+                
+
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@ColorId", colors.ColorId);
@@ -65,12 +76,7 @@ namespace Domain.Services.Inventory
                 parameters.Add("@LanguageId", colors.LanguageId);
                 parameters.Add("@ColorIdName", colors.ColorIdName);
                 parameters.Add("@EntryDateTime", colors.EntryDateTime);
-                parameters.Add("@EntryBy", colors.EntryBy);
-                parameters.Add("@LastModifyDate", colors.LastModifyDate);
-                parameters.Add("@LastModifyBy", colors.LastModifyBy);
-                parameters.Add("@DeletedDate", colors.DeletedDate);
-                parameters.Add("@DeletedBy", colors.DeletedBy);
-                parameters.Add("@Status", colors.Status);
+                
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("Color_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
@@ -91,8 +97,7 @@ namespace Domain.Services.Inventory
             long DeletedSatatus = 0;
             if (deleteObj != null)
             {
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
                 DeletedSatatus = await SaveOrUpdate(deleteObj);
             }
 
