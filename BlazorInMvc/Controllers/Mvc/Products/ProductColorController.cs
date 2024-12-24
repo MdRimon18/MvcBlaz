@@ -91,7 +91,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         [HttpGet]
         public async Task<IActionResult> AddNewForm()
         {
-            ProductSze obj = new();
+            Colors obj = new();
             if (obj == null)
             {
                 return NotFound();
