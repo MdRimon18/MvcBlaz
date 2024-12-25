@@ -1,6 +1,6 @@
 ﻿@using Domain.CommonServices
 @using Domain.Entity.Settings
-@model Colors
+@model ProductCategories
 <div class="row" id="ProductSettingsLoader" style="display: none;">
     <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
         <div class="spinner-border text-primary" role="status">
@@ -10,9 +10,10 @@
 </div>
 <div class="row">
     <div class="col-6">
-        <h5 class="mb-4 text-dark dark__text-light">@(Model.ColorId > 0 ? "Update" : "New") Color</h5>
+        <h5 class="mb-4 text-dark dark__text-light">@(Model.ProdCtgId > 0 ? "Update" : "New") Color</h5>
     </div>
-    @if (Model.ColorId > 0){
+    @if (Model.ProdCtgId > 0)
+    {
         <div class="col-6 text-end">
             <button class="btn btn-sm btn-outline-primary" onclick="AddUnitNewForm()">New</button>
         </div>
@@ -21,17 +22,17 @@
 </div>
 
 
-<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProductColors" id="ProductColorForm">
+<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProductCtgry" id="ProductCtgryForm">
     @Html.AntiForgeryToken()
     <div class="row gx-2">
         <!-- Event Title -->
         <div class="col-12 mb-3">
-            <label class="form-label text-dark dark__text-light" for="event-name">Color Name</label>
+            <label class="form-label text-dark dark__text-light" for="event-name">Category Name</label>
             <input class="form-control shadow-none bg-white dark__bg-1100 text-dark dark__text-light"
-                   asp-for="ColorIdName"
+                   asp-for="ProdCtgName"
                    type="text"
                    placeholder="Color Name" />
-            <span class="text-danger" asp-validation-for="ColorIdName"></span>
+            <span class="text-danger" asp-validation-for="ProdCtgName"></span>
         </div>
 
 
@@ -43,14 +44,14 @@
         <!-- Buttons -->
         <div class="col-12 text-end">
              
-            <input type="hidden" asp-for="ColorId" />
+            <input type="hidden" asp-for="ProdCtgId" />
             
-            <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.ColorId > 0 ? "Update" : "Save")</button>
+            <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.ProdCtgId > 0 ? "Update" : "Save")</button>
             <button type="button" onclick="OnRefresh()" class="btn btn-secondary btn-sm me-2">Refresh</button>
             
-            @if (Model.ColorId > 0)
+            @if (Model.ProdCtgId > 0)
             {
-                <button type="button" onclick="OnDeleteProductClr('@Model.ColorId')"
+                <button type="button" onclick="OnDeleteProductCtgry('@Model.ProdCtgId')"
                         class="btn btn-danger btn-sm">
                     Delete
                 </button>
@@ -62,7 +63,7 @@
         </div>
     </div>
 </form>
-<div data-product-size-name="@Model.ColorIdName">
+<div data-product-size-name="@Model.ProdCtgName">
     <!-- Existing form content -->
 </div>
 
@@ -70,7 +71,7 @@
    
     $(document).ready(function () {
        
-        $('form[name="SaveOrUpdateProductColors"]').submit(function (e) {
+        $('form[name="SaveOrUpdateProductCtgry"]').submit(function (e) {
             
             e.preventDefault(); // Prevent the default form submission
              const loaderSelector = '#ProductSettingsLoader';
@@ -85,7 +86,7 @@
                 success: function (result) {
                     // Check if Model.Id is not an empty GUID correctly in JavaScript
                     console.log(result)
-                    var modelId = '@Model.ColorId';
+                    var modelId = '@Model.ProdCtgId';
                     if (modelId !== '0') {
                         
                         showSuccessToast('@MessageManager.UpdateSuccess');
@@ -128,12 +129,12 @@
 
 <script>
     function OnRefresh(){
-        $('#ProductColorForm')[0].reset();
+        $('#ProductCtgryForm')[0].reset();
     }
     function AddUnitNewForm() {
 
         $.ajax({
-            url: '/ProductColor/AddNewForm', // Your action URL
+            url: '/ProductCategory/AddNewForm', // Your action URL
             type: 'GET', // Use GET method
             //   data:, // Send the model object as query string parameters
             success: function (result) {
@@ -150,7 +151,7 @@
 </script>
  
 <script>
-    function OnDeleteProductClr(id) {
+    function OnDeleteProductCtgry(id) {
         Swal.fire({
             title: `Are you sure you want to delete the item with ID ${id}?`,
             text: "You won't be able to revert this!",
@@ -163,7 +164,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/ProductColor/Delete', // Your action URL
+                    url: '/ProductCategory/Delete', // Your action URL
                     type: 'POST',
                     data: { id: id }, // Data sent to the server
                     success: function (response) {

@@ -2,6 +2,7 @@
 using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
+using Domain.Entity;
 
 namespace Domain.Services.Inventory
 {
@@ -57,7 +58,9 @@ namespace Domain.Services.Inventory
         {
             try
             {
-                var parameters = new DynamicParameters();
+                EntityHelper.SetCreateAuditFields(productCategories);
+
+               var parameters = new DynamicParameters();
 
                 parameters.Add("@ProdCtgId", dbType: DbType.Int64, direction: ParameterDirection.Output);
                 parameters.Add("@branchId", productCategories.BranchId);
@@ -81,14 +84,12 @@ namespace Domain.Services.Inventory
 
         public async Task<bool> Update(ProductCategories productCategories)
         {
+            EntityHelper.SetUpdateAuditFields(productCategories);
             var parameters = new DynamicParameters();
             parameters.Add("@ProdCtgId", productCategories.ProdCtgId);
             parameters.Add("@branchId", productCategories.BranchId);
             parameters.Add("@ProdCtgName", productCategories.ProdCtgName);
-            parameters.Add("@lastModifyDate", productCategories.LastModifyDate);
-            parameters.Add("@lastModifyBy", productCategories.LastModifyBy);
-            parameters.Add("@deletedDate", productCategories.DeletedDate);
-            parameters.Add("@DeletedBy", productCategories.DeletedBy);
+          
             parameters.Add("@Status", productCategories.Status);
             parameters.Add("@success", dbType: DbType.Int32, direction: ParameterDirection.Output);
             await _db.ExecuteAsync("Product_Ctg_Update_SP",
