@@ -2,6 +2,7 @@
 using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
+using Domain.Entity;
 
 namespace Domain.Services.Inventory
 {
@@ -59,6 +60,14 @@ namespace Domain.Services.Inventory
         {
             try
             {
+                if (productSubCategory.ProdSubCtgId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(productSubCategory);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(productSubCategory);
+                }
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@ProdSubCtgId", productSubCategory.ProdSubCtgId);
@@ -66,13 +75,13 @@ namespace Domain.Services.Inventory
                 parameters.Add("@BranchId", productSubCategory.BranchId);
                 parameters.Add("@ProdCtgId", productSubCategory.ProdCtgId);
                 parameters.Add("@ProdSubCtgName", productSubCategory.ProdSubCtgName);
-                parameters.Add("@EntryDateTime", productSubCategory.EntryDateTime);
-                parameters.Add("@EntryBy", productSubCategory.EntryBy);
-                parameters.Add("@LastModifyDate", productSubCategory.LastModifyDate);
-                parameters.Add("@LastModifyBy", productSubCategory.LastModifyBy);
-                parameters.Add("@DeletedDate", productSubCategory.DeletedDate);
-                parameters.Add("@DeletedBy", productSubCategory.DeletedBy);
-                parameters.Add("@Status", productSubCategory.Status);
+                //parameters.Add("@EntryDateTime", productSubCategory.EntryDateTime);
+                //parameters.Add("@EntryBy", productSubCategory.EntryBy);
+                //parameters.Add("@LastModifyDate", productSubCategory.LastModifyDate);
+                //parameters.Add("@LastModifyBy", productSubCategory.LastModifyBy);
+                //parameters.Add("@DeletedDate", productSubCategory.DeletedDate);
+                //parameters.Add("@DeletedBy", productSubCategory.DeletedBy);
+                //parameters.Add("@Status", productSubCategory.Status);
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("Prdct_Sub_Ctg_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
@@ -93,8 +102,7 @@ namespace Domain.Services.Inventory
             long DeletedSatatus = 0;
             if (deleteObj != null)
             {
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
                 DeletedSatatus = await SaveOrUpdate(deleteObj);
             }
 

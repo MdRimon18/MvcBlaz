@@ -1,13 +1,13 @@
 ﻿@using Domain.CommonServices
 @using Domain.Entity.Settings
 @model ProductSze
-<div class="row" id="ProductSettingsLoader" style="display: none;">
+@* <div class="row" id="ProductSettingsLoader" style="display: none;">
     <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-</div>
+</div> *@
 <div class="row">
     <div class="col-6">
         <h5 class="mb-4 text-dark dark__text-light">@(Model.ProductSizeId > 0 ? "Update" : "New") Size</h5>
