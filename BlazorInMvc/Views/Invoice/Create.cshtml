@@ -173,7 +173,14 @@
 
     </div> *@
 </div>
-<div class="card">
+
+@foreach (var tp in Model.InvoiceTypeList.OrderBy(o=>o.InvoiceTypeId))
+{
+    <button class="btn btn-falcon-default btn-sm ms-2 toggle-button" type="button" onclick="">@tp.InvoiceTypeName</button>
+
+}
+
+<div class="card mt-2">
 
     <div class="card-header bg-body-tertiary">
         <h5 class="mb-0"><i class="fas fa-arrow-left"></i>Create Invoice</h5>

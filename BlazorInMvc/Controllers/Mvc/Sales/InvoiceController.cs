@@ -4,7 +4,7 @@ using Domain.Services;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BlazorInMvc.Controllers.Mvc
+namespace BlazorInMvc.Controllers.Mvc.Sales
 {
     public class InvoiceController : Controller
     {
