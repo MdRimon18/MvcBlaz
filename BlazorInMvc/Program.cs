@@ -21,7 +21,7 @@ builder.Services.Configure<CircuitOptions>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // Add this line to register Razor Pages services
 builder.Services.AddServerSideBlazor();
-
+builder.Services.AddMemoryCache();
 builder.Services.AddApplicationServices();
 var app = builder.Build();
 

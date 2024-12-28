@@ -14,8 +14,8 @@
                type="search"
                placeholder="Search by name"
            aria-label="search"  
-           id="productSizeSearch"
-           onkeyup="filterProductSize()" />
+           id="productSearch"
+           onkeyup="filterProduct()" />
         <button class="btn btn-sm btn-outline-primary">
               <i class="fa fa-search"></i>  
             
@@ -43,7 +43,7 @@
 <script>
     function LoadEditModeDataUnit(id) {
         $.ajax({
-            url: '/ProductSize/LoadEditModeData', // Your action URL
+            url: '/Product/LoadEditModeData', // Your action URL
             type: 'GET', // Use GET method
             data: { id: id }, // Send the ID as a query string parameter
             success: function (result) {
@@ -58,21 +58,21 @@
     }
 </script>
 <script>
-    function filterProductSize() {
+    function filterProduct() {
         // Get the search term
-        const searchInput = document.getElementById('productSizeSearch');
+        const searchInput = document.getElementById('productSearch');
         const filter = searchInput.value.toLowerCase();
       
         // Get all the unit items
-        const list = document.getElementById('productSizeList');
-        const items = list.getElementsByClassName('unit-item');
-        
+        const list = document.getElementById('modelList');
+        const items = list.getElementsByClassName('model-item');
+
         // Loop through the items and toggle visibility
         for (let i = 0; i < items.length; i++) {
-            const unitName = items[i].querySelector('span').textContent.toLowerCase();
+            const name = items[i].querySelector('span').textContent.toLowerCase();
 
             // Show or hide the item based on the search term
-            if (unitName.indexOf(filter) > -1) {
+            if (name.indexOf(filter) > -1) {
                 items[i].style.display = "block"; // Show matching item
             } else {
                 items[i].style.display = "none"; // Hide non-matching item

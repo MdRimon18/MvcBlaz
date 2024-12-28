@@ -1,4 +1,5 @@
-﻿@using Domain.CommonServices
+﻿
+@using Domain.CommonServices
 @using Domain.Entity.Settings
 @model Products
 <div class="row" id="ProductSettingsLoader" style="display: none;">
@@ -40,9 +41,10 @@
                 </ul>
             </div>
             <div class="tab-content border border-top-0 p-3 card-body bg-body-tertiary" id="myTabContent">
-                <div class="tab-pane fade show active" id="tab_basic_info" role="tabpanel" aria-labelledby="basic_info_tab">
+            <div   class="tab-pane fade show active" id="tab_basic_info" role="tabpanel" aria-labelledby="basic_info_tab">
 
-
+                <form asp-action="SaveOrUpdateProductBasicInfo" method="post" name="SaveOrUpdateProductBasicInfoForm" id="SaveOrUpdateProductBasicInfoForm">
+                    @Html.AntiForgeryToken()
                     <div class="row gx-2">
                         <div class="col-sm-4 col-md-4 col-lg-4 col-12">
                             <div class="form-group">
@@ -143,7 +145,7 @@
                         </div>
                     </div>
 
-
+                </form>
                 </div>
               
 
@@ -385,15 +387,17 @@
     @Html.AntiForgeryToken()
    
 </form> *@
-<div data-product-name="@Model.ProdName">
+ 
+<div data-product-size-name="@Model.ProdName">
     <!-- Existing form content -->
 </div>
 
+<script src="~/assets/js/jquery-3.6.0.min.js"></script>
 <script>
    
     $(document).ready(function () {
        
-        $('form[name="SaveOrUpdateProduct"]').submit(function (e) {
+        $('form[name="SaveOrUpdateProductBasicInfoForm"]').submit(function (e) {
             
             e.preventDefault(); // Prevent the default form submission
              const loaderSelector = '#ProductSettingsLoader';
@@ -424,12 +428,18 @@
                     error: function (xhr) {
                     if (xhr.status === 400) {
                         showDangerToast('@MessageManager.SaveFaild');
+                         
                         $('#AddContainer').html(xhr.responseText); // Show validation errors
+                      
+                        
                     } else if (xhr.status === 409) { // Conflict
                         // Parse the response if necessary to extract additional data
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(xhr.responseText, 'text/html');
-                        const ProdName = doc.querySelector('[data-product-name]').dataset.ProdName;
+                          const productSizeName = doc.querySelector('[data-product-size-name]').dataset.productSizeName;
+
+                        showDangerToast(`${productSizeName} @MessageManager.Exist`);
+
 
                         showDangerToast(`${ProdName} @MessageManager.Exist`);
                         $('#AddContainer').html(xhr.responseText);
@@ -451,12 +461,12 @@
 
 <script>
     function OnRefresh(){
-        $('#ProductForm')[0].reset();
+        $('#SaveOrUpdateProductBasicInfoForm')[0].reset();
     }
     function AddUnitNewForm() {
 
         $.ajax({
-            url: '/ProductSize/AddNewForm', // Your action URL
+            url: '/Product/AddNewForm', // Your action URL
             type: 'GET', // Use GET method
             //   data:, // Send the model object as query string parameters
             success: function (result) {
@@ -486,7 +496,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/ProductSize/Delete', // Your action URL
+                    url: '/Product/Delete', // Your action URL
                     type: 'POST',
                     data: { id: id }, // Data sent to the server
                     success: function (response) {

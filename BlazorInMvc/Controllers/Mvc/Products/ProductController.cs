@@ -4,12 +4,14 @@ using Domain.Services;
 using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Drawing.Printing;
 
 namespace BlazorInMvc.Controllers.Mvc.Products
 {
     public class ProductController : Controller
     {
+        private readonly IMemoryCache _cache;
         private readonly ProductService _productService;
         private readonly UnitService _unitService;
         private readonly SupplierService _supplierService;
@@ -26,7 +28,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly WarehouseService _warehouseService;
         private readonly BodyPartService _bodyPartService;
 
-        public ProductController(ProductService ProductService,
+        public ProductController(IMemoryCache cache,
+            ProductService ProductService,
               UnitService unitService,
             SupplierService supplierService,
             CurrencyService currencyService,
@@ -43,6 +46,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             BodyPartService bodyPartService
           )
         {
+            _cache = cache;
             _productService = ProductService;
             _unitService = unitService;
             _supplierService = supplierService;
@@ -65,24 +69,37 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         {
             var viewModel = new ProductViewModel();
             var model = new Domain.Entity.Settings.Products();
-            model.SupplierList = (await _supplierService.Get(null, null, null, null, null, null, 1, 1000)).ToList();
-            model.UnitList = (await _unitService.Get(null, null, null, null, 1, 1000)).ToList();
-            model.CurrencyList = (await _currencyService.Get(null, null, null, null, null, null, null, null, 1, 1000)).ToList();
-            model.ShippingByList = (await _shippingByService.Get(null, null, null, null, 1, 1000)).ToList();
-            model.ColorList = (await _colorService.Get(null, null, null, null, 1, 1000)).ToList();
-            model.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
-            model.StatusSettingList = (await _statusSettingService.Get(null, null, null, null, "Product", null, 1, 1000)).ToList();
-            model.ImportStatusSettingList = (await _statusSettingService.Get(null, null, null, null, null, null, 1, 1000)).ToList();
-            model.ProductSubCategoryList = (await _productSubCategoryService.Get(null, null, null, null, null, 1, 1000)).ToList();
-            model.BrandList = (await _brandService.Get(null, null, null, 1, 1000)).ToList();
-            model.ProductCategoryList = (await _productCategoryService.Get(null, null, null, null, 1, 1000)).ToList();
-            model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
-            model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
-            model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
-
+            if (!_cache.TryGetValue("ProductDropdownData", out model))
+            {
+                if (model == null) { model = new Domain.Entity.Settings.Products(); }
+                model.SupplierList = (await _supplierService.Get(null, null, null, null, null, null, 1, 1000)).ToList();
+                model.UnitList = (await _unitService.Get(null, null, null, null, 1, 1000)).ToList();
+                model.CurrencyList = (await _currencyService.Get(null, null, null, null, null, null, null, null, 1, 1000)).ToList();
+                model.ShippingByList = (await _shippingByService.Get(null, null, null, null, 1, 1000)).ToList();
+                model.ColorList = (await _colorService.Get(null, null, null, null, 1, 1000)).ToList();
+                model.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
+                model.StatusSettingList = (await _statusSettingService.Get(null, null, null, null, "Product", null, 1, 1000)).ToList();
+                model.ImportStatusSettingList = (await _statusSettingService.Get(null, null, null, null, null, null, 1, 1000)).ToList();
+                model.ProductSubCategoryList = (await _productSubCategoryService.Get(null, null, null, null, null, 1, 1000)).ToList();
+                model.BrandList = (await _brandService.Get(null, null, null, 1, 1000)).ToList();
+                model.ProductCategoryList = (await _productCategoryService.Get(null, null, null, null, 1, 1000)).ToList();
+                model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
+                model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
+                model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
+                // Store data in the cache with an expiration time
+                _cache.Set("ProductDropdownData", model, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1), // Cache expires after 1 hour
+                    SlidingExpiration = TimeSpan.FromMinutes(30)            // Resets expiration if accessed within 30 mins
+                });
+            }
             viewModel.ProductList = await FetchModelList();
             viewModel.Product = model;
-            return PartialView("Index", viewModel);
+            if (isPartial)
+            {
+                return PartialView("Index", viewModel);
+            }
+            return View("Index", viewModel);
 
         }
         public async Task<List<Domain.Entity.Settings.Products>> FetchModelList()
@@ -106,13 +123,27 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveOrUpdate(Domain.Entity.Settings.Products model)
+        public async Task<IActionResult> SaveOrUpdateProductBasicInfo(Domain.Entity.Settings.Products model)
         {
+            var viewModel = new ProductViewModel();
             if (!ModelState.IsValid)
             {
+                ViewData["RenderLayout"] = true; // Flag to include layout
+                // Retrieve dropdown data from the cache
+                var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+                if (cachedData != null)
+                {
+                    model = cachedData;
+                }
                 Response.StatusCode = 400;
+                viewModel.ProductList = await FetchModelList();
+                viewModel.Product = model;
+                
+                    return PartialView("Index", viewModel);
+                 
+              
                 // Return the AddForm partial view with validation errors
-                return PartialView("_AddForm", model); // Returning partial view directly
+                //return PartialView("_AddForm", model); // Returning partial view directly
             }
 
             try
@@ -135,6 +166,19 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             }
             catch (Exception ex)
             {
+                // Retrieve dropdown data from the cache
+                var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+                if (cachedData != null)
+                {
+                    model = cachedData;
+                }
+                else
+                {
+                    // Handle cache miss: reload from database or return an error
+                    model = new Domain.Entity.Settings.Products();
+                }
+
+
                 Response.StatusCode = 500;
                 // In case of an error, render the AddForm partial view again
                 return PartialView("_AddForm", model); // Returning partial view directly

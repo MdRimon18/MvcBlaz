@@ -88,19 +88,19 @@ namespace Domain.Entity.Settings
         public int total_row { get; set; } = 0;
 
 
-        public List<Unit> UnitList { get; set; }
-        public List<Suppliers> SupplierList { get; set; }
-        public List<Currency> CurrencyList { get; set; }
-        public List<ShippingBy> ShippingByList { get; set; }
-        public List<Colors> ColorList { get; set; }
-        public List<CountryV2> CountryList { get; set; }
-        public List<StatusSetting> StatusSettingList { get; set; }
-        public List<StatusSetting> ImportStatusSettingList { get; set; }
-        public List<ProductSubCategory> ProductSubCategoryList { get; set; }
-        public List<Brands> BrandList { get; set; }
-        public List<ProductCategories> ProductCategoryList { get; set; }
-        public List<ProductSze> ProductSizeList { get; set; }
-        public List<Warehouse> WarehouseList { get; set; }
-        public IEnumerable<BodyPart> BodyParts { get; set; }
+        public List<Unit> UnitList { get; set; } = new List<Unit>();
+        public List<Suppliers> SupplierList { get; set; } = new List<Suppliers>();
+        public List<Currency> CurrencyList { get; set; } = new List<Currency>();
+        public List<ShippingBy> ShippingByList { get; set; } = new List<ShippingBy>();
+        public List<Colors> ColorList { get; set; } = new List<Colors>();
+        public List<CountryV2> CountryList { get; set; } = new List<CountryV2>();
+        public List<StatusSetting> StatusSettingList { get; set; } = new List<StatusSetting>();
+        public List<StatusSetting> ImportStatusSettingList { get; set; } = new List<StatusSetting>();
+        public List<ProductSubCategory> ProductSubCategoryList { get; set; }= new List<ProductSubCategory>();
+        public List<Brands> BrandList { get; set; } = new List<Brands>();
+        public List<ProductCategories> ProductCategoryList { get; set; } = new List<ProductCategories>();
+        public List<ProductSze> ProductSizeList { get; set; } = new List<ProductSze>();
+        public List<Warehouse> WarehouseList { get; set; }=new List<Warehouse>();
+        public IEnumerable<BodyPart> BodyParts { get; set; }=new List<BodyPart>();
     }
 }
