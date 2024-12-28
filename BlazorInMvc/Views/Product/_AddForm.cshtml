@@ -11,7 +11,7 @@
 </div>
 <div class="row">
     <div class="col-6">
-        <h5 class="mb-4 text-dark dark__text-light">@(Model.ProductId > 0 ? "Update" : "New") Size</h5>
+        <h5 class="mb-4 text-dark dark__text-light">@(Model.ProductId > 0 ? "Update" : "New") Product</h5>
     </div>
     @if (Model.ProductId > 0)
     {
@@ -21,7 +21,8 @@
     }
   
 </div>
-
+ <form asp-action="SaveOrUpdateProductBasicInfo" method="post" name="SaveOrUpdateProductBasicInfoForm" id="SaveOrUpdateProductBasicInfoForm">
+                    @Html.AntiForgeryToken()
 <div class="row">
     <div class="col-lg-9 pe-lg-2">
         
@@ -43,8 +44,7 @@
             <div class="tab-content border border-top-0 p-3 card-body bg-body-tertiary" id="myTabContent">
             <div   class="tab-pane fade show active" id="tab_basic_info" role="tabpanel" aria-labelledby="basic_info_tab">
 
-                <form asp-action="SaveOrUpdateProductBasicInfo" method="post" name="SaveOrUpdateProductBasicInfoForm" id="SaveOrUpdateProductBasicInfoForm">
-                    @Html.AntiForgeryToken()
+               
                     <div class="row gx-2">
                         <div class="col-sm-4 col-md-4 col-lg-4 col-12">
                             <div class="form-group">
@@ -139,13 +139,17 @@
 
                     <div class="row">
                         <div class="d-grid gap-2 d-md-block mt-4">
+                            <input asp-for="ProductId" type="hidden"/>
                             <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
                             <button type="reset" class="btn btn-outline-primary btn-sm">Refresh</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm">Delete</button>
+                            @if (Model.ProductId>0){
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="OnDeleteProduct('@Model.ProductId')">Delete</button>
+                            }
+                        
                         </div>
                     </div>
 
-                </form>
+              
                 </div>
               
 
@@ -273,6 +277,38 @@
                         </div>
                     </div>
                 </div>
+
+                    <div class="row gx-2">
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-semi-bold" for="product-description">Product description:</label>
+                            <div class="create-product-description-textarea">
+                                <textarea id="tinymce-editor" class="tinymce d-none" data-tinymce="data-tinymce" asp-for="ProdDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label class="form-label fw-semi-bold" for="GivenEntryDate">Date</label>
+                                <input type="date" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Date" asp-for="GivenEntryDate" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-12">
+                            <div class="form-group">
+                                <label class="form-label fw-semi-bold" for="ReleaseDate">Release Date:</label>
+                                <input type="date" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Date" asp-for="ReleaseDate" />
+                            </div>
+                        </div>
+                        @if (Model.ProductId > 0)
+                        {
+                            <div class="row">
+                                <div class="d-grid gap-2 d-md-block mt-4">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+                                    <button type="button" onclick="refreshPage()" class="btn btn-outline-primary btn-sm">Refresh</button>
+                                    <button type="button" onclick="deleteProduct()" class="btn btn-outline-danger btn-sm">Delete</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
             </div>
 
              
@@ -288,7 +324,15 @@
                             <div class="col-12">
                                 <label class="form-label fw-semi-bold" for="product-category">Select category<span class="error-star">*</span></label>
                                 <div class="form-group">
-                                    <input asp-for="ProdCtgId" class="form-control" placeholder="Search for categories..." />
+                                <select asp-for="ProdCtgId" class="form-select form-rounded form-select-sm">
+                                    <option value="">Select Category</option>
+                                    @foreach (var item in Model.ProductCategoryList)
+                                    {
+                                        <option value="@item.ProdCtgId">@item.ProdCtgName</option>
+                                    }
+                                </select>
+                    
+                               @*      <input asp-for="ProdCtgId" class="form-control" placeholder="Search for categories..." /> *@
                                     <span asp-validation-for="ProdCtgId" class="text-danger"></span>
                                 </div>
                             </div>
@@ -381,7 +425,7 @@
         </div>
 
 </div>
-
+</form>
 
 @* <form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProduct" id="ProductForm">
     @Html.AntiForgeryToken()
@@ -483,7 +527,7 @@
 </script>
  
 <script>
-    function OnDeleteProductSize(id) {
+    function OnDeleteProduct(id) {
         Swal.fire({
             title: `Are you sure you want to delete the item with ID ${id}?`,
             text: "You won't be able to revert this!",

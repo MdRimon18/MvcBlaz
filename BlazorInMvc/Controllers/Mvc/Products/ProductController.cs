@@ -68,7 +68,39 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         public async Task<IActionResult> Index(bool isPartial = false)
         {
             var viewModel = new ProductViewModel();
-            var model = new Domain.Entity.Settings.Products();
+            viewModel.Product=await LoadDDL(new Domain.Entity.Settings.Products());
+            viewModel.ProductList = await FetchModelList();
+             
+            if (isPartial)
+            {
+                return PartialView("Index", viewModel);
+            }
+            return View("Index", viewModel);
+
+        }
+
+
+        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList()
+        {
+            //var list = await _productService.Get(
+            //    null,
+            //    null,
+            //    null,
+            //    "",
+            //    GlobalPageConfig.PageNumber,
+            //    GlobalPageConfig.PageSize
+            //);
+            var list = (await _productService.Get(null, null, null, null, null,
+                null, null, null, null, null, null, null, 
+                null, null, null, null, GlobalPageConfig.PageNumber,
+                GlobalPageConfig.PageSize)).ToList();
+
+            return list.ToList(); // Convert and return as List<Unit>
+        }
+
+        public async Task<Domain.Entity.Settings.Products> LoadDDL(Domain.Entity.Settings.Products model)
+        {
+           // var model = new Domain.Entity.Settings.Products();
             if (!_cache.TryGetValue("ProductDropdownData", out model))
             {
                 if (model == null) { model = new Domain.Entity.Settings.Products(); }
@@ -93,57 +125,41 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                     SlidingExpiration = TimeSpan.FromMinutes(30)            // Resets expiration if accessed within 30 mins
                 });
             }
-            viewModel.ProductList = await FetchModelList();
-            viewModel.Product = model;
-            if (isPartial)
-            {
-                return PartialView("Index", viewModel);
-            }
-            return View("Index", viewModel);
+
+
+            return model;
 
         }
-        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList()
-        {
-            //var list = await _productService.Get(
-            //    null,
-            //    null,
-            //    null,
-            //    "",
-            //    GlobalPageConfig.PageNumber,
-            //    GlobalPageConfig.PageSize
-            //);
-            var list = (await _productService.Get(null, null, null, null, null,
-                null, null, null, null, null, null, null, 
-                null, null, null, null, GlobalPageConfig.PageNumber,
-                GlobalPageConfig.PageSize)).ToList();
-
-            return list.ToList(); // Convert and return as List<Unit>
-        }
-
-
-        [HttpPost]
+            [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveOrUpdateProductBasicInfo(Domain.Entity.Settings.Products model)
         {
-            var viewModel = new ProductViewModel();
+            model.BranchId=CompanyInfo.BranchId;
+            //ViewData["RenderLayout"] = null;
+           // var viewModel = new ProductViewModel();
             if (!ModelState.IsValid)
             {
-                ViewData["RenderLayout"] = true; // Flag to include layout
+               // ViewData["RenderLayout"] = true; // Flag to include layout
                 // Retrieve dropdown data from the cache
                 var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
                 if (cachedData != null)
                 {
                     model = cachedData;
                 }
+                else
+                {
+                    await LoadDDL(model);
+                }
                 Response.StatusCode = 400;
-                viewModel.ProductList = await FetchModelList();
-                viewModel.Product = model;
+
+                //viewModel.ProductList = await FetchModelList();
+                //viewModel.Product = model;
                 
-                    return PartialView("Index", viewModel);
+                //return PartialView("Index", viewModel);
                  
               
                 // Return the AddForm partial view with validation errors
-                //return PartialView("_AddForm", model); // Returning partial view directly
+                return PartialView("_AddForm", model); // Returning partial view directly
             }
 
             try
@@ -166,6 +182,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             }
             catch (Exception ex)
             {
+
                 // Retrieve dropdown data from the cache
                 var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
                 if (cachedData != null)
@@ -174,12 +191,18 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 }
                 else
                 {
-                    // Handle cache miss: reload from database or return an error
-                    model = new Domain.Entity.Settings.Products();
+                    model= await LoadDDL(model);
                 }
 
 
                 Response.StatusCode = 500;
+
+                //viewModel.ProductList = await FetchModelList();
+                //viewModel.Product = model;
+
+               
+                //return PartialView("Index", viewModel);
+
                 // In case of an error, render the AddForm partial view again
                 return PartialView("_AddForm", model); // Returning partial view directly
             }
@@ -194,21 +217,72 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 return NotFound();
             }
             Domain.Entity.Settings.Products obj = (await _productService.GetById(id));
+            if (obj == null)
+            {
+                return NotFound(); // Handle case where product doesn't exist
+            }
+            // Retrieve dropdown data from the cache
+            var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+            if (cachedData != null)
+            {
+                // Populate dropdown fields from cached data
+                obj.SupplierList = cachedData.SupplierList;
+                obj.UnitList = cachedData.UnitList;
+                obj.CurrencyList = cachedData.CurrencyList;
+                obj.ShippingByList = cachedData.ShippingByList;
+                obj.ColorList = cachedData.ColorList;
+                obj.CountryList = cachedData.CountryList;
+                obj.StatusSettingList = cachedData.StatusSettingList;
+                obj.ImportStatusSettingList = cachedData.ImportStatusSettingList;
+                obj.ProductSubCategoryList = cachedData.ProductSubCategoryList;
+                obj.BrandList = cachedData.BrandList;
+                obj.ProductCategoryList = cachedData.ProductCategoryList;
+                obj.ProductSizeList = cachedData.ProductSizeList;
+                obj.WarehouseList = cachedData.WarehouseList;
+                obj.BodyParts = cachedData.BodyParts;
+            }
+            else
+            {
+                await LoadDDL(obj);
+            }
 
             return PartialView("_AddForm", obj);
         }
         [HttpGet]
         public async Task<IActionResult> AddNewForm()
         {
-            ProductSze obj = new();
-            if (obj == null)
+            // Create a new instance of ProductSze
+            Domain.Entity.Settings.Products obj = new();
+
+            // Retrieve dropdown data from the cache
+            var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+            if (cachedData != null)
             {
-                return NotFound();
+                // Populate dropdown fields from cached data
+                obj.SupplierList = cachedData.SupplierList;
+                obj.UnitList = cachedData.UnitList;
+                obj.CurrencyList = cachedData.CurrencyList;
+                obj.ShippingByList = cachedData.ShippingByList;
+                obj.ColorList = cachedData.ColorList;
+                obj.CountryList = cachedData.CountryList;
+                obj.StatusSettingList = cachedData.StatusSettingList;
+                obj.ImportStatusSettingList = cachedData.ImportStatusSettingList;
+                obj.ProductSubCategoryList = cachedData.ProductSubCategoryList;
+                obj.BrandList = cachedData.BrandList;
+                obj.ProductCategoryList = cachedData.ProductCategoryList;
+                obj.ProductSizeList = cachedData.ProductSizeList;
+                obj.WarehouseList = cachedData.WarehouseList;
+                obj.BodyParts = cachedData.BodyParts;
+            }
+            else
+            {
+                // Load dropdown data if cache is not available
+                await LoadDDL(obj);
             }
 
+            // Return the partial view with the populated model
             return PartialView("_AddForm", obj);
         }
-
 
 
         [HttpPost]
