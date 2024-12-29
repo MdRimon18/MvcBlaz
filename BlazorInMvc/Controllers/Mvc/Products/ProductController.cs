@@ -174,10 +174,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                     return PartialView("_AddForm", model); // Returning partial view directly
 
                 }
-
-
+                 
                 var list = await FetchModelList();
-                // Return the _SearchResult partial view with the updated list
                 return PartialView("_SearchResult", list); // Returning partial view directly
             }
             catch (Exception ex)

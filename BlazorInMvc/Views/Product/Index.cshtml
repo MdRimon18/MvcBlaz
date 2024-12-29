@@ -29,8 +29,33 @@
 
 </div>
 
+ 
+<script src="~/vendors/tinymce/tinymce.min.js"></script>
 
-
-
-
-
+<script>
+     function initializeTinyMCE() {
+       tinymce.remove(); // Remove any existing TinyMCE instances
+       tinymce.init({
+           selector: '.tinymce', // Target all elements with the `tinymce` class
+           plugins: 'lists link image table code',
+           toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | link image',
+           height: 300
+       });
+     }
+    function LoadEditModeData(id) {
+        $.ajax({
+            url: '/Product/LoadEditModeData', // Your action URL
+            type: 'GET', // Use GET method
+            data: { id: id }, // Send the ID as a query string parameter
+            success: function (result) {
+                // On success, replace the content of a container with the returned partial view
+                $('#AddContainer').html(result);
+                 initializeTinyMCE();
+            },
+            error: function (xhr, status, error) {
+                console.log('Error:', error);
+                alert('An error occurred while loading the data. Please try again.');
+            }
+        });
+    }
+</script>

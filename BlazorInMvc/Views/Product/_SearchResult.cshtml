@@ -25,12 +25,14 @@
  
     <!-- Items List -->
 <div class="list-group" id="modelList" style="max-height: 300px; overflow-y: auto;">
-        @foreach (var unit in Model)
+        @foreach (var prod in Model)
     {
         <div class="model-item">
             <p class="d-flex justify-content-between align-items-center border-bottom py-2 mb-0">
-                <span class="text-dark dark__text-light">@unit.ProdName</span>
-                <button class="btn btn-sm btn-outline-primary" onclick="LoadEditModeDataUnit('@unit.ProductId')">
+                <span class="text-dark dark__text-light">@prod.ProdName</span>
+                <button class="btn btn-sm btn-outline-primary"
+                        data-product-id="@prod.ProductId"
+                onclick="LoadEditModeData('@prod.ProductId')">
                     <i class="fa fa-edit me-1"></i>
                 </button>
             </p>
@@ -38,25 +40,8 @@
     }
          
  </div>
- 
 
-<script>
-    function LoadEditModeDataUnit(id) {
-        $.ajax({
-            url: '/Product/LoadEditModeData', // Your action URL
-            type: 'GET', // Use GET method
-            data: { id: id }, // Send the ID as a query string parameter
-            success: function (result) {
-                // On success, replace the content of a container with the returned partial view
-                $('#AddContainer').html(result);
-            },
-            error: function (xhr, status, error) {
-                console.log('Error:', error);
-                alert('An error occurred while loading the data. Please try again.');
-            }
-        });
-    }
-</script>
+
 <script>
     function filterProduct() {
         // Get the search term

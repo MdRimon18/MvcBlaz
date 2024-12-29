@@ -140,7 +140,7 @@
                     <div class="row">
                         <div class="d-grid gap-2 d-md-block mt-4">
                             <input asp-for="ProductId" type="hidden"/>
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Save</button>
                             <button type="reset" class="btn btn-outline-primary btn-sm">Refresh</button>
                             @if (Model.ProductId>0){
                                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="OnDeleteProduct('@Model.ProductId')">Delete</button>
@@ -301,9 +301,10 @@
                         {
                             <div class="row">
                                 <div class="d-grid gap-2 d-md-block mt-4">
-                                    <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
-                                    <button type="button" onclick="refreshPage()" class="btn btn-outline-primary btn-sm">Refresh</button>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+                                    <button type="button" onclick=" OnRefresh()" class="btn btn-outline-primary btn-sm">Refresh</button>
                                     <button type="button" onclick="deleteProduct()" class="btn btn-outline-danger btn-sm">Delete</button>
+                                   
                                 </div>
                             </div>
                         }
@@ -455,19 +456,22 @@
                 data: $(this).serialize(),
                 success: function (result) {
                     // Check if Model.Id is not an empty GUID correctly in JavaScript
-                    console.log(result)
+                 //   console.log(result)
+              
+                  $('#SearchResultContainer').html(result);
+
                     var modelId = '@Model.ProductId';
                     if (modelId !== '0') {
                         
                         showSuccessToast('@MessageManager.UpdateSuccess');
                     } else {
                         showSuccessToast('@MessageManager.SaveSuccess');
-                        AddUnitNewForm();
+                      var firstProductId = $('#modelList button[data-product-id]').first().data('product-id');
+                      console.log('First Product ID:', firstProductId);
+                      LoadEditModeData(firstProductId);
+                     //   AddUnitNewForm();
                     }
-
-                    $('#SearchResultContainer').html(result);
-
-
+                  
                 },
                     error: function (xhr) {
                     if (xhr.status === 400) {
