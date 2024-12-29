@@ -1,4 +1,5 @@
 ﻿using Domain.CommonServices;
+using Domain.Entity.Inventory;
 using Domain.Entity.Settings;
 using Domain.Services;
 using Domain.Services.Inventory;
@@ -27,7 +28,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly ProductSizeService _productSizeService;
         private readonly WarehouseService _warehouseService;
         private readonly BodyPartService _bodyPartService;
-
+        private readonly ProductMediaService _productMediaService;
         public ProductController(IMemoryCache cache,
             ProductService ProductService,
               UnitService unitService,
@@ -43,7 +44,9 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             ProductService productService,
             ProductSizeService productSizeService,
             WarehouseService warehouseService,
-            BodyPartService bodyPartService
+            BodyPartService bodyPartService,
+            ProductMediaService productMediaService
+
           )
         {
             _cache = cache;
@@ -62,6 +65,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _productSizeService = productSizeService;
             _warehouseService = warehouseService;
             _bodyPartService = bodyPartService;
+            _productMediaService = productMediaService;
         }
 
 
@@ -118,6 +122,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
+                model.ProductImages = (List<ProductImage>)await _productMediaService.Get(null, null, 1, null);
                 // Store data in the cache with an expiration time
                 _cache.Set("ProductDropdownData", model, new MemoryCacheEntryOptions
                 {
@@ -238,6 +243,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.ProductSizeList = cachedData.ProductSizeList;
                 obj.WarehouseList = cachedData.WarehouseList;
                 obj.BodyParts = cachedData.BodyParts;
+                obj.ProductImages = cachedData.ProductImages;  
             }
             else
             {

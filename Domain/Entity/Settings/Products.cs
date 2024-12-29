@@ -1,5 +1,6 @@
 ﻿
 
+using Domain.Entity.Inventory;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -118,5 +119,9 @@ namespace Domain.Entity.Settings
         [NotMapped]
         public IEnumerable<BodyPart> BodyParts { get; set; }=new List<BodyPart>();
 
+        [NotMapped]
+         public  List<ProductImage> ProductImages = new List<ProductImage>();
+        [NotMapped]
+        public ProductImage ProductImage = new ProductImage();
     }
 }
