@@ -390,6 +390,50 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="tab_product_specification" role="tabpanel" aria-labelledby="product_specification_tab">
+                    <div class="card-body">
+                        @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
+                        {
+                            foreach (var spec in Model.Specification_list)
+                            {
+                                <div class="row gx-2 flex-between-center mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="d-flex flex-between-center">
+                                            <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
+                                            <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                               onclick="deleteItem(@spec.ProdSpcfctnId)">
+                                                <span class="fs-10 fas fa-trash-alt"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="row gy-3 gx-2">
+                            <div class="col-sm-3">
+                                <input asp-for="productSpecification.SpecificationName"
+                                       class="form-control form-control-sm form-label fw-semi-bold"
+                                       id="SpecificationName"
+                                       placeholder="Specification Name" />
+                                <span asp-validation-for="productSpecification.SpecificationName" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="d-flex gap-2 flex-between-center">
+                                    <input asp-for="productSpecification.SpecificationDtls"
+                                           class="form-control form-control-sm form-label fw-semi-bold"
+                                           id="SpecificationDtls"
+                                           placeholder="Specification Details" />
+                                    <span asp-validation-for="productSpecification.SpecificationDtls" class="text-danger"></span>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveSpecification()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
              
             </div>

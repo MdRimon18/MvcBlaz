@@ -29,6 +29,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly WarehouseService _warehouseService;
         private readonly BodyPartService _bodyPartService;
         private readonly ProductMediaService _productMediaService;
+        private readonly ProductSpecificationService _productSpecificationService;
         public ProductController(IMemoryCache cache,
             ProductService ProductService,
               UnitService unitService,
@@ -45,7 +46,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             ProductSizeService productSizeService,
             WarehouseService warehouseService,
             BodyPartService bodyPartService,
-            ProductMediaService productMediaService
+            ProductMediaService productMediaService,
+            ProductSpecificationService productSpecificationService
 
           )
         {
@@ -66,6 +68,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _warehouseService = warehouseService;
             _bodyPartService = bodyPartService;
             _productMediaService = productMediaService;
+            _productSpecificationService = productSpecificationService;
         }
 
 
@@ -123,6 +126,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
                 model.ProductImages = (List<ProductImage>)await _productMediaService.Get(null, null, 1, null);
+                model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
+
                 // Store data in the cache with an expiration time
                 _cache.Set("ProductDropdownData", model, new MemoryCacheEntryOptions
                 {
@@ -243,7 +248,9 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.ProductSizeList = cachedData.ProductSizeList;
                 obj.WarehouseList = cachedData.WarehouseList;
                 obj.BodyParts = cachedData.BodyParts;
-                obj.ProductImages = cachedData.ProductImages;  
+                obj.ProductImages = cachedData.ProductImages;
+                obj.Specification_list = cachedData.Specification_list;
+             
             }
             else
             {

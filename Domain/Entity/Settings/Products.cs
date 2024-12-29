@@ -123,5 +123,9 @@ namespace Domain.Entity.Settings
          public  List<ProductImage> ProductImages = new List<ProductImage>();
         [NotMapped]
         public ProductImage ProductImage = new ProductImage();
+        [NotMapped]
+        public  List<ProductSpecifications> Specification_list = new List<ProductSpecifications>();
+        [NotMapped]
+        public ProductSpecifications productSpecification = new ProductSpecifications();
     }
 }
