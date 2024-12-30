@@ -24,7 +24,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly ProductSubCategoryService _productSubCategoryService;
         private readonly BrandService _brandService;
         private readonly ProductCategoryService _productCategoryService;
-         
+
         private readonly ProductSizeService _productSizeService;
         private readonly WarehouseService _warehouseService;
         private readonly BodyPartService _bodyPartService;
@@ -63,7 +63,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _productSubCategoryService = productSubCategoryService;
             _brandService = brandService;
             _productCategoryService = productCategoryService;
-            
+
             _productSizeService = productSizeService;
             _warehouseService = warehouseService;
             _bodyPartService = bodyPartService;
@@ -75,9 +75,9 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         public async Task<IActionResult> Index(bool isPartial = false)
         {
             var viewModel = new ProductViewModel();
-            viewModel.Product=await LoadDDL(new Domain.Entity.Settings.Products());
+            viewModel.Product = await LoadDDL(new Domain.Entity.Settings.Products());
             viewModel.ProductList = await FetchModelList();
-             
+            
             if (isPartial)
             {
                 return PartialView("Index", viewModel);
@@ -98,7 +98,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             //    GlobalPageConfig.PageSize
             //);
             var list = (await _productService.Get(null, null, null, null, null,
-                null, null, null, null, null, null, null, 
+                null, null, null, null, null, null, null,
                 null, null, null, null, GlobalPageConfig.PageNumber,
                 GlobalPageConfig.PageSize)).ToList();
 
@@ -107,7 +107,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
         public async Task<Domain.Entity.Settings.Products> LoadDDL(Domain.Entity.Settings.Products model)
         {
-           // var model = new Domain.Entity.Settings.Products();
+            // var model = new Domain.Entity.Settings.Products();
             if (!_cache.TryGetValue("ProductDropdownData", out model))
             {
                 if (model == null) { model = new Domain.Entity.Settings.Products(); }
@@ -125,6 +125,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
+                model.ProductImage.BodyParts = model.BodyParts;
                 model.ProductImages = (List<ProductImage>)await _productMediaService.Get(null, null, 1, null);
                 model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
 
@@ -140,16 +141,16 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             return model;
 
         }
-            [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveOrUpdateProductBasicInfo(Domain.Entity.Settings.Products model)
         {
-            model.BranchId=CompanyInfo.BranchId;
+            model.BranchId = CompanyInfo.BranchId;
             //ViewData["RenderLayout"] = null;
-           // var viewModel = new ProductViewModel();
+            // var viewModel = new ProductViewModel();
             if (!ModelState.IsValid)
             {
-               // ViewData["RenderLayout"] = true; // Flag to include layout
+                // ViewData["RenderLayout"] = true; // Flag to include layout
                 // Retrieve dropdown data from the cache
                 var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
                 if (cachedData != null)
@@ -164,10 +165,10 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
                 //viewModel.ProductList = await FetchModelList();
                 //viewModel.Product = model;
-                
+
                 //return PartialView("Index", viewModel);
-                 
-              
+
+
                 // Return the AddForm partial view with validation errors
                 return PartialView("_AddForm", model); // Returning partial view directly
             }
@@ -184,7 +185,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                     return PartialView("_AddForm", model); // Returning partial view directly
 
                 }
-                 
+
                 var list = await FetchModelList();
                 return PartialView("_SearchResult", list); // Returning partial view directly
             }
@@ -199,7 +200,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 }
                 else
                 {
-                    model= await LoadDDL(model);
+                    model = await LoadDDL(model);
                 }
 
 
@@ -208,7 +209,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 //viewModel.ProductList = await FetchModelList();
                 //viewModel.Product = model;
 
-               
+
                 //return PartialView("Index", viewModel);
 
                 // In case of an error, render the AddForm partial view again
@@ -250,7 +251,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.BodyParts = cachedData.BodyParts;
                 obj.ProductImages = cachedData.ProductImages;
                 obj.Specification_list = cachedData.Specification_list;
-             
+
             }
             else
             {
@@ -284,6 +285,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.ProductSizeList = cachedData.ProductSizeList;
                 obj.WarehouseList = cachedData.WarehouseList;
                 obj.BodyParts = cachedData.BodyParts;
+                obj.ProductImage.BodyParts= cachedData.BodyParts;
             }
             else
             {
@@ -325,6 +327,45 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
             return PartialView("_SearchResult", list);
 
+
+        }
+
+        [HttpPost]
+        
+        public async Task<IActionResult> SaveProductImage(ProductImage model)
+        {
+            if (!ModelState.IsValid)
+            {
+                 
+                Response.StatusCode = 400;
+
+                
+                return PartialView("_AddImages", model); // Returning partial view directly
+            }
+
+            try
+            {
+
+                long responseId = await _productMediaService.SaveOrUpdate(model);
+                if (responseId == -1)
+                {
+                    //model.rowsAffected = -1;
+                    model.ProductId = 0;
+                    Response.StatusCode = 409;
+                    return PartialView("_AddImages", model); // Returning partial view directly
+
+                }
+
+                var list = await FetchModelList();
+                return PartialView("_ShowImages", list); // Returning partial view directly
+            }
+            catch (Exception ex)
+            {
+                 
+                Response.StatusCode = 500;
+                 
+                return PartialView("_AddImages", model); // Returning partial view directly
+            }
 
         }
     }

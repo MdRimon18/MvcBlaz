@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Domain.Entity.Settings;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +20,10 @@ namespace Domain.Entity.Inventory
         public string ImageUrl { get; set; }
 
         public int Position { get; set; }
+        [Required]
+
         public string BodyPartName { get; set; }
+        [NotMapped]
+        public IEnumerable<BodyPart> BodyParts { get; set; } = new List<BodyPart>();
     }
 }

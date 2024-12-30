@@ -6,7 +6,8 @@
     <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
-        </div>
+        </div> 
+
     </div>
 </div>
 <div class="row">
@@ -312,9 +313,18 @@
 
             </div>
                 <div class="tab-pane fade" id="tab_image" role="tabpanel" aria-labelledby="image_tab">
-                    <div id="ProductImageContainer">
-                        @await Html.PartialAsync("_AddImages", Model)
+
+                    <div class="card-body">
+                        <div id="ShowProductImagesContainer">
+                            @await Html.PartialAsync("_ShowImages", Model.ProductImages)
+                        </div>
+                        <div id="ProductImageAddContainer">
+                            @await Html.PartialAsync("_AddImages", Model.ProductImage)
+                        
+                        </div>
+
                     </div>
+                    
                  
                    
                 </div>

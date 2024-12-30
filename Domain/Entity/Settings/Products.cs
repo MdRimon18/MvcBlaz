@@ -120,9 +120,9 @@ namespace Domain.Entity.Settings
         public IEnumerable<BodyPart> BodyParts { get; set; }=new List<BodyPart>();
 
         [NotMapped]
-         public  List<ProductImage> ProductImages = new List<ProductImage>();
+         public  List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         [NotMapped]
-        public ProductImage ProductImage = new ProductImage();
+        public ProductImage ProductImage { get; set; } = new ProductImage();
         [NotMapped]
         public  List<ProductSpecifications> Specification_list = new List<ProductSpecifications>();
         [NotMapped]
