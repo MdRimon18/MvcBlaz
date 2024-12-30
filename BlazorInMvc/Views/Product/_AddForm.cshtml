@@ -312,83 +312,11 @@
 
             </div>
                 <div class="tab-pane fade" id="tab_image" role="tabpanel" aria-labelledby="image_tab">
-                    <div class="card-body">
-                        @if (Model.ProductImages?.Count() > 0)
-                        {
-                            <div class="row gx-2 flex-between-center mb-3">
-                                <div class="col-sm-3">Images</div>
-                                <div class="col-sm-3">Body Part</div>
-                                <div class="col-sm-3">Position</div>
-                                <div class="col-sm-2">Action</div>
-                            </div>
-                            @foreach (var img in Model.ProductImages)
-                            {
-                                <div class="row gx-2 flex-between-center mb-3">
-                                    <div class="col-sm-3">
-                                        <div class="avatar avatar-4xl">
-                                            @if (!string.IsNullOrEmpty(img.ImageUrl))
-                                            {
-                                                <img class="rounded-circle" src="@img.ImageUrl" alt="" />
-                                            }
-                                            else
-                                            {
-                                                <img src="/assets/commonimage/no-image.png" />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="d-flex flex-between-center">
-                                            <h6 class="mb-0 text-700">@img.BodyPartName</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="d-flex flex-between-center">
-                                            <h6 class="mb-0 text-700">@img.Position</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <div class="d-flex flex-between-center">
-                                            <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadImageEditModeData('@img.ProductMediaId')">
-                                                <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
-                                            </button>
-                                            <a class="btn btn-sm btn-link text-danger" onclick="DeleteImagesItem('@img.ProductMediaId')">
-                                                <span class="fs-10 fas fa-trash-alt"></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-                        <div class="row gy-3 gx-2">
-                            <div class="col-sm-4">
-                                <input type="file" class="file-input form-control form-control-sm form-rounded" id="fileInput" />
-                                <div class="image-uploader">
-                                    <div class="image-preview">
-                                        <img src="" alt="Selected Image" style="width: 100px; height: 100px;" />
-                                           <button type="button" class="remove-button" onclick="RemoveImage()">X</button>
-                                         
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <select asp-for="ProductImage.BodyPartName" class="form-control form-control-sm form-rounded fw-semi-bold">
-                                    <option value="">Select Body Part</option>
-                                    @foreach (var item in Model.BodyParts)
-                                    {
-                                        <option value="@item.BodyPartName">@item.BodyPartName</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="d-flex gap-2 flex-between-center">
-                                    <input asp-for="ProductImage.Position" class="form-control form-control-sm form-label fw-semi-bold" id="Details" type="text" placeholder="Position" />
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="SavesProductImage()">
-                                        @(Model.ProductImage.ProductMediaId > 0 ? "Update" : "Add")
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="ProductImageContainer">
+                        @await Html.PartialAsync("_AddImages", Model)
                     </div>
+                 
+                   
                 </div>
                 <div class="tab-pane fade" id="tab_product_specification" role="tabpanel" aria-labelledby="product_specification_tab">
                     <div class="card-body">

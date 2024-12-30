@@ -1,0 +1,39 @@
+﻿@using Domain.Entity.Settings
+@model Products
+<div class="card-body">
+    <div id="ShowImagesContainer">
+        @await Html.PartialAsync("_ShowImages", Model.ProductImages)
+    </div>
+    <form asp-action="SaveProductImage" method="post" name="SaveProductImageForm" id="SaveProductImageForm">
+                    @Html.AntiForgeryToken()
+    <div class="row gy-3 gx-2">
+        <div class="col-sm-4">
+            <input type="file" class="file-input form-control form-control-sm form-rounded" id="fileInput" />
+            <div class="image-uploader">
+                <div class="image-preview">
+                    <img src="" alt="Selected Image" style="width: 100px; height: 100px;" />
+                    <button type="button" class="remove-button" onclick="RemoveImage()">X</button>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <select asp-for="ProductImage.BodyPartName" class="form-control form-control-sm form-rounded fw-semi-bold">
+                <option value="">Select Body Part</option>
+                @foreach (var item in Model.BodyParts)
+                {
+                    <option value="@item.BodyPartName">@item.BodyPartName</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <div class="d-flex gap-2 flex-between-center">
+                <input asp-for="ProductImage.Position" class="form-control form-control-sm form-label fw-semi-bold" id="Details" type="text" placeholder="Position" />
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="SavesProductImage()">
+                    @(Model.ProductImage.ProductMediaId > 0 ? "Update" : "Add")
+                </button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
