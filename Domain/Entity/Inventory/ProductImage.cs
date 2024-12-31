@@ -1,4 +1,5 @@
 ﻿using Domain.Entity.Settings;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,13 +18,13 @@ namespace Domain.Entity.Inventory
 
         public long ProductId { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public int Position { get; set; }
-        [Required]
-
-        public string BodyPartName { get; set; }
+        
+        public string? BodyPartName { get; set; }
         [NotMapped]
-        public IEnumerable<BodyPart> BodyParts { get; set; } = new List<BodyPart>();
+        public IEnumerable<BodyPart>? BodyParts { get; set; } = new List<BodyPart>();
+        public IFormFile? file { get; set; }
     }
 }

@@ -332,41 +332,68 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
         [HttpPost]
         
-        public async Task<IActionResult> SaveProductImage(ProductImage model)
+        public async Task<IActionResult> SaveProductImage(Domain.Entity.Settings.Products model)
         {
             if (!ModelState.IsValid)
             {
-                 
+                // ViewData["RenderLayout"] = true; // Flag to include layout
+                // Retrieve dropdown data from the cache
+                var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+                if (cachedData != null)
+                {
+                    model = cachedData;
+                }
+                else
+                {
+                    await LoadDDL(model);
+                }
                 Response.StatusCode = 400;
 
-                
-                return PartialView("_AddImages", model); // Returning partial view directly
+                //viewModel.ProductList = await FetchModelList();
+                //viewModel.Product = model;
+
+                //return PartialView("Index", viewModel);
+
+
+                // Return the AddForm partial view with validation errors
+                return PartialView("_AddForm", model); // Returning partial view directly
             }
 
             try
             {
 
-                long responseId = await _productMediaService.SaveOrUpdate(model);
+                long responseId = await _productService.SaveOrUpdate(model);
                 if (responseId == -1)
                 {
                     //model.rowsAffected = -1;
                     model.ProductId = 0;
                     Response.StatusCode = 409;
-                    return PartialView("_AddImages", model); // Returning partial view directly
+                    return PartialView("_AddForm", model); // Returning partial view directly
 
                 }
 
                 var list = await FetchModelList();
-                return PartialView("_ShowImages", list); // Returning partial view directly
+                return PartialView("_SearchResult", list); // Returning partial view directly
             }
             catch (Exception ex)
             {
-                 
-                Response.StatusCode = 500;
-                 
-                return PartialView("_AddImages", model); // Returning partial view directly
-            }
 
+                // Retrieve dropdown data from the cache
+                var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+                if (cachedData != null)
+                {
+                    model = cachedData;
+                }
+                else
+                {
+                    model = await LoadDDL(model);
+                }
+
+
+                Response.StatusCode = 500;
+ 
+                return PartialView("_AddForm", model); // Returning partial view directly
+            }
         }
     }
 }

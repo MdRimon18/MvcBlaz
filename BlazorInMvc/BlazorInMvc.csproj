@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Api\" />
     <Folder Include="Controllers\Mvc\Customer\" />
     <Folder Include="Controllers\Mvc\User\" />
     <Folder Include="Controllers\Mvc\Supplier\" />
