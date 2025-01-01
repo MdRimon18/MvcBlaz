@@ -125,7 +125,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
-                model.ProductImage.BodyParts = model.BodyParts;
+              //  model.ProductImage.BodyParts = model.BodyParts;
                 model.ProductImages = (List<ProductImage>)await _productMediaService.Get(null, null, 1, null);
                 model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
 

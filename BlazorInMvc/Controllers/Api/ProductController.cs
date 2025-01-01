@@ -1,6 +1,10 @@
 ﻿using Domain.Entity.Inventory;
+using Domain.Helper;
+using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
+using System.Net;
 
 namespace BlazorInMvc.Controllers.Api
 {
@@ -8,46 +12,60 @@ namespace BlazorInMvc.Controllers.Api
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IWebHostEnvironment _environment;
 
-        public ProductController(IWebHostEnvironment environment)
+        private readonly ProductMediaService _productMediaService;
+        public ProductController(ProductMediaService productMediaService)
         {
-            _environment = environment;
+            _productMediaService = productMediaService;
         }
 
         [HttpPost("SaveProductImage")]
-        public IActionResult SaveProductImage([FromForm] ProductImage model)
+        public async Task<IActionResult> SaveProductImage([FromForm] ProductImage model)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    // Handle file upload
-            //    if (model.file != null)
-            //    {
-            //        string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            //        if (!Directory.Exists(uploadsFolder))
-            //        {
-            //            Directory.CreateDirectory(uploadsFolder);
-            //        }
+             
+            if (model.file != null || model.file.Length> 0)
+            {
+                // Get the base URL
+                var request = HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
 
-            //        string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.file.FileName;
-            //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                string extension = Path.GetExtension(model.file.FileName);
+                var bytes = await new MediaHelper().GetBytes(model.file);
 
-            //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-            //        {
-            //            model.file.CopyTo(fileStream);
-            //        }
+                // Upload file and get its relative path
+                var relativePath = MediaHelper.UploadAnyFile(bytes, "/Content/Images", extension);
 
-            //        model.ImageUrl = $"/uploads/{uniqueFileName}";
-            //    }
-
-                // Save the model to the database (example)
-                // _dbContext.ProductImages.Add(model);
-                // _dbContext.SaveChanges();
-
-                return Ok(new { message = "Product image saved successfully!", model });
-           // }
-
-            return BadRequest(ModelState);
+                model.ImageUrl = baseUrl + relativePath;
+                try
+                {
+                    long responseId = await _productMediaService.SaveOrUpdate(model);
+                    model.ProductMediaId= responseId;
+                }
+                catch (Exception ex)
+                {
+  
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                    {
+                        code = HttpStatusCode.InternalServerError,
+                        message = "An error occurred while saving the product image. Please try again later.",
+                        isSuccess = false
+                    });
+                }
+            
+            }
+ 
+            return Ok(new
+            {
+                Data = new
+                {
+                    model
+                },
+                code = HttpStatusCode.OK,
+                message = "Success",
+                isSuccess = true
+           });
         }
+         
+
     }
 }
