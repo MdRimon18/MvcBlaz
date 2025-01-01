@@ -326,7 +326,7 @@
                             <div id="product-images-list">
                                 @foreach (var img in Model.ProductImages)
                                 {
-                                    <div class="row gx-2 flex-between-center mb-3">
+                                    <div id="image-row-@img.ProductMediaId" class="row gx-2 flex-between-center mb-3">
                                         <div class="col-sm-3">
                                             <div class="avatar avatar-4xl">
                                                 @if (!string.IsNullOrEmpty(img.ImageUrl))
@@ -812,7 +812,7 @@
 
         images.forEach(img => {
             const row = `
-                <div class="row gx-2 flex-between-center mb-3">
+                <div id="image-row-${img.productMediaId}" class="row gx-2 flex-between-center mb-3">
                     <div class="col-sm-3">
                         <div class="avatar avatar-4xl">
                             <img class="rounded-circle" src="${img.imageUrl || '/assets/commonimage/no-image.png'}" alt="" />
@@ -841,6 +841,33 @@
                 </div>
             `;
             productImagesList.innerHTML += row;
+        });
+    }
+
+        function DeleteImagesItem(productMediaId) {
+        if (!confirm('Are you sure you want to delete this image?')) {
+            return; // Exit if user cancels
+        }
+
+        // Make an AJAX call to delete the image
+        $.ajax({
+            url: `/api/Product/DeleteProductImage/${productMediaId}`, // Adjust the endpoint URL
+            type: 'DELETE',
+            success: function (response) {
+                if (response.isSuccess) {
+                    showSuccessToast('Image deleted successfully.');
+
+                    // Remove the deleted image from the DOM
+                    // Assuming each image row has an ID like `image-row-{ProductMediaId}`
+                    $(`#image-row-${productMediaId}`).remove();
+                } else {
+                    showDangerToast('Failed to delete the image.');
+                }
+            },
+            error: function (xhr) {
+                showDangerToast('An error occurred while deleting the image.');
+                console.log(xhr.responseText);
+            }
         });
     }
 </script>

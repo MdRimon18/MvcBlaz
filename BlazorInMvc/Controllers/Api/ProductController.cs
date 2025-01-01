@@ -85,5 +85,32 @@ namespace BlazorInMvc.Controllers.Api
             });
         }
 
+        [HttpDelete("DeleteProductImage/{productMediaId}")]
+        public async Task<IActionResult> DeleteProductImage(long productMediaId)
+        {
+            if (productMediaId <=0)
+            {
+                return BadRequest(new { isSuccess = false, message = "Invalid ProductMediaId." });
+            }
+
+            try
+            {
+                var result = await _productMediaService.DeleteImageItem(productMediaId);
+                if (result)
+                {
+                    return Ok(new { isSuccess = true, message = "Product image deleted successfully." });
+                }
+                else
+                {
+                    return NotFound(new { isSuccess = false, message = "Product image not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (using a logging library or framework)
+                return StatusCode(500, new { isSuccess = false, message = "An error occurred while deleting the product image.", details = ex.Message });
+            }
+        }
     }
+ 
 }
