@@ -126,7 +126,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
               //  model.ProductImage.BodyParts = model.BodyParts;
-                model.ProductImages = (List<ProductImage>)await _productMediaService.Get(null, null, 1, null);
+               // model.ProductImages =
                 model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
 
                 // Store data in the cache with an expiration time
@@ -249,7 +249,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.ProductSizeList = cachedData.ProductSizeList;
                 obj.WarehouseList = cachedData.WarehouseList;
                 obj.BodyParts = cachedData.BodyParts;
-                obj.ProductImages = cachedData.ProductImages;
+               // obj.ProductImages = cachedData.ProductImages.Where(w=>w.ProductId==id).ToList();
+                obj.ProductImages=(List<ProductImage>)await _productMediaService.Get(null, null, id, null);
                 obj.Specification_list = cachedData.Specification_list;
 
             }

@@ -23,7 +23,7 @@ namespace BlazorInMvc.Controllers.Api
         public async Task<IActionResult> SaveProductImage([FromForm] ProductImage model)
         {
              
-            if (model.file != null || model.file.Length> 0)
+            if (model.file != null || model.file?.Length> 0)
             {
                 // Get the base URL
                 var request = HttpContext.Request;
@@ -36,24 +36,26 @@ namespace BlazorInMvc.Controllers.Api
                 var relativePath = MediaHelper.UploadAnyFile(bytes, "/Content/Images", extension);
 
                 model.ImageUrl = baseUrl + relativePath;
-                try
-                {
-                    long responseId = await _productMediaService.SaveOrUpdate(model);
-                    model.ProductMediaId= responseId;
-                }
-                catch (Exception ex)
-                {
-  
-                    return StatusCode((int)HttpStatusCode.InternalServerError, new
-                    {
-                        code = HttpStatusCode.InternalServerError,
-                        message = "An error occurred while saving the product image. Please try again later.",
-                        isSuccess = false
-                    });
-                }
+               
             
             }
- 
+
+            try
+            {
+                long responseId = await _productMediaService.SaveOrUpdate(model);
+                model.ProductMediaId = responseId;
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    code = HttpStatusCode.InternalServerError,
+                    message = "An error occurred while saving the product image. Please try again later.",
+                    isSuccess = false
+                });
+            }
+
             return Ok(new
             {
                 Data = new
@@ -65,7 +67,22 @@ namespace BlazorInMvc.Controllers.Api
                 isSuccess = true
            });
         }
-         
+        
+        [HttpGet("GetProductImageById")]
+        public async Task<IActionResult> GetProductImageById(long productMediaId)
+        {
+            var productImage = await _productMediaService.GetById(productMediaId);
+            if (productImage == null)
+            {
+                return NotFound(new { isSuccess = false, message = "Product image not found" });
+            }
+
+            return Ok(new
+            {
+                isSuccess = true,
+                data = productImage
+            });
+        }
 
     }
 }
