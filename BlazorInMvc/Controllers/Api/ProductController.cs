@@ -22,7 +22,7 @@ namespace BlazorInMvc.Controllers.Api
         [HttpPost("SaveProductImage")]
         public async Task<IActionResult> SaveProductImage([FromForm] ProductImage model)
         {
-             
+            List<ProductImage> productImages = new List<ProductImage>(); 
             if (model.file != null || model.file?.Length> 0)
             {
                 // Get the base URL
@@ -36,14 +36,15 @@ namespace BlazorInMvc.Controllers.Api
                 var relativePath = MediaHelper.UploadAnyFile(bytes, "/Content/Images", extension);
 
                 model.ImageUrl = baseUrl + relativePath;
-               
-            
+                
             }
 
             try
             {
                 long responseId = await _productMediaService.SaveOrUpdate(model);
                 model.ProductMediaId = responseId;
+
+                productImages=(List<ProductImage>)await _productMediaService.Get(null, null, model.ProductId, null);
             }
             catch (Exception ex)
             {
@@ -60,7 +61,7 @@ namespace BlazorInMvc.Controllers.Api
             {
                 Data = new
                 {
-                    model
+                    productImages
                 },
                 code = HttpStatusCode.OK,
                 message = "Success",

@@ -370,7 +370,7 @@
                                 <div class="image-uploader">
                                     <div class="image-preview">
                                         <img id="previewImage" src="" alt="Selected Image" style="width: 100px; height: 100px;" />
-                                       @*  <button type="button" class="remove-button" onclick="RemoveImage()">X</button> *@
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -709,7 +709,7 @@
     }
 </script>
 <script>
-      function saveProductImage() {
+    function saveProductImage() {
         const submitButton = $('#SaveProductImageButton');
 
         // Gather values
@@ -717,24 +717,25 @@
         const bodyPartName = $('#BodyPartName').val();
         const position = $('#Position').val();
         const productId = $('#ProductId').val();
-          const productMediaId= $('#ProductMediaId').val();
-         const productMediaKey= $('#ProductMediaKey').val();
-       const imageUrl= $('#ImageUrl').val();
-        
-        if (productId<=0) {
-            alert('Please select a Product First.');
+        const productMediaId = $('#ProductMediaId').val();
+        const productMediaKey = $('#ProductMediaKey').val();
+        const imageUrl = $('#ImageUrl').val();
+
+        if (productId <= 0) {
+             
+             showDangerToast('Please select a Product First.');
             return;
         }
-
-        // if (!fileInput) {
-        //     alert('Please select a file.');
-        //     return;
-        // }
 
         if (!bodyPartName) {
-            alert('Please select a body part.');
+             showDangerToast('Please select a body part.');
             return;
         }
+          if (!fileInput&&productMediaId==0) {
+            showDangerToast('Please select a file.');
+            return;
+        }
+
 
         // Create FormData to handle file and other inputs
         const formData = new FormData();
@@ -743,8 +744,9 @@
         formData.append('Position', position);
         formData.append('ProductId', productId);
         formData.append('ProductMediaId', productMediaId);
-        formData.append('ProductMediaKey',productMediaKey);
-        formData.append('ImageUrl',imageUrl);
+        formData.append('ProductMediaKey', productMediaKey);
+        formData.append('ImageUrl', imageUrl);
+
         // Disable the button to prevent multiple clicks
         submitButton.prop('disabled', true);
 
@@ -756,71 +758,38 @@
             processData: false, // Prevent jQuery from processing data
             contentType: false, // Allow the browser to set the Content-Type
             success: function (response) {
-
                 console.log(response); // Log success response for debugging
-                  if (response.isSuccess) {
-                    alert('Product image saved successfully!');
-
-                    const img = response.data.model; // Extract the newly created item
-                    if(productMediaId<=0){
-                    // Construct the new HTML
-                    const newItem = `
-                        <div class="row gx-2 flex-between-center mb-3">
-                            <div class="col-sm-3">
-                                <div class="avatar avatar-4xl">
-                                    <img class="rounded-circle" src="${img.imageUrl || '/assets/commonimage/no-image.png'}" alt="" />
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="d-flex flex-between-center">
-                                    <h6 class="mb-0 text-700">${img.bodyPartName}</h6>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="d-flex flex-between-center">
-                                    <h6 class="mb-0 text-700">${img.position}</h6>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="d-flex flex-between-center">
-                                    <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductImageEditModeData('${img.productMediaId}')">
-                                        <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
-                                    </button>
-                                    <a class="btn btn-sm btn-link text-danger" onclick="DeleteImagesItem('${img.productMediaId}')">
-                                        <span class="fs-10 fas fa-trash-alt"></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    // Append the new item to the list
-                    $('#product-images-list').append(newItem); // Ensure the parent container has an ID like 'product-images-list'
+                if (response.isSuccess) {
                     
-                }    // Clear the input fields
-                    $('#BodyPartName').val('');  // Clear BodyPartName
-                    $('#Position').val('');      // Clear Position
-                    $('#ProductId').val('');     // Clear ProductId
+                    showSuccessToast('@MessageManager.SaveSuccess');
+                    const image_list = response.data.productImages;
 
-                    // Reset the file input
-                    $('#fileInput').val(''); // Modern browsers support this directly
-                   // Clear the preview image
-                   $('#previewImage').attr('src', '').hide(); // Optionally hide it
-                   $('#ProductMediaId').val(0);
-                   $('#ProductMediaKey').val('00000000-0000-0000-0000-000000000000');
-                   $('#ImageUrl').val('');
-                    // Change the button text to "Update"
+                    // Update the product image list
+                    updateProductImageList(image_list);
+
+                    // Clear the input fields
+                    $('#BodyPartName').val('');
+                    $('#Position').val('');
+                    $('#ProductId').val('');
+                    $('#fileInput').val('');
+                    $('#previewImage').attr('src', '').hide();
+                    $('#ProductMediaId').val(0);
+                    $('#ProductMediaKey').val('00000000-0000-0000-0000-000000000000');
+                    $('#ImageUrl').val('');
+
+                    // Reset button text
                     $('#SaveProductImageButton').text('Add');
                 } else {
-                    alert('Failed to save product image.');
+                   
+                    showDangerToast('Failed to save product image.');
                 }
             },
             error: function (xhr) {
-                alert('An error occurred while saving the product image.');
-                console.log(xhr.responseText); // Log error response for debugging
+               showDangerToast('An error occurred while saving the product image.');
+               
             },
             complete: function () {
-                submitButton.prop('disabled', false); // Re-enable the button
+                submitButton.prop('disabled', false);
             }
         });
     }
@@ -831,13 +800,51 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                $('#previewImage').attr('src', e.target.result);
+                $('#previewImage').attr('src', e.target.result).show();
             };
             reader.readAsDataURL(file);
         }
     });
 
+    function updateProductImageList(images) {
+        const productImagesList = document.getElementById("product-images-list");
+        productImagesList.innerHTML = ""; // Clear the existing list
+
+        images.forEach(img => {
+            const row = `
+                <div class="row gx-2 flex-between-center mb-3">
+                    <div class="col-sm-3">
+                        <div class="avatar avatar-4xl">
+                            <img class="rounded-circle" src="${img.imageUrl || '/assets/commonimage/no-image.png'}" alt="" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="d-flex flex-between-center">
+                            <h6 class="mb-0 text-700">${img.bodyPartName}</h6>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="d-flex flex-between-center">
+                            <h6 class="mb-0 text-700">${img.position}</h6>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="d-flex flex-between-center">
+                            <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductImageEditModeData('${img.productMediaId}')">
+                                <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
+                            </button>
+                            <a class="btn btn-sm btn-link text-danger" onclick="DeleteImagesItem('${img.productMediaId}')">
+                                <span class="fs-10 fas fa-trash-alt"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            productImagesList.innerHTML += row;
+        });
+    }
 </script>
+
 <script>
         function LoadProductImageEditModeData(productMediaId) {
         $.ajax({
