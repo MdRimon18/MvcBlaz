@@ -1,9 +1,12 @@
-﻿using Domain.Entity.Inventory;
+﻿using Domain.CommonServices;
+using Domain.Entity.Inventory;
+using Domain.Entity.Settings;
 using Domain.Helper;
 using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
+using System.Drawing.Printing;
 using System.Net;
 
 namespace BlazorInMvc.Controllers.Api
@@ -14,9 +17,11 @@ namespace BlazorInMvc.Controllers.Api
     {
 
         private readonly ProductMediaService _productMediaService;
-        public ProductController(ProductMediaService productMediaService)
+        private readonly ProductSpecificationService _productSpecificationService;
+        public ProductController(ProductMediaService productMediaService, ProductSpecificationService productSpecificationService)
         {
             _productMediaService = productMediaService;
+            _productSpecificationService = productSpecificationService;
         }
 
         [HttpPost("SaveProductImage")]
@@ -110,6 +115,48 @@ namespace BlazorInMvc.Controllers.Api
                 // Log the exception (using a logging library or framework)
                 return StatusCode(500, new { isSuccess = false, message = "An error occurred while deleting the product image.", details = ex.Message });
             }
+        }
+
+        [HttpPost]
+        [Route("AddSpecification")]
+        public async Task<IActionResult> AddSpecification([FromBody] ProductSpecifications specification)
+        {
+            if (ModelState.IsValid)
+            {
+                List<ProductSpecifications> specification_list = new List<ProductSpecifications>();
+                try
+                {
+                  long responseId= await _productSpecificationService.SaveOrUpdate(specification);
+                  specification_list= (await _productSpecificationService.Get(null, null, specification.ProductId, null, null,GlobalPageConfig.PageNumber,
+                        GlobalPageConfig.PageSize)).ToList();
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                    {
+                        code = HttpStatusCode.InternalServerError,
+                        message = "An error occurred while saving the Product Specification. Please try again later.",
+                        isSuccess = false
+                    });
+
+                }
+                        
+
+                return Ok(new
+                {
+                    Data = new
+                    {
+                        specification_list
+                    },
+                    code = HttpStatusCode.OK,
+                    message = "Success",
+                    isSuccess = true
+                });
+            }
+
+            // Return failure response
+            return BadRequest(new { success = false, message = "Invalid data!" });
         }
     }
  

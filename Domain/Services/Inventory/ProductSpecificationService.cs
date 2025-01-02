@@ -2,6 +2,7 @@
 using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
+using Domain.Entity;
 
 namespace Domain.Services.Inventory
 {
@@ -16,7 +17,7 @@ namespace Domain.Services.Inventory
 
 		}
 		public async Task<IEnumerable<ProductSpecifications>> Get(long? ProdSpcfctnId, string? ProdSpcfctnKey, long? ProductId,string? SpecificationName,string? SpecificationDtls, int? PageNumber, int? PageSize)
-        {
+		{
 			try
 			{
 				var parameters = new DynamicParameters();
@@ -59,6 +60,15 @@ namespace Domain.Services.Inventory
 		{
 			try
 			{
+				if (_productSpecifications.ProdSpcfctnId > 0)
+				{
+					EntityHelper.SetUpdateAuditFields(_productSpecifications);
+				}
+				else
+				{
+					EntityHelper.SetCreateAuditFields(_productSpecifications);
+				}
+
 				var parameters = new DynamicParameters();
 
 				parameters.Add("@ProdSpcfctnId", _productSpecifications.ProdSpcfctnId);
@@ -67,13 +77,13 @@ namespace Domain.Services.Inventory
 				parameters.Add("@SpecificationName", _productSpecifications.SpecificationName);
 				parameters.Add("@SpecificationDtls", _productSpecifications.SpecificationDtls);
 
-				parameters.Add("@EntryDateTime", _productSpecifications.EntryDateTime);
-				parameters.Add("@EntryBy", _productSpecifications.EntryBy);
-				parameters.Add("@LastModifyDate", _productSpecifications.LastModifyDate);
-				parameters.Add("@LastModifyBy", _productSpecifications.LastModifyBy);
-				parameters.Add("@DeletedDate", _productSpecifications.DeletedDate);
-				parameters.Add("@DeletedBy", _productSpecifications.DeletedBy);
-				parameters.Add("@Status", _productSpecifications.Status);
+				//parameters.Add("@EntryDateTime", _productSpecifications.EntryDateTime);
+				//parameters.Add("@EntryBy", _productSpecifications.EntryBy);
+				//parameters.Add("@LastModifyDate", _productSpecifications.LastModifyDate);
+				//parameters.Add("@LastModifyBy", _productSpecifications.LastModifyBy);
+				//parameters.Add("@DeletedDate", _productSpecifications.DeletedDate);
+				//parameters.Add("@DeletedBy", _productSpecifications.DeletedBy);
+				//parameters.Add("@Status", _productSpecifications.Status);
 				parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 				await _db.ExecuteAsync("ProductSpecifications_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
