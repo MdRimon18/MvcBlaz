@@ -158,6 +158,42 @@ namespace BlazorInMvc.Controllers.Api
             // Return failure response
             return BadRequest(new { success = false, message = "Invalid data!" });
         }
+
+        [HttpDelete("DeleteSpecification/{id}")]
+        public async Task<IActionResult> DeleteSpecification(long id)
+        {
+            try
+            {
+                bool isDeleted = await _productSpecificationService.Delete(id);
+                if (isDeleted)
+                {
+                    return Ok(new
+                    {
+                        code = HttpStatusCode.OK,
+                        message = "Specification deleted successfully.",
+                        isSuccess = true
+                    });
+                }
+
+                return NotFound(new
+                {
+                    code = HttpStatusCode.NotFound,
+                    message = "Specification not found.",
+                    isSuccess = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    code = HttpStatusCode.InternalServerError,
+                    message = "An error occurred while deleting the specification.",
+                    isSuccess = false
+                });
+            }
+        }
+
+
     }
- 
+
 }

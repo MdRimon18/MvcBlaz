@@ -405,27 +405,30 @@
                    
                 </div>
                 <div class="tab-pane fade" id="tab_product_specification" role="tabpanel" aria-labelledby="product_specification_tab">
-                    <div class="card-body">
-                        @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
-                        {
-                            foreach (var spec in Model.Specification_list)
+                    <div class="card-body" >
+                        <div id="specifications-container">
+                            @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
                             {
-                                <div class="row gx-2 flex-between-center mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
-                                    </div>
-                                    <div class="col-sm-9">
-                                        <div class="d-flex flex-between-center">
-                                            <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
-                                            <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
-                                               onclick="deleteSpecification(@spec.ProdSpcfctnId)">
-                                                <span class="fs-10 fas fa-trash-alt"></span>
-                                            </a>
+                                foreach (var spec in Model.Specification_list)
+                                {
+                                    <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="d-flex flex-between-center">
+                                                <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
+                                                <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                                   onclick="deleteSpecification(@spec.ProdSpcfctnId)">
+                                                    <span class="fs-10 fas fa-trash-alt"></span>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             }
-                        }
+                        </div>
+                       
 
                         <div class="row gy-3 gx-2">
                             <div class="col-sm-3">
@@ -927,9 +930,31 @@
             contentType: 'application/json',
             data: JSON.stringify(specification),
             success: function (response) {
+                console.log(response)
                 if (response.isSuccess) {
                     alert(response.message);
-                   
+                   const container = document.getElementById('specifications-container');
+                    container.innerHTML = ''; // Clear the existing list
+
+                    response.data.specification_list.forEach(spec => {
+                        const specRow = `
+                            <div class="row gx-2 flex-between-center mb-3" id="spec-${spec.prodSpcfctnId}">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0 text-600">${spec.specificationName}</h6>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="d-flex flex-between-center">
+                                        <h6 class="mb-0 text-700">${spec.specificationDtls}</h6>
+                                        <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                           onclick="deleteSpecification(${spec.prodSpcfctnId})">
+                                            <span class="fs-10 fas fa-trash-alt"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.insertAdjacentHTML('beforeend', specRow);
+                    });
                 } else {
                     alert("Failed to save specification!");
                 }
@@ -940,3 +965,31 @@
         });
     }
 </script>
+<script>
+        function deleteSpecification(id) {
+        if (confirm("Are you sure you want to delete this specification?")) {
+            fetch(`api/Product/DeleteSpecification/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isSuccess) {
+                        // Remove the deleted specification row from the DOM
+                        const specRow = document.getElementById(`spec-${id}`);
+                        if (specRow) {
+                            specRow.remove();
+                        }
+                        alert(data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while deleting the specification.");
+                });
+        }
+    }
+
+</script>
+                               
