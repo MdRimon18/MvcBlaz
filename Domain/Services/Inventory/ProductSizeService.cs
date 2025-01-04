@@ -3,6 +3,8 @@ using System.Data;
 using Domain.Entity.Settings;
 using System.Data;
 using Domain.DbContex;
+using Domain.Services.Shared;
+using Domain.Entity;
 
 namespace Domain.Services.Inventory
 {
@@ -60,19 +62,29 @@ namespace Domain.Services.Inventory
             {
                 try
                 {
-                    var parameters = new DynamicParameters();
+                if (_ProductSize.ProductSizeId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(_ProductSize);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(_ProductSize);
+                }
+                var parameters = new DynamicParameters();
 
                     parameters.Add("@ProductSizeId", _ProductSize.ProductSizeId);
                     parameters.Add("@ProductSizeKey", _ProductSize.ProductSizeKey);
                     parameters.Add("@LanguageId", _ProductSize.LanguageId);
                     parameters.Add("@ProductSizeName", _ProductSize.ProductSizeName);
-                    parameters.Add("@EntryDateTime", _ProductSize.EntryDateTime);
-                    parameters.Add("@EntryBy", _ProductSize.EntryBy);
-                    parameters.Add("@LastModifyDate", _ProductSize.LastModifyDate);
-                    parameters.Add("@LastModifyBy", _ProductSize.LastModifyBy);
-                    parameters.Add("@DeletedDate", _ProductSize.DeletedDate);
-                    parameters.Add("@DeletedBy", _ProductSize.DeletedBy);
-                    parameters.Add("@Status", _ProductSize.Status);
+                   ParameterHelper.AddAuditParameters(_ProductSize, parameters);
+
+                //parameters.Add("@EntryDateTime", _ProductSize.EntryDateTime);
+                //    parameters.Add("@EntryBy", _ProductSize.EntryBy);
+                //    parameters.Add("@LastModifyDate", _ProductSize.LastModifyDate);
+                //    parameters.Add("@LastModifyBy", _ProductSize.LastModifyBy);
+                //    parameters.Add("@DeletedDate", _ProductSize.DeletedDate);
+                //    parameters.Add("@DeletedBy", _ProductSize.DeletedBy);
+                //    parameters.Add("@Status", _ProductSize.Status);
                     parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                     await _db.ExecuteAsync("Product_Size_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 

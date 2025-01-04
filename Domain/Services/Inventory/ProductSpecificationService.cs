@@ -3,6 +3,7 @@ using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
 using Domain.Entity;
+using Domain.Services.Shared;
 
 namespace Domain.Services.Inventory
 {
@@ -77,14 +78,8 @@ namespace Domain.Services.Inventory
 				parameters.Add("@SpecificationName", _productSpecifications.SpecificationName);
 				parameters.Add("@SpecificationDtls", _productSpecifications.SpecificationDtls);
 
-				//parameters.Add("@EntryDateTime", _productSpecifications.EntryDateTime);
-				//parameters.Add("@EntryBy", _productSpecifications.EntryBy);
-				//parameters.Add("@LastModifyDate", _productSpecifications.LastModifyDate);
-				//parameters.Add("@LastModifyBy", _productSpecifications.LastModifyBy);
-				//parameters.Add("@DeletedDate", _productSpecifications.DeletedDate);
-				//parameters.Add("@DeletedBy", _productSpecifications.DeletedBy);
-				//parameters.Add("@Status", _productSpecifications.Status);
-				parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                ParameterHelper.AddAuditParameters(_productSpecifications, parameters);
+                parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 				await _db.ExecuteAsync("ProductSpecifications_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
 				return (long)parameters.Get<int>("@SuccessOrFailId");
@@ -104,9 +99,8 @@ namespace Domain.Services.Inventory
 			long DeletedSatatus = 0;
 			if (deleteObj != null)
 			{
-				deleteObj.DeletedDate = DateTime.UtcNow;
-				deleteObj.Status = "Deleted";
-				DeletedSatatus = await SaveOrUpdate(deleteObj);
+                EntityHelper.SetDeleteAuditFields(deleteObj);
+                DeletedSatatus = await SaveOrUpdate(deleteObj);
 			}
 
 			return DeletedSatatus > 0;

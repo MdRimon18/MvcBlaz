@@ -912,7 +912,11 @@
 <script>
     function saveSpecification() {
         if($('#ProductId').val()<=0){
-            alert('Please Select Product First');
+            showDangerToast('Please Select a Product First');
+            return;
+        }
+        if($('#SpecificationName').val()==''||$('#SpecificationName').val()==null){
+            showDangerToast('Please Give Specification Name');
             return;
         }
         // Collect values from the input fields
@@ -931,8 +935,12 @@
             data: JSON.stringify(specification),
             success: function (response) {
                 console.log(response)
-                if (response.isSuccess) {
-                    alert(response.message);
+                    if(response.responseId==-1){
+                         showDangerToast(specification.SpecificationName+' '+'@MessageManager.Exist');
+                         return;
+                    }
+                    if (response.isSuccess) {
+                   // alert(response.message);
                    const container = document.getElementById('specifications-container');
                     container.innerHTML = ''; // Clear the existing list
 
@@ -955,6 +963,11 @@
                         `;
                         container.insertAdjacentHTML('beforeend', specRow);
                     });
+
+                      $("#SpecificationName").val("");
+                    $("#SpecificationDtls").val("");
+                    $("#ProdSpcfctnId").val(0);
+                     
                 } else {
                     alert("Failed to save specification!");
                 }
@@ -979,9 +992,9 @@
                         if (specRow) {
                             specRow.remove();
                         }
-                        alert(data.message);
+                        showSuccessToast(data.message);
                     } else {
-                        alert(data.message);
+                        showDangerToast(data.message);
                     }
                 })
                 .catch(error => {

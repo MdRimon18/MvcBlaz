@@ -1,4 +1,5 @@
-﻿using Domain.CommonServices;
+﻿using Azure;
+using Domain.CommonServices;
 using Domain.Entity.Inventory;
 using Domain.Entity.Settings;
 using Domain.Helper;
@@ -121,12 +122,13 @@ namespace BlazorInMvc.Controllers.Api
         [Route("AddSpecification")]
         public async Task<IActionResult> AddSpecification([FromBody] ProductSpecifications specification)
         {
+            long responseId = 0;
             if (ModelState.IsValid)
             {
                 List<ProductSpecifications> specification_list = new List<ProductSpecifications>();
                 try
                 {
-                  long responseId= await _productSpecificationService.SaveOrUpdate(specification);
+                    responseId= await _productSpecificationService.SaveOrUpdate(specification);
                   specification_list= (await _productSpecificationService.Get(null, null, specification.ProductId, null, null,GlobalPageConfig.PageNumber,
                         GlobalPageConfig.PageSize)).ToList();
 
@@ -147,11 +149,14 @@ namespace BlazorInMvc.Controllers.Api
                 {
                     Data = new
                     {
-                        specification_list
+                        specification_list 
+                      
                     },
                     code = HttpStatusCode.OK,
                     message = "Success",
-                    isSuccess = true
+                    isSuccess = true,
+                    responseId = responseId
+
                 });
             }
 

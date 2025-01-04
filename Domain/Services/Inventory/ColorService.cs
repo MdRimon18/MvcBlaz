@@ -4,6 +4,7 @@ using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
 using Domain.Entity;
+using Domain.Services.Shared;
 
 namespace Domain.Services.Inventory
 {
@@ -76,7 +77,8 @@ namespace Domain.Services.Inventory
                 parameters.Add("@LanguageId", colors.LanguageId);
                 parameters.Add("@ColorIdName", colors.ColorIdName);
                 parameters.Add("@EntryDateTime", colors.EntryDateTime);
-                
+                ParameterHelper.AddAuditParameters(colors, parameters);
+
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("Color_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
