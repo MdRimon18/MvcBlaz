@@ -30,6 +30,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly BodyPartService _bodyPartService;
         private readonly ProductMediaService _productMediaService;
         private readonly ProductSpecificationService _productSpecificationService;
+        private readonly ProductSerialNumbersService _productSerialNumbersService;
         public ProductController(IMemoryCache cache,
             ProductService ProductService,
               UnitService unitService,
@@ -47,7 +48,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             WarehouseService warehouseService,
             BodyPartService bodyPartService,
             ProductMediaService productMediaService,
-            ProductSpecificationService productSpecificationService
+            ProductSpecificationService productSpecificationService,
+            ProductSerialNumbersService productSerialNumbersService
 
           )
         {
@@ -69,6 +71,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _bodyPartService = bodyPartService;
             _productMediaService = productMediaService;
             _productSpecificationService = productSpecificationService;
+            _productSerialNumbersService= productSerialNumbersService;
         }
 
 
@@ -125,9 +128,10 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 model.ProductSizeList = (await _productSizeService.Get(null, null, null, null, 1, 1000)).ToList();
                 model.WarehouseList = (await _warehouseService.Get(null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
                 model.BodyParts = await _bodyPartService.GetBodyPartsAsync();
-              //  model.ProductImage.BodyParts = model.BodyParts;
-               // model.ProductImages =
-               // model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
+               
+                //  model.ProductImage.BodyParts = model.BodyParts;
+                // model.ProductImages =
+                // model.Specification_list = (await _productSpecificationService.Get(null, null, null, null, null, 1, 1000)).ToList();
 
                 // Store data in the cache with an expiration time
                 _cache.Set("ProductDropdownData", model, new MemoryCacheEntryOptions
@@ -251,8 +255,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.BodyParts = cachedData.BodyParts;
                // obj.ProductImages = cachedData.ProductImages.Where(w=>w.ProductId==id).ToList();
                 obj.ProductImages=(await _productMediaService.Get(null, null, id, null)).ToList();
-                obj.Specification_list =(await _productSpecificationService.Get(null, null, id, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList(); 
-                 
+                obj.Specification_list =(await _productSpecificationService.Get(null, null, id, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                obj.ProductSerialNumbers_list = (await _productSerialNumbersService.Get(null, null, id, null, null, null, null, null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
             }
             else
             {

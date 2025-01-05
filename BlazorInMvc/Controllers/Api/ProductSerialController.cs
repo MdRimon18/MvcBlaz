@@ -12,9 +12,11 @@ namespace BlazorInMvc.Controllers.Api
     public class ProductSerialController : ControllerBase
     {
         private readonly ProductSerialNumbersService _productSerialNumbersService;
-        public ProductSerialController(ProductSerialNumbersService productSerialNumbersService)
+        private readonly SupplierService _supplierService;
+        public ProductSerialController(ProductSerialNumbersService productSerialNumbersService, SupplierService supplierService)
         {
             _productSerialNumbersService = productSerialNumbersService;
+            _supplierService = supplierService;
         }
         [HttpPost("SaveSerialNumber")]
         public async Task<IActionResult> SaveSerialNumber([FromBody] ProductSerialNumbers productSerialNumber)
@@ -24,6 +26,7 @@ namespace BlazorInMvc.Controllers.Api
             {
                  
                 responseId=await _productSerialNumbersService.SaveOrUpdate(productSerialNumber);
+
                 if (responseId == -1)
                 {
                     return Ok(new
@@ -33,6 +36,15 @@ namespace BlazorInMvc.Controllers.Api
                         responseId
                     });
                 }
+                if(productSerialNumber.TagSupplierId is not null&& productSerialNumber.TagSupplierId>0)
+                {
+                    Suppliers suppliers = await _supplierService.GetById((long)productSerialNumber.TagSupplierId);
+                    if(suppliers is not null)
+                    {
+                        productSerialNumber.SupplierName = suppliers.SupplrName;
+                    }
+                }
+                productSerialNumber.ProdSerialNmbrId = responseId;
                 return Ok(new
                 {
                     Data = new

@@ -494,8 +494,10 @@
                                         <div class="col-sm-2">
                                             <h6 class="mb-0 text-600">@srl.Date</h6>
                                         </div>
+                                  
                                         <div class="col-sm-3">
                                             <div class="d-flex flex-between-center">
+                                                <h6 class="mb-0 text-600">@srl.Remarks</h6>
                                                 <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductSericalEditModeData('@srl.ProdSerialNmbrId')">
                                                     <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
                                                 </button>
@@ -558,7 +560,7 @@
                                            placeholder="Remarks" />
                                     <input id="ProdSerialNmbrId" asp-for="ProductSerialNumber.ProdSerialNmbrId" type="hidden" />
                                      
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveProductSerial()">Add</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="SaveProductSerialButton" onclick="saveProductSerial()">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -1138,7 +1140,7 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert(response.message);
+              //  alert(response.message);
 
                  if (response.responseId === -1) {
                 alert("Serial number already exists!");
@@ -1146,7 +1148,7 @@
                   alert("Serial number saved successfully!");
                   updateSerialNumberList(response.data.productSerialNumber);
 
-                    $('#ProductSerialNumber_Rate').val('');
+                 $('#ProductSerialNumber_Rate').val('');
                  $('#TagSupplierId').val('');
                  $('#ProductSerialNumber_Remarks').val('');
                  $('#ProductSerialNumber_Date').val('');
@@ -1154,8 +1156,8 @@
                 }
                 // Optionally, clear the form fields
                 $('#SerialNumber').val('');
-               
-              
+
+                $('#SaveProductSerialButton').text('Add');
             },
             error: function (error) {
                 console.error('Error:', error);
@@ -1166,7 +1168,7 @@
 
    function updateSerialNumberList(serialNumberData) {
         console.log('1',serialNumberData)
-        const { prodSerialNmbrId, serialNumber, rate, supplierName, date } = serialNumberData;
+         const { prodSerialNmbrId, serialNumber, rate, supplierName, date,remarks } = serialNumberData;
            console.log('2',serialNumberData)
         const container = $('#product-serial-container');
         const existingItem = $(`#spec-${prodSerialNmbrId}`);
@@ -1177,6 +1179,7 @@
             existingItem.find('.col-sm-2:nth-child(2) h6').text(rate);
             existingItem.find('.col-sm-2:nth-child(3) h6').text(supplierName);
             existingItem.find('.col-sm-2:nth-child(4) h6').text(date);
+            existingItem.find('.col-sm-3:nth-child(2) h6').text(remarks);
         } else {
             // Add new item
             const newItem = `
@@ -1195,6 +1198,7 @@
                     </div>
                     <div class="col-sm-3">
                         <div class="d-flex flex-between-center">
+                            <h6 class="mb-0 text-600">${remarks}</h6>
                             <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductSericalEditModeData('${prodSerialNmbrId}')">
                                 <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
                             </button>
@@ -1211,15 +1215,28 @@
     }
         function LoadProductSericalEditModeData(serialId) {
         $.ajax({
-            url: `/api/ProductSerialController/GetSerialNumber/${serialId}`,
+            url: `/api/ProductSerial/GetSerialNumber/${serialId}`,
             type: 'GET',
             success: function (data) {
-                $('#SerialNumber').val(data.SerialNumber);
-                $('#ProductSerialNmbr_Rate').val(data.Rate);
-                $('#TagSupplierId').val(data.TagSupplierId);
-                $('#ProductSerialNmbr_Remarks').val(data.Remarks);
-                $('#ProdSerialNmbrId').val(data.ProdSerialNmbrId);
-                $('#ProductSerialNmbr_Date').val(data.Date ? new Date(data.Date).toISOString().split('T')[0] : '');
+                console.log(data)
+                 if(data.success){
+                   $('#SerialNumber').val(data.data.serialNumber);
+                  $('#ProductSerialNumber_Rate').val(data.data.rate);
+                   $('#TagSupplierId').val(data.data.tagSupplierId);
+                  $('#ProductSerialNumber_Remarks').val(data.data.remarks);
+                  $('#ProdSerialNmbrId').val(data.data.prodSerialNmbrId);
+                      const dateValue = data.data.date; // Access the date value
+                        if (dateValue) {
+                            // Use only the date part, without adjusting for timezone
+                            const formattedDate = dateValue.split('T')[0]; // Extract "YYYY-MM-DD" directly
+                            $('#ProductSerialNumber_Date').val(formattedDate);
+                        } else {
+                            $('#ProductSerialNumber_Date').val('');
+                        }
+                    $('#SaveProductSerialButton').text('Update');
+                    
+                    }
+               
             },
             error: function (error) {
                 console.error("Error fetching serial number data:", error);
@@ -1234,7 +1251,7 @@
         }
 
         $.ajax({
-            url: `/api/ProductSerialController/DeleteSerialNumber/${serialId}`,
+            url: `/api/ProductSerial/DeleteSerialNumber/${serialId}`,
             type: 'DELETE',
             success: function () {
                 $(`#spec-${serialId}`).remove();

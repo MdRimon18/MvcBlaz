@@ -131,5 +131,6 @@ namespace Domain.Entity.Settings
         public ProductSerialNumbers ProductSerialNumber = new ProductSerialNumbers();
         [NotMapped]
         public List<ProductSerialNumbers> ProductSerialNumbers_list = new List<ProductSerialNumbers>();
+         
     }
 }
