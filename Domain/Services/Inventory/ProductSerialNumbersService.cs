@@ -3,6 +3,8 @@ using System.Data;
 using Domain.Entity.Settings;
 using System.Data;
 using Domain.DbContex;
+using Domain.Entity;
+using Domain.Services.Shared;
 
 namespace Domain.Services.Inventory
 {
@@ -66,6 +68,15 @@ namespace Domain.Services.Inventory
         {
             try
             {
+                if (_productSerialNumbers.ProdSerialNmbrId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(_productSerialNumbers);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(_productSerialNumbers);
+                }
+
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@ProdSerialNmbrId", _productSerialNumbers.ProdSerialNmbrId);
@@ -79,13 +90,15 @@ namespace Domain.Services.Inventory
                 parameters.Add("@SupplierOrgName", _productSerialNumbers.SupplierOrgName);
                 parameters.Add("@Remarks", _productSerialNumbers.Remarks);
                 parameters.Add("@SerialStatus", _productSerialNumbers.SerialStatus);
-                parameters.Add("@EntryDateTime", _productSerialNumbers.EntryDateTime);
-                parameters.Add("@EntryBy", _productSerialNumbers.EntryBy);
-                parameters.Add("@LastModifyDate", _productSerialNumbers.LastModifyDate);
-                parameters.Add("@LastModifyBy", _productSerialNumbers.LastModifyBy);
-                parameters.Add("@DeletedDate", _productSerialNumbers.DeletedDate);
-                parameters.Add("@DeletedBy", _productSerialNumbers.DeletedBy);
-                parameters.Add("@Status", _productSerialNumbers.Status);
+
+                ParameterHelper.AddAuditParameters(_productSerialNumbers, parameters);
+                //parameters.Add("@EntryDateTime", _productSerialNumbers.EntryDateTime);
+                //parameters.Add("@EntryBy", _productSerialNumbers.EntryBy);
+                //parameters.Add("@LastModifyDate", _productSerialNumbers.LastModifyDate);
+                //parameters.Add("@LastModifyBy", _productSerialNumbers.LastModifyBy);
+                //parameters.Add("@DeletedDate", _productSerialNumbers.DeletedDate);
+                //parameters.Add("@DeletedBy", _productSerialNumbers.DeletedBy);
+                //parameters.Add("@Status", _productSerialNumbers.Status);
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("ProductSerialNumbers_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
@@ -106,8 +119,7 @@ namespace Domain.Services.Inventory
             long DeletedSatatus = 0;
             if (deleteObj != null)
             {
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
                 DeletedSatatus = await SaveOrUpdate(deleteObj);
             }
 

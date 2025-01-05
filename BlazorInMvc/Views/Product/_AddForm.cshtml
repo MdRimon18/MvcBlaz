@@ -464,43 +464,54 @@
                 </div>
                 <div class="tab-pane fade" id="tab_product_serial" role="tabpanel" aria-labelledby="product_serial_tab">
                     <div class="card-body">
-                        <div id="product-serial-container">
+                       
 
-                            @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
-                            {
-                                <div class="row gx-2 flex-between-center mb-3">
+                               <div class="row gx-2 flex-between-center mb-3">
                                     <div class="col-sm-3">Serial Number</div>
                                     <div class="col-sm-2">Rate</div>
-                                    <div class="col-sm-3">Supplier</div>
-                                    <div class="col-sm-4">Remarks </div>
+                                    <div class="col-sm-2">Supplier</div>
+                                    <div class="col-sm-2">Purchase Date</div>
+                                    <div class="col-sm-3">Remarks </div>
                                      
                                     
                                 </div>
-                                foreach (var spec in Model.Specification_list)
+                            <div id="product-serial-container">
+                            @if (Model.ProductSerialNumbers_list != null && Model.ProductSerialNumbers_list.Count > 0)
+                            {
+
+                                foreach (var srl in Model.ProductSerialNumbers_list)
                                 {
-                                    <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
+                                    <div class="row gx-2 flex-between-center mb-3" id="spec-@srl.ProdSerialNmbrId">
                                         <div class="col-sm-3">
-                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                            <h6 class="mb-0 text-600">@srl.SerialNumber</h6>
                                         </div>
                                         <div class="col-sm-2">
-                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                            <h6 class="mb-0 text-600">@srl.Rate</h6>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h6 class="mb-0 text-600">@srl.SupplierName</h6>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h6 class="mb-0 text-600">@srl.Date</h6>
                                         </div>
                                         <div class="col-sm-3">
-                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
-                                        </div>
-                                        <div class="col-sm-4">
                                             <div class="d-flex flex-between-center">
-                                                <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
+                                                <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductSericalEditModeData('@srl.ProdSerialNmbrId')">
+                                                    <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
+                                                </button>
                                                 <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
-                                                   onclick="deleteSpecification(@spec.ProdSpcfctnId)">
+                                                   onclick="deleteSpecification(@srl.ProdSerialNmbrId)">
                                                     <span class="fs-10 fas fa-trash-alt"></span>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 }
-                            }
-                        </div>
+                              }
+                      
+                            </div>
+                            
+                      
 
 
                         <div class="row gy-3 gx-2">
@@ -518,8 +529,10 @@
                                        placeholder="Serial Number" />
                                 <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span>
                             </div>
-                            <div class="col-sm-3">
-                                <select asp-for="ProductSerialNumber.TagSupplierId" class="form-control form-control-sm form-rounded">
+                            <div class="col-sm-2">
+                                <select asp-for="ProductSerialNumber.TagSupplierId"
+                                class="form-control form-control-sm form-rounded"
+                                id="TagSupplierId">
                                     <option value="">Link to Supplier</option>
                                     @foreach (var sp in Model.SupplierList)
                                     {
@@ -528,7 +541,16 @@
                                 </select>
                                 <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
+                                <input asp-for="ProductSerialNumber.Date" type="date"
+                                       class="form-control form-control-sm form-label fw-semi-bold"
+                                       id="ProductSerialNumber_Date"
+                                       placeholder="Serial Number" />
+                                
+                                @* <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span> *@
+                            </div>
+                            
+                            <div class="col-sm-3">
                                 <div class="d-flex gap-2 flex-between-center">
                                     <input asp-for="ProductSerialNumber.Remarks"
                                            id="ProductSerialNumber_Remarks"
@@ -1094,4 +1116,134 @@
     }
 
 </script>
-                               
+<script>
+    function saveProductSerial() {
+        if($('#ProductId').val()<=0){
+            showDangerToast('Please Select a Product First');
+            return;
+        }
+        const data = {
+            SerialNumber: $('#SerialNumber').val(),
+            Rate: parseFloat($('#ProductSerialNumber_Rate').val()) || 0,
+            TagSupplierId: parseFloat($('#TagSupplierId').val()) || null,
+            Remarks: $('#ProductSerialNumber_Remarks').val(),
+            ProdSerialNmbrId: parseInt($('#ProdSerialNmbrId').val()) || 0,
+            ProductId: $('#ProductId').val(),
+            Date: $('#ProductSerialNumber_Date').val()
+        };
+        console.log('data',data)
+        $.ajax({
+            url: '/api/ProductSerial/SaveSerialNumber',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert(response.message);
+
+                 if (response.responseId === -1) {
+                alert("Serial number already exists!");
+                 } else if (response.responseId > 0) {
+                  alert("Serial number saved successfully!");
+                  updateSerialNumberList(response.data.productSerialNumber);
+
+                    $('#ProductSerialNumber_Rate').val('');
+                 $('#TagSupplierId').val('');
+                 $('#ProductSerialNumber_Remarks').val('');
+                 $('#ProductSerialNumber_Date').val('');
+
+                }
+                // Optionally, clear the form fields
+                $('#SerialNumber').val('');
+               
+              
+            },
+            error: function (error) {
+                console.error('Error:', error);
+                alert('Failed to save serial number.');
+            }
+        });
+    }
+
+   function updateSerialNumberList(serialNumberData) {
+        console.log('1',serialNumberData)
+        const { prodSerialNmbrId, serialNumber, rate, supplierName, date } = serialNumberData;
+           console.log('2',serialNumberData)
+        const container = $('#product-serial-container');
+        const existingItem = $(`#spec-${prodSerialNmbrId}`);
+
+        if (existingItem.length) {
+            // Update existing item
+            existingItem.find('.col-sm-3:nth-child(1) h6').text(serialNumber);
+            existingItem.find('.col-sm-2:nth-child(2) h6').text(rate);
+            existingItem.find('.col-sm-2:nth-child(3) h6').text(supplierName);
+            existingItem.find('.col-sm-2:nth-child(4) h6').text(date);
+        } else {
+            // Add new item
+            const newItem = `
+                <div class="row gx-2 flex-between-center mb-3" id="spec-${prodSerialNmbrId}">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0 text-600">${serialNumber}</h6>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6 class="mb-0 text-600">${rate}</h6>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6 class="mb-0 text-600">${supplierName}</h6>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6 class="mb-0 text-600">${date}</h6>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="d-flex flex-between-center">
+                            <button class="btn btn-falcon-default btn-sm" type="button" onclick="LoadProductSericalEditModeData('${prodSerialNmbrId}')">
+                                <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
+                            </button>
+                            <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);" onclick="deleteSpecification(${prodSerialNmbrId})">
+                                <span class="fs-10 fas fa-trash-alt"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.append(newItem);
+        }
+    }
+        function LoadProductSericalEditModeData(serialId) {
+        $.ajax({
+            url: `/api/ProductSerialController/GetSerialNumber/${serialId}`,
+            type: 'GET',
+            success: function (data) {
+                $('#SerialNumber').val(data.SerialNumber);
+                $('#ProductSerialNmbr_Rate').val(data.Rate);
+                $('#TagSupplierId').val(data.TagSupplierId);
+                $('#ProductSerialNmbr_Remarks').val(data.Remarks);
+                $('#ProdSerialNmbrId').val(data.ProdSerialNmbrId);
+                $('#ProductSerialNmbr_Date').val(data.Date ? new Date(data.Date).toISOString().split('T')[0] : '');
+            },
+            error: function (error) {
+                console.error("Error fetching serial number data:", error);
+                alert("Failed to load serial number data.");
+            }
+        });
+    }
+
+        function deleteSpecification(serialId) {
+        if (!confirm("Are you sure you want to delete this serial number?")) {
+            return;
+        }
+
+        $.ajax({
+            url: `/api/ProductSerialController/DeleteSerialNumber/${serialId}`,
+            type: 'DELETE',
+            success: function () {
+                $(`#spec-${serialId}`).remove();
+                alert("Serial number deleted successfully.");
+            },
+            error: function (error) {
+                console.error("Error deleting serial number:", error);
+                alert("Failed to delete serial number.");
+            }
+        });
+    }
+</script>                            
