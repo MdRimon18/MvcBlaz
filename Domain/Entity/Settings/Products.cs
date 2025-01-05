@@ -127,5 +127,7 @@ namespace Domain.Entity.Settings
         public  List<ProductSpecifications> Specification_list = new List<ProductSpecifications>();
         [NotMapped]
         public ProductSpecifications productSpecification = new ProductSpecifications();
+        [NotMapped]
+        public ProductSerialNumbers ProductSerialNumber = new ProductSerialNumbers();
     }
 }

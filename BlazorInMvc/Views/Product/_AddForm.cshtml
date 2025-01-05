@@ -38,7 +38,7 @@
                     <li class="nav-item"><a class="nav-link" id="ecommerce_tab" data-bs-toggle="tab" href="#tab_ecommerce" role="tab" aria-controls="tab_ecommerce" aria-selected="false">Advanced</a></li>
                     <li class="nav-item"><a class="nav-link" id="image_tab" data-bs-toggle="tab" href="#tab_image" role="tab" aria-controls="tab_image" aria-selected="false">Add Images</a></li>
                     <li class="nav-item"><a class="nav-link" id="product_specification_tab" data-bs-toggle="tab" href="#tab_product_specification" role="tab" aria-controls="tab_product_specification" aria-selected="false">Product Specification</a></li>
-
+                    <li class="nav-item"><a class="nav-link" id="product_serial_tab" data-bs-toggle="tab" href="#tab_product_serial" role="tab" aria-controls="tab_product_serial" aria-selected="false">Serial</a></li>
                     @*  <li class="nav-item"><a class="nav-link" id="Weight_tab" data-bs-toggle="tab" href="#tab_Weight" role="tab" aria-controls="tab_Weight" aria-selected="false">Weight</a></li> *@
                 </ul>
             </div>
@@ -409,8 +409,15 @@
                         <div id="specifications-container">
                             @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
                             {
-                                foreach (var spec in Model.Specification_list)
-                                {
+                                <div class="row gx-2 flex-between-center mb-3">
+                                    <div class="col-sm-3 w-50">Name</div>
+                                    <div class="col-sm-7 w-50"> Details</div>
+                                   
+                                </div>
+                               
+
+                                    @foreach (var spec in Model.Specification_list)
+                                    {
                                     <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
                                         <div class="col-sm-3">
                                             <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
@@ -425,7 +432,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                }
+                                    }
+                                 
+                            
                             }
                         </div>
                        
@@ -448,6 +457,86 @@
                                     <input id="ProdSpcfctnId" asp-for="productSpecification.ProdSpcfctnId" type="hidden" />
                                     <span asp-validation-for="productSpecification.SpecificationDtls" class="text-danger"></span>
                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveSpecification()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab_product_serial" role="tabpanel" aria-labelledby="product_serial_tab">
+                    <div class="card-body">
+                        <div id="product-serial-container">
+
+                            @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
+                            {
+                                <div class="row gx-2 flex-between-center mb-3">
+                                    <div class="col-sm-3">Serial Number</div>
+                                    <div class="col-sm-2">Rate</div>
+                                    <div class="col-sm-3">Supplier</div>
+                                    <div class="col-sm-4">Remarks </div>
+                                     
+                                    
+                                </div>
+                                foreach (var spec in Model.Specification_list)
+                                {
+                                    <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="d-flex flex-between-center">
+                                                <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
+                                                <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                                   onclick="deleteSpecification(@spec.ProdSpcfctnId)">
+                                                    <span class="fs-10 fas fa-trash-alt"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+
+                        <div class="row gy-3 gx-2">
+                            <div class="col-sm-3">
+                                <input asp-for="ProductSerialNumber.SerialNumber"
+                                       class="form-control form-control-sm form-label fw-semi-bold"
+                                       id="SerialNumber"
+                                       placeholder="Serial Number" />
+                                <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input asp-for="ProductSerialNumber.Rate"
+                                       class="form-control form-control-sm form-label fw-semi-bold"
+                                       id="ProductSerialNumber_Rate"
+                                       placeholder="Serial Number" />
+                                <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <select asp-for="ProductSerialNumber.TagSupplierId" class="form-control form-control-sm form-rounded">
+                                    <option value="">Link to Supplier</option>
+                                    @foreach (var sp in Model.SupplierList)
+                                    {
+                                        <option value="@sp.SupplierId">@sp.SupplrName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ProductSerialNumber.SerialNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="d-flex gap-2 flex-between-center">
+                                    <input asp-for="ProductSerialNumber.Remarks"
+                                           id="ProductSerialNumber_Remarks"
+                                           class="form-control form-control-sm form-label fw-semi-bold"
+                                           placeholder="Remarks" />
+                                    <input id="ProdSerialNmbrId" asp-for="ProductSerialNumber.ProdSerialNmbrId" type="hidden" />
+                                     
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveProductSerial()">Add</button>
                                 </div>
                             </div>
                         </div>
