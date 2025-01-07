@@ -1145,7 +1145,7 @@
                  if (response.responseId === -1) {
                 alert("Serial number already exists!");
                  } else if (response.responseId > 0) {
-                  alert("Serial number saved successfully!");
+                 // alert("Serial number saved successfully!");
                   updateSerialNumberList(response.data.productSerialNumber);
 
                  $('#ProductSerialNumber_Rate').val('');
@@ -1255,7 +1255,7 @@
             type: 'DELETE',
             success: function () {
                 $(`#spec-${serialId}`).remove();
-                alert("Serial number deleted successfully.");
+                //alert("Serial number deleted successfully.");
             },
             error: function (error) {
                 console.error("Error deleting serial number:", error);
@@ -1263,4 +1263,40 @@
             }
         });
     }
-</script>                            
+</script>
+
+<script>
+    $(document).ready(function () {
+        function calculateFinalPrice() {
+            // Get values from the inputs
+            let sellingPrice = parseFloat($('#SellingPrice').val()) || 0;
+            let vatPercent = parseFloat($('#VatPercent').val()) || 0;
+            let vatAmount = parseFloat($('#VatAmount').val()) || 0;
+            let discountPercent = parseFloat($('#DiscountPercentg').val()) || 0;
+            let discountAmount = parseFloat($('#DiscountAmount').val()) || 0;
+
+            // Calculate VAT amount if VAT percentage is provided
+            if (vatPercent > 0) {
+                vatAmount = (sellingPrice * vatPercent) / 100;
+                $('#VatAmount').val(vatAmount.toFixed(2)); // Update VAT Amount field
+            }
+
+            // Calculate Discount amount if Discount percentage is provided
+            if (discountPercent > 0) {
+                discountAmount = (sellingPrice * discountPercent) / 100;
+                $('#DiscountAmount').val(discountAmount.toFixed(2)); // Update Discount Amount field
+            }
+
+            // Calculate Final Price
+            let finalPrice = sellingPrice + vatAmount - discountAmount;
+
+            // Update Final Price field
+            $('#FinalPrice').val(finalPrice.toFixed(2));
+        }
+
+        // Attach change event handlers to the input fields
+        $('#SellingPrice, #VatPercent, #VatAmount, #DiscountPercentg, #DiscountAmount').on('input', function () {
+            calculateFinalPrice();
+        });
+    });
+</script>
