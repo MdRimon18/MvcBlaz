@@ -43,7 +43,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             ProductSubCategoryService productSubCategoryService,
             BrandService brandService,
             ProductCategoryService productCategoryService,
-            ProductService productService,
+            
             ProductSizeService productSizeService,
             WarehouseService warehouseService,
             BodyPartService bodyPartService,

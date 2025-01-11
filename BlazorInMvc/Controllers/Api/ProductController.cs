@@ -12,20 +12,70 @@ using System.Net;
 
 namespace BlazorInMvc.Controllers.Api
 {
-    [Route("api/[controller]")]
+   // [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
-
+        private readonly ILogger<ProductController> _logger;
         private readonly ProductMediaService _productMediaService;
         private readonly ProductSpecificationService _productSpecificationService;
-        public ProductController(ProductMediaService productMediaService, ProductSpecificationService productSpecificationService)
+        private readonly ProductService _productService;
+        public ProductController(ProductMediaService productMediaService,
+            ProductSpecificationService productSpecificationService,
+            ProductService productService, ILogger<ProductController> logger)
         {
             _productMediaService = productMediaService;
             _productSpecificationService = productSpecificationService;
+            _productService = productService;
+            _logger = logger;
         }
+        [HttpGet]
+        [Route("api/GetProducts")]
+        public async Task<IActionResult> GetProductImageById()
+        {
+            try
+            {
+                var product_list = (await _productService.Get(null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, GlobalPageConfig.PageNumber,
+                            GlobalPageConfig.PageSize)).ToList();
+                //var productImage = await _productMediaService.GetById(productMediaId);
+                //if (productImage == null)
+                //{
+                //    return NotFound(new { isSuccess = false, message = "Product image not found" });
+                //}
+                return Ok(new
+                {
+                    product_list,
+                    code = HttpStatusCode.OK,
+                    message = "Success",
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving Products with");
+                var errorDetails = new
+                {
+                    Message = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                };
+                return StatusCode(500, new
+                {
+                    code = HttpStatusCode.InternalServerError,
+                    message = "An error occurred while processing your request.",
+                    details = errorDetails, // Optional: You can include this for debugging purposes.
+                    isSuccess = false
+                });
+            }
+        }
+          
+          
 
-        [HttpPost("SaveProductImage")]
+            
+        
+        [HttpPost]
+        [Route("api/Product/SaveProductImage")]
         public async Task<IActionResult> SaveProductImage([FromForm] ProductImage model)
         {
             List<ProductImage> productImages = new List<ProductImage>(); 
@@ -75,7 +125,8 @@ namespace BlazorInMvc.Controllers.Api
            });
         }
         
-        [HttpGet("GetProductImageById")]
+        [HttpGet]
+        [Route("api/Product/GetProductImageById")]
         public async Task<IActionResult> GetProductImageById(long productMediaId)
         {
             var productImage = await _productMediaService.GetById(productMediaId);
@@ -91,7 +142,8 @@ namespace BlazorInMvc.Controllers.Api
             });
         }
 
-        [HttpDelete("DeleteProductImage/{productMediaId}")]
+        [HttpDelete]
+        [Route("api/Product/DeleteProductImage")]
         public async Task<IActionResult> DeleteProductImage(long productMediaId)
         {
             if (productMediaId <=0)
@@ -119,7 +171,7 @@ namespace BlazorInMvc.Controllers.Api
         }
 
         [HttpPost]
-        [Route("AddSpecification")]
+        [Route("api/Product/AddSpecification")]
         public async Task<IActionResult> AddSpecification([FromBody] ProductSpecifications specification)
         {
             long responseId = 0;
@@ -164,7 +216,8 @@ namespace BlazorInMvc.Controllers.Api
             return BadRequest(new { success = false, message = "Invalid data!" });
         }
 
-        [HttpDelete("DeleteSpecification/{id}")]
+        [HttpDelete]
+        [Route("api/Product/DeleteSpecification")]
         public async Task<IActionResult> DeleteSpecification(long id)
         {
             try
