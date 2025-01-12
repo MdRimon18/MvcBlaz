@@ -96,7 +96,7 @@ namespace Domain.Services.Inventory
 
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                await _db.ExecuteAsync("ProductVariant_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
+                await _db.ExecuteAsync("ProductVariants_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
                 return parameters.Get<int>("@SuccessOrFailId");
             }

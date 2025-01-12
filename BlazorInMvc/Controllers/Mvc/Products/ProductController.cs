@@ -31,6 +31,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         private readonly ProductMediaService _productMediaService;
         private readonly ProductSpecificationService _productSpecificationService;
         private readonly ProductSerialNumbersService _productSerialNumbersService;
+        private readonly ProductVariantService _productVariantService;
         public ProductController(IMemoryCache cache,
             ProductService ProductService,
               UnitService unitService,
@@ -49,7 +50,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             BodyPartService bodyPartService,
             ProductMediaService productMediaService,
             ProductSpecificationService productSpecificationService,
-            ProductSerialNumbersService productSerialNumbersService
+            ProductSerialNumbersService productSerialNumbersService,
+            ProductVariantService productVariantService
 
           )
         {
@@ -72,6 +74,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _productMediaService = productMediaService;
             _productSpecificationService = productSpecificationService;
             _productSerialNumbersService= productSerialNumbersService;
+            _productVariantService = productVariantService;
         }
 
 
@@ -257,6 +260,8 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 obj.ProductImages=(await _productMediaService.Get(null, null, id, null)).ToList();
                 obj.Specification_list =(await _productSpecificationService.Get(null, null, id, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
                 obj.ProductSerialNumbers_list = (await _productSerialNumbersService.Get(null, null, id, null, null, null, null, null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                obj.ProductVariants = (await _productVariantService.Get(null, id, null, null, null, null, null, GlobalPageConfig.PageNumber,
+                    GlobalPageConfig.PageSize)).ToList();
             }
             else
             {

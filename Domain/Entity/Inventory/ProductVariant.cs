@@ -10,6 +10,7 @@ namespace Domain.Entity.Inventory
     public class ProductVariant:BaseEntity
     {
         public long ProductVariantId { get; set; }
+         
         public long ProductId { get; set; }
         public string SkuNumber { get; set; }
         public string? Color { get; set; }
