@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace Domain.Entity.Inventory
         public string? ImageUrl { get; set; }
         public bool? IsPrimary { get; set; }
         public int Position { get; set; }
+        public IFormFile? file { get; set; }
         //public DateTime? EntryDateTime { get; set; }
         //public long? EntryBy { get; set; }
         //public DateTime? LastModifyDate { get; set; }

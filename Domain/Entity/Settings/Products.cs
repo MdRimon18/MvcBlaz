@@ -133,5 +133,9 @@ namespace Domain.Entity.Settings
         public List<ProductSerialNumbers> ProductSerialNumbers_list = new List<ProductSerialNumbers>();
         [NotMapped]
         public string? ImageUrl { get; set; }
+        [NotMapped]
+        public List<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
+        [NotMapped]
+        public ProductVariant ProductVariant { get; set; } = new ProductVariant();
     }
 }
