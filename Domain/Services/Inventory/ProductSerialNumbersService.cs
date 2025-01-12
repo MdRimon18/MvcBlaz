@@ -114,16 +114,24 @@ namespace Domain.Services.Inventory
 
         public async Task<bool> Delete(long ProdSerialNmbrId)
         {
-            var _productSerialNumbers = await (Get(ProdSerialNmbrId, null, null,null,null, null, null, null, null, null, null, 1, 1));
-            var deleteObj = _productSerialNumbers.FirstOrDefault();
-            long DeletedSatatus = 0;
-            if (deleteObj != null)
+            try
             {
-                EntityHelper.SetDeleteAuditFields(deleteObj);
-                DeletedSatatus = await SaveOrUpdate(deleteObj);
-            }
+                // Define the SQL query for deletion
+                string query = "delete from [invnt].[ProductSpecifications] where [ProdSpcfctnId]=@ProdSerialNmbrId";
 
-            return DeletedSatatus > 0;
+                // Execute the query
+                int rowsAffected = await _db.ExecuteAsync(query, new { ProdSerialNmbrId });
+
+                // Return true if at least one row was deleted
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., log the error)
+                Console.WriteLine($"Error during deletion: {ex.Message}");
+                return false;
+            }
         }
+
     }
 }

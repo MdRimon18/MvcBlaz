@@ -688,7 +688,7 @@
    
 </form> *@
  
-<div data-product-size-name="@Model.ProdName">
+<div data-product-size-name="@Model.Sku">
     <!-- Existing form content -->
 </div>
 
@@ -740,7 +740,7 @@
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(xhr.responseText, 'text/html');
                           const productSizeName = doc.querySelector('[data-product-size-name]').dataset.productSizeName;
-
+                      //    console.log(productSizeName)
                         showDangerToast(`${productSizeName} @MessageManager.Exist`);
 
 
@@ -969,7 +969,7 @@
 
         // Make an AJAX call to delete the image
         $.ajax({
-            url: `/api/Product/DeleteProductImage/${productMediaId}`, // Adjust the endpoint URL
+            url: `/api/Product/DeleteProductImage?productMediaId=${productMediaId}`, // Adjust the endpoint URL
             type: 'DELETE',
             success: function (response) {
                 if (response.isSuccess) {
@@ -1094,7 +1094,7 @@
 <script>
         function deleteSpecification(id) {
         if (confirm("Are you sure you want to delete this specification?")) {
-            fetch(`api/Product/DeleteSpecification/${id}`, {
+            fetch(`/api/Product/DeleteSpecification?id=${id}`, {
                 method: 'DELETE'
             })
                 .then(response => response.json())

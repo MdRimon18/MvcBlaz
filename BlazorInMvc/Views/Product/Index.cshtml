@@ -59,3 +59,22 @@
         });
     }
 </script>
+
+            <script>
+                function LoadSimilarEditModeData(id) {
+                    $.ajax({
+            url: '/Product/LoadSimilarEditModeData', // Your action URL
+                        type: 'GET', // Use GET method
+                        data: { id: id }, // Send the ID as a query string parameter
+                        success: function (result) {
+                            // On success, replace the content of a container with the returned partial view
+                            $('#AddContainer').html(result);
+                             initializeTinyMCE();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('Error:', error);
+                            alert('An error occurred while loading the data. Please try again.');
+                        }
+                    });
+                }
+            </script>

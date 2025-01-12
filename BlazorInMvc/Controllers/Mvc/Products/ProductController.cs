@@ -266,6 +266,52 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             return PartialView("_AddForm", obj);
         }
         [HttpGet]
+        public async Task<IActionResult> LoadSimilarEditModeData(long id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+            Domain.Entity.Settings.Products obj = (await _productService.GetById(id));
+
+            if (obj == null)
+            {
+                return NotFound(); // Handle case where product doesn't exist
+            }
+            obj.ProductId = 0;
+          //  obj.Sku = "";
+            // Retrieve dropdown data from the cache
+            var cachedData = _cache.Get<Domain.Entity.Settings.Products>("ProductDropdownData");
+            if (cachedData != null)
+            {
+                // Populate dropdown fields from cached data
+                obj.SupplierList = cachedData.SupplierList;
+                obj.UnitList = cachedData.UnitList;
+                obj.CurrencyList = cachedData.CurrencyList;
+                obj.ShippingByList = cachedData.ShippingByList;
+                obj.ColorList = cachedData.ColorList;
+                obj.CountryList = cachedData.CountryList;
+                obj.StatusSettingList = cachedData.StatusSettingList;
+                obj.ImportStatusSettingList = cachedData.ImportStatusSettingList;
+                obj.ProductSubCategoryList = cachedData.ProductSubCategoryList;
+                obj.BrandList = cachedData.BrandList;
+                obj.ProductCategoryList = cachedData.ProductCategoryList;
+                obj.ProductSizeList = cachedData.ProductSizeList;
+                obj.WarehouseList = cachedData.WarehouseList;
+                obj.BodyParts = cachedData.BodyParts;
+                // obj.ProductImages = cachedData.ProductImages.Where(w=>w.ProductId==id).ToList();
+                //obj.ProductImages = //(await _productMediaService.Get(null, null, id, null)).ToList();
+               // obj.Specification_list = (await _productSpecificationService.Get(null, null, id, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+              //  obj.ProductSerialNumbers_list = (await _productSerialNumbersService.Get(null, null, id, null, null, null, null, null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+            }
+            else
+            {
+                await LoadDDL(obj);
+            }
+
+            return PartialView("_AddForm", obj);
+        }
+        [HttpGet]
         public async Task<IActionResult> AddNewForm()
         {
             // Create a new instance of ProductSze

@@ -69,5 +69,6 @@ public static class ServiceRegistrationExtensions
 
 
         services.AddScoped<BodyPartService>();
+        services.AddScoped<ProductVariantService>();
     }
 }

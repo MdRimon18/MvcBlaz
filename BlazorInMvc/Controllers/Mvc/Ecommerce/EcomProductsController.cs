@@ -24,13 +24,13 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
             }
             return View("Index", list);
         }
-        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList()
+        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList(int? pageSize=9)
         {
             
             var list = (await _productService.Get(null, null, null, null, null,
                 null, null, null, null, null, null, null,
                 null, null, null, null, GlobalPageConfig.PageNumber,
-                GlobalPageConfig.PageSize)).ToList();
+                pageSize)).ToList();
 
             return list.ToList(); // Convert and return as List<Unit>
         }

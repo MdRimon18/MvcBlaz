@@ -22,7 +22,7 @@ namespace Domain.CommonServices
     public static class GlobalPageConfig
     {
         public static int PageNumber { get; set; } = 1;
-        public static int PageSize { get; set; } = 9;
+        public static int PageSize { get; set; } = 1000;
 
     }
 }
