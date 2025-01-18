@@ -9,11 +9,14 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
     {
         private readonly IMemoryCache _cache;
         private readonly ProductService _productService;
+        private readonly ProductVariantService _productVariantService;
         public EcomProductsController(IMemoryCache cache,
-            ProductService ProductService)
+            ProductService ProductService,
+            ProductVariantService productVariantService)
         {
             _cache = cache;
-            _productService = ProductService;   
+            _productService = ProductService;  
+            _productVariantService= productVariantService;
         }
         public async Task<IActionResult> Index(bool isPartial = false)
         {
@@ -24,13 +27,21 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
             }
             return View("Index", list);
         }
-        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList(int? pageSize=9)
+        public async Task<List<Domain.Entity.Settings.Products>> FetchModelList(int? pageSize=100)
         {
             
             var list = (await _productService.Get(null, null, null, null, null,
                 null, null, null, null, null, null, null,
                 null, null, null, null, GlobalPageConfig.PageNumber,
                 pageSize)).ToList();
+            foreach (var item in list)
+            {
+                item.ProductVariants = (await _productVariantService.Get(null, item.ProductId,
+                    null, null, null, null,
+                    null, GlobalPageConfig.PageNumber,
+                   GlobalPageConfig.PageSize)).ToList();
+            }
+           
 
             return list.ToList(); // Convert and return as List<Unit>
         }

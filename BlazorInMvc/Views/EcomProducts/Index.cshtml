@@ -32,25 +32,25 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            @foreach (var group in Model.GroupBy(g => g.ProductCode))
+            @foreach (var item in Model)
             {
-                var firstItem = group.FirstOrDefault();
-                if(firstItem!=null){
+                //var firstItem = group.FirstOrDefault();
+                if(item!=null){
                     <div class="mb-4 mb-lg-0  col-md-6 col-lg-4">
                         <div class="border rounded-1 h-100 d-flex flex-column justify-content-between pb-3">
                             <div class="overflow-hidden">
-                                @if (group.Count() > 1)
+                                @if (item.ProductVariants.Count() > 0)
                                 {
                                 <div class="position-relative rounded-top overflow-hidden">
                                     
                                     <div class="swiper-container theme-slider" data-swiper='{"autoplay":true,"autoHeight":true,"spaceBetween":5,"loop":true,"loopedSlides":5,"navigation":{"nextEl":".swiper-button-next","prevEl":".swiper-button-prev"}}'>
                                         <div class="swiper-wrapper">
-                                           
-                                                @foreach (var product in group)
+
+                                                @foreach (var variant in item.ProductVariants)
                                                 {
                                                     <div class="swiper-slide">
                                                         <a class="d-block" href="/EcomProducts/Details">
-                                                            <img class="rounded-top img-fluid" src="@Url.Content($"~{product?.ImageUrl}")" alt="" />
+                                                            <img class="rounded-top img-fluid" src="@variant?.ImageUrl" alt="" />
                                                         </a>
                                                             </div>
                                                 }
@@ -71,17 +71,17 @@
                                 {
                                     <div class="position-relative rounded-top overflow-hidden">
                                         <a class="d-block" href="/EcomProducts/Details">
-                                            <img class="img-fluid rounded-top" src="@Url.Content($"~{firstItem?.ImageUrl}")" alt="" />
+                                            <img class="img-fluid rounded-top" src="@item.VariantImageUrl)" alt="" />
                                         </a>
                                     </div>
                                 }
                                 
                                     
                                     <div class="p-3">
-                                    <h5 class="fs-9"><a class="text-1100" href="/EcomProducts/Details">@firstItem?.ProdName</a></h5>
-                                    <p class="fs-10 mb-3"><a class="text-500" href="#!">@firstItem?.ProdCtgName</a></p>
+                                    <h5 class="fs-9"><a class="text-1100" href="/EcomProducts/Details">@item?.ProdName</a></h5>
+                                    <p class="fs-10 mb-3"><a class="text-500" href="#!">@item?.ProdCtgName</a></p>
                                     <h5 class="fs-md-7 text-warning mb-0 d-flex align-items-center mb-3">
-                                        $@firstItem?.SellingPrice
+                                        $@item?.SellingPrice
                                     </h5>
                                     <p class="fs-10 mb-1">Shipping Cost: <strong>$65</strong></p>
                                     <p class="fs-10 mb-1">

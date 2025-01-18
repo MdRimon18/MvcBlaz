@@ -134,6 +134,9 @@ namespace Domain.Entity.Settings
         [NotMapped]
         public string? ImageUrl { get; set; }
         [NotMapped]
+        public string? VariantImageUrl { get; set; }
+
+        [NotMapped]
         public List<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
         [NotMapped]
         public ProductVariant ProductVariant { get; set; } = new ProductVariant();
