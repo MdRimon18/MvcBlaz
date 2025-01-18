@@ -21,6 +21,7 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
         public async Task<IActionResult> Index(bool isPartial = false)
         {
             var list  = await FetchModelList();
+       var list2 =list.Where(x => x.VariantImageUrl is not null);
             if (isPartial)
             {
                 return PartialView("Index", list);
