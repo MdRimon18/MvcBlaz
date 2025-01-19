@@ -85,6 +85,7 @@ namespace Domain.Entity.Settings
         //public long? DeletedBy { get; set; }
        // public string Status { get; set; }
         public string? ProdCtgName { get; set; }
+        public string? BrandName { get; set; }
         public string? ProdSubCtgName { get; set; }
         public string? UnitName {  get; set; }
         [NotMapped] 

@@ -12,7 +12,7 @@ namespace Domain.Entity.Inventory
         public long ProductVariantId { get; set; }
          
         public long ProductId { get; set; }
-        public string SkuNumber { get; set; }
+        public string? SkuNumber { get; set; } = "";
         public string? Color { get; set; }
         public string? Size { get; set; }
         public decimal? Weight { get; set; }

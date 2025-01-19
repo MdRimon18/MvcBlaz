@@ -51,7 +51,7 @@
                                                     <div class="swiper-slide">
                                                         @if (variant.ImageUrl != null)
                                                         {
-                                                            <a class="d-block" href="/EcomProducts/Details">
+                                                            <a class="d-block" href="/EcomProducts/Details?key=@item.ProductKey">
                                                                 <img class="rounded-top img-fluid" src="@variant?.ImageUrl" alt="" />
                                                             </a>
                                                         }
@@ -76,18 +76,18 @@
                                         @if (item.VariantImageUrl != null)
                                         {
                                             <div class="position-relative rounded-top overflow-hidden">
-                                                <a class="d-block" href="../../../app/e-commerce/product/product-details.html">
+                                            <a class="d-block" href="/EcomProducts/Details?key=@item.ProductKey">
                                                     <img class="img-fluid rounded-top" src="@item.VariantImageUrl" alt="" />
                                                 </a>
                                             </div>
                                         }
                                    
-                          
+                            
                                 }
                                 
                                     
                                     <div class="p-3">
-                                    <h5 class="fs-9"><a class="text-1100" href="/EcomProducts/Details">@item?.ProdName</a></h5>
+                                    <h5 class="fs-9"><a class="text-1100" href="/EcomProducts/Details?key=@item.ProductKey">@item?.ProdName</a></h5>
                                     <p class="fs-10 mb-3"><a class="text-500" href="#!">@item?.ProdCtgName</a></p>
                                     <h5 class="fs-md-7 text-warning mb-0 d-flex align-items-center mb-3">
                                         $@item?.SellingPrice
