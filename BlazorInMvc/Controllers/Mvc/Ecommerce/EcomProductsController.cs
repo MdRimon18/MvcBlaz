@@ -47,6 +47,12 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
                     null, null, null, null,
                     null, GlobalPageConfig.PageNumber,
                    GlobalPageConfig.PageSize)).ToList();
+
+                item.Specification_list = (await _productSpecificationService.Get(null, null, item.ProductId, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                var specifications = item.Specification_list.Take(2);
+
+                item.ProductShortSpecification = string.Join(", ",
+                specifications.Select(s => s.SpecificationName + ": " + s.SpecificationDtls));
             }
            
 
@@ -65,6 +71,8 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
 
                 product.ProductImages = (await _productMediaService.Get(null, null, product.ProductId, null)).ToList();
                 product.Specification_list = (await _productSpecificationService.Get(null, null, product.ProductId, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+
+             
             }
 
             return View(product);

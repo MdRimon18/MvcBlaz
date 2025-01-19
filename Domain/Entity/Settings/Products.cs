@@ -88,6 +88,7 @@ namespace Domain.Entity.Settings
         public string? BrandName { get; set; }
         public string? ProdSubCtgName { get; set; }
         public string? UnitName {  get; set; }
+        public string? CurrencySymbol { get; set; }
         [NotMapped] 
         public int total_row { get; set; } = 0;
 
@@ -141,5 +142,6 @@ namespace Domain.Entity.Settings
         public List<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
         [NotMapped]
         public ProductVariant ProductVariant { get; set; } = new ProductVariant();
+        public string? ProductShortSpecification { get; set; }
     }
 }
