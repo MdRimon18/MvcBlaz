@@ -36,7 +36,9 @@
     Model.ProductShortSpecification = string.Join(", ",
     specifications.Select(s => s.SpecificationName + ": " + s.SpecificationDtls));
 
-    
+
+   string snippet = HtmlHelperForSnippet.GetFirst150Characters(Model?.ProdDescription, 150);
+
 }
 <div class="card">
     <div class="card-body">
@@ -75,7 +77,7 @@
                 <div class="fs-11 mb-3 d-inline-block text-decoration-none">
                     <span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star-half-alt text-warning star-icon"></span><span class="ms-1 text-600">(8)</span>
                 </div>
-                <p class="fs-10">Testing conducted by Apple in October 2018 using pre-production 2.9GHz 6‑core Intel Core i9‑based 15-inch MacBook Pro systems with Radeon Pro Vega 20 graphics, and shipping 2.9GHz 6‑core Intel Core i9‑based 15‑inch MacBook Pro systems with Radeon Pro 560X graphics, both configured with 32GB of RAM and 4TB SSD.</p>
+                <p class="fs-10">@snippet</p>
                 <h4 class="d-flex align-items-center">
                     <span class="text-warning me-2"> <strong>@Model.CurrencySymbol</strong>  @Model.FinalPrice</span><span class="me-1 fs-10 text-500">
                         <del class="me-1">@Model.CurrencySymbol @Model.PreviousPrice</del><strong>-50%</strong>
@@ -83,7 +85,19 @@
                 </h4>
                 <p class="fs-10 mb-1"> <span>Shipping Cost: </span><strong>$50</strong></p>
                 <p class="fs-10">Stock: <strong class="text-success">Available</strong></p>
-                <p class="fs-10 mb-3">Tags: <a class="ms-2" href="#!">Computer,</a><a class="ms-1" href="#!">Mac Book,</a><a class="ms-1" href="#!">Mac Book Pro,</a><a class="ms-1" href="#!">Laptop </a></p>
+                @{
+                     if(Model.TagWord is not null){
+                       Model.TagList = Model.TagWord.Split(',').Select(tag => tag.Trim()).ToList();
+                     }
+                   
+                }
+                <p class="fs-10 mb-3">
+                    Tags:
+                    @foreach (var tag in Model.TagList)
+                    {
+                        <a class="ms-2" href="#!">@tag ,</a>
+                    }
+                </p>
                 <div class="row">
                     <div class="col-auto pe-0">
                         <div class="input-group input-group-sm" data-quantity="data-quantity">

@@ -143,5 +143,6 @@ namespace Domain.Entity.Settings
         [NotMapped]
         public ProductVariant ProductVariant { get; set; } = new ProductVariant();
         public string? ProductShortSpecification { get; set; }
+        public List<string>? TagList { get; set; }=new List<string>();
     }
 }
