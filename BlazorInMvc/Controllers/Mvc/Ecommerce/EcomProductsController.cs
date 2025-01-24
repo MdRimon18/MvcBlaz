@@ -2,6 +2,7 @@
 using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System.Drawing.Printing;
 
 namespace BlazorInMvc.Controllers.Mvc.Ecommerce
 {
@@ -71,8 +72,20 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
 
                 product.ProductImages = (await _productMediaService.Get(null, null, product.ProductId, null)).ToList();
                 product.Specification_list = (await _productSpecificationService.Get(null, null, product.ProductId, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                if(product.Specification_list is not null&& product.Specification_list.Count > 0)
+                {
+                    var specifications = product.Specification_list.Take(2);
 
-             
+                    product.ProductShortSpecification = string.Join(", ",
+                    specifications.Select(s => s.SpecificationName + ": " + s.SpecificationDtls));
+                }
+
+              var relatedProducts = (await _productService.Get(null, null, null, product.ProdCtgId, null,
+              null, null, null, null, null, null, null,
+              null, null, null, null, GlobalPageConfig.PageNumber,
+              50)).ToList();
+              product.RelevantProducts = relatedProducts;
+
             }
 
             return View(product);
