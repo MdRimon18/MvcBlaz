@@ -2,6 +2,8 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net;
 
 namespace BlazorInMvc.Controllers.Api
 {
@@ -24,12 +26,18 @@ namespace BlazorInMvc.Controllers.Api
         {
             try
             {
-                var result = await _itemCardService.GetItemCartAsync(cartId, customerId, productId, sku);
+                var result = (await _itemCardService.GetItemCartAsync(cartId, customerId, productId, sku)).ToList();
                 if (result == null || !result.Any())
                 {
                     return ErrorMessage("No items found in the cart.");
                 }
-                return SuccessMessage(result);
+                return Ok(new
+                {
+                    result =result,
+                    code = (int)HttpStatusCode.OK,
+                    message = "success",
+                    isSuccess = true
+                });
             }
             catch (Exception ex)
             {
@@ -65,7 +73,41 @@ namespace BlazorInMvc.Controllers.Api
                 return InternalServerError();
             }
         }
+        [HttpGet("UpdateItemQuantity")]
+        public async Task<IActionResult> UpdateItemQuantity(int id, int quantity)
+        {
+            if (id<=0 && quantity<=0)
+            {
+                return ErrorMessage("Quantity Or Id Is Not Valid");
+            }
 
+            try
+            {
+                var itemCart = (await _itemCardService.GetItemCartAsync(id, null, null, null))?.FirstOrDefault();
+                
+                if (itemCart != null)
+                {
+                    itemCart.Quantity = quantity;
+                    var successId = await _itemCardService.SaveOrUpdateItemCart(itemCart);
+
+                    if (successId > 0)
+                    {
+                        return SuccessMessage(new { CartId = successId });
+                    }
+                    else
+                    {
+                        return ErrorMessage("Failed to save or update the item cart.");
+                    }
+                }
+                return ErrorMessage("Failed to save or update the item cart.");
+
+            }
+            catch (Exception ex)
+            {
+                // Log exception
+                return InternalServerError();
+            }
+        }
         [HttpGet("DeleteItemCart")]
         public async Task<IActionResult> DeleteItemCart(
             int? cartId = null,

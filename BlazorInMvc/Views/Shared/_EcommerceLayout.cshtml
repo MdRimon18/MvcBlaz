@@ -278,7 +278,7 @@
                         </div>
                     </li>
                     <li class="nav-item d-none d-sm-block">
-                        <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" data-spa="ItemCart/Index" style="cursor:pointer"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
+                        <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="/ItemCart/Index" style="cursor:pointer"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
 
                     </li>
                     <li class="nav-item dropdown">
@@ -897,7 +897,202 @@
            submitAjaxForm('form[name="SaveOrUpdateUnit"]', '/Unit/AddNewForm', 'AddContainer');
         });
     </script> *@
+    
+    <script>
+         $(document).ready(function () {
+            console.log("Script loaded successfully");
 
+            $(".btn-add-to-cart").click(function () {
+                console.log("Add to Cart button clicked");
+
+                // Get product data (like ID, SKU, Price, etc.)
+                let productId = $(this).data('product-id');
+                let sku = $(this).data('sku');
+                let price = $(this).data('price');
+                let discount = $(this).data('discount') || 0;  // Default to 0 if not provided
+                let vat = $(this).data('vat') || 0;  // Default to 0 if not provided
+                let customerId = 123;  // Replace with the actual customer ID, or get from session
+
+                // Prepare the data to be sent to the server
+                let cartItem = {
+                    ProductId: productId,
+                    Sku: sku,
+                    Price: price,
+                    Discount: discount,
+                    Vat: vat,
+                    Quantity: 1,  // Default to 1, or get from quantity input field
+                    CustomerId: customerId,
+                    CreatedAt: new Date(),  // Set the creation date (optional)
+                    LastModifyDate: new Date()  // Set last modified date (optional)
+                };
+
+                // Send data to the server using AJAX POST
+                    $.ajax({
+                        url: "/api/ItemCard/SaveOrUpdateItemCart",  // Your actual API endpoint
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(cartItem),
+                        success: function (response) {
+                            console.log("Item added to cart:", response);
+                            alert("Item added to cart!");
+                            loadCartItems();  // Reload the cart items
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error adding to cart:", error);
+                            console.error("XHR status:", xhr.status);  // Log the HTTP status code
+                            console.error("Response text:", xhr.responseText);  // Log the response text (could contain more details)
+                            alert("Failed to add item to cart. Please try again.");
+                        }
+                    });
+
+            });
+        });
+
+
+    </script>
+
+    <script>
+          $(document).ready(function () {
+         const apiUrl = "/api/ItemCard";
+
+            // Load cart items
+            function loadCartItems() {
+                $.get(`${apiUrl}/GetItemCart`, function (response) {
+                     
+                    if (response.isSuccess) {
+                        let items = response.result;
+                        console.log((response.result));
+                        let cartHtml = "";
+                        let totalItems = 0;
+                        let totalPrice = 0;
+
+                response.result.forEach(item => {
+                                    // Ensure item.cartId is defined and has a valid value
+                                    if (!item.cartId) {
+                                        console.error("Cart ID is missing for an item:", item);
+                                        return; // Skip this item if cartId is not defined
+                                    }
+
+                                    totalItems += item.quantity;
+                                    totalPrice += item.quantity * item.price;
+
+                                    cartHtml += `
+                                        <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
+                                         
+                                            <div class="col-8 py-3 px-x1">
+                                                <div class="d-flex align-items-center">
+                                                    <a href="${item.detailsUrl}">
+                                                        <img class="img-fluid rounded-1 me-3 d-none d-md-block" src="${item.imageUrl}" alt="${item.productName}" width="60" />
+                                                    </a>
+                                                    <div class="flex-1">
+                                                        <h5 class="fs-9"><a class="text-900" href="${item.detailsUrl}">${item.productName}</a></h5>
+                                                        <div class="fs-11 fs-md--1">
+                                                            <a class="text-danger remove-item" href="javascript:void(0)">Remove</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 py-3 px-x1">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-8 d-flex justify-content-end justify-content-md-center">
+                                                        <div>
+                                                            <div class="input-group input-group-sm flex-nowrap">
+                                                             <input type="hidden" class="cart-id" value="${item.cartId}">
+                                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="minus">-</button>
+                                                                <input class="form-control text-center px-2 input-spin-none quantity-input" type="number" min="1" value="${item.quantity}" data-cart-id="${item.cartId}"/>
+                                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="plus">+</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                                });
+                                 
+
+                        $("#cart-items").html(cartHtml);
+                        $("#item-count").text(totalItems);
+                        $("#total-items").text(`(${totalItems} items)`);
+                        $("#total-price").text(`$${totalPrice.toFixed(2)}`);
+                    } else {
+                        alert(response.message || "Failed to load cart items.");
+                    }
+                });
+            }
+
+            // Handle quantity change
+                        $(document).on("click", ".quantity-change", function () {
+            let type = $(this).data("type");
+            let $row = $(this).closest(".row");
+            let $input = $row.find(".quantity-input");
+
+            // Get cartId from the data attribute
+            let cartId = $input.data("cart-id");
+
+            // Get the current quantity or set default to 1
+            let newQuantity = parseInt($input.val()) || 1;
+            newQuantity = type === "plus" ? newQuantity + 1 : Math.max(1, newQuantity - 1);
+
+            // Update the input value
+            $input.val(newQuantity);
+
+            console.log("New Quantity:", newQuantity);
+            console.log("Cart ID:", cartId);
+
+            if (cartId) {
+                updateCartItem(cartId, newQuantity);
+            } else {
+                console.error("Cart ID is undefined. Check your HTML structure or backend data.");
+            }
+        });
+
+
+
+            // Handle remove item
+            $(document).on("click", ".remove-item", function () {
+                let $row = $(this).closest(".row");
+                let itemId = $row.data("item-id");
+
+                $.get(`${apiUrl}/DeleteItemCart`, { cartId: itemId }, function (response) {
+                    if (response.success) {
+                        $row.remove();
+                        loadCartItems();
+                    } else {
+                        alert(response.message || "Failed to remove item.");
+                    }
+                });
+            });
+
+            // Update cart item
+                   function updateCartItem(itemId, quantity) {
+                        // Construct the URL with query parameters
+                        const url = `${apiUrl}/UpdateItemQuantity?id=${itemId}&quantity=${quantity}`;
+
+                        // Use $.get() to make the GET request with the parameters in the URL
+                        $.get(url, function (response) {
+                            if (response.success) {
+                                loadCartItems(); // Reload cart items after successful update
+                            } else {
+                                alert(response.message || "Failed to update item.");
+                            }
+                        }).fail(function (xhr, status, error) {
+                            console.error("AJAX Error:", error); // Log any errors
+                            alert("An error occurred while updating the item.");
+                        });
+                    }
+
+            // Apply promo code
+            $("#apply-promo").click(function () {
+                let promoCode = $("#promo-code").val();
+                alert(`Promo code "${promoCode}" applied!`);
+            });
+
+            // Initial load
+            loadCartItems();
+        });
+
+    </script>
 
 
     <!-- ===============================================-->

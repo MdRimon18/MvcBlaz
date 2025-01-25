@@ -43,5 +43,12 @@ namespace Domain.Entity
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? LastModifyDate { get; set; }
+
+        [NotMapped]
+        public string? DetailsUrl { get; set; } 
+        [NotMapped]
+        public string? ImageUrl { get; set; }
+        [NotMapped]
+        public string? ProductName { get; set; }
     }
 }
