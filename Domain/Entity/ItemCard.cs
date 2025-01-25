@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entity
+{
+    [Table("ItemCart")]
+    public class ItemCart
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int CartId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Sku { get; set; }
+
+        [Required]
+        public long CustomerId { get; set; }
+
+        [Required]
+        public int Quantity { get; set; } = 0;
+
+        [Required]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Price { get; set; } = 0;
+
+        [Required]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Discount { get; set; } = 0;
+
+        [Required]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Vat { get; set; } = 0;
+
+        public DateTime? CreatedAt { get; set; }
+
+        public DateTime? LastModifyDate { get; set; }
+    }
+}

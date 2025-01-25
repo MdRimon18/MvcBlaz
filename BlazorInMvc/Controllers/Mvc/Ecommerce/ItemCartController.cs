@@ -4,9 +4,23 @@ namespace BlazorInMvc.Controllers.Mvc.Ecommerce
 {
     public class ItemCartController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(bool isPartial = false)
         {
-            return View();
+            if (isPartial)
+            {
+                return PartialView("Index");
+            }
+            return View("Index");
+
+        }
+        public IActionResult Checkout(bool isPartial = false)
+        {
+            if (isPartial)
+            {
+                return PartialView("Checkout");
+            }
+            return View("Checkout");
+
         }
     }
 }
