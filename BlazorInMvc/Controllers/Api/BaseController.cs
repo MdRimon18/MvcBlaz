@@ -26,10 +26,7 @@ namespace BlazorInMvc.Controllers.Api
         {
             return Ok(new
             {
-                result = new
-                {
-                    Result = data
-                },
+                result = data,
                 code = (int)HttpStatusCode.OK,
                 message = "success",
                 isSuccess = true

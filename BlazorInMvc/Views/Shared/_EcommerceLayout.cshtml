@@ -973,58 +973,64 @@
                         let totalItems = 0;
                         let totalPrice = 0;
 
-                response.result.forEach(item => {
-                                    // Ensure item.cartId is defined and has a valid value
-                                    if (!item.cartId) {
-                                        console.error("Cart ID is missing for an item:", item);
-                                        return; // Skip this item if cartId is not defined
-                                    }
+                        response.result.forEach(item => {
+            // Ensure item.cartId is defined
+            if (!item.cartId) {
+                console.error("Cart ID is missing for an item:", item);
+                return;
+            }
 
-                                    totalItems += item.quantity;
-                                    totalPrice += item.quantity * item.price;
-                                   
+            totalItems += item.quantity;
+            totalPrice += item.quantity * item.price;
 
-                                    cartHtml += `
-                                        <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
-                                         
-                                            <div class="col-6 py-3 px-x1">
-                                                <div class="d-flex align-items-center">
-                                                    <a href="${item.detailsUrl}">
-                                                        <img class="img-fluid rounded-1 me-3 d-none d-md-block" src="${item.imageUrl}" alt="${item.productName}" width="60" />
-                                                    </a>
-                                                    <div class="flex-1">
-                                                        <h5 class="fs-9"><a class="text-900" href="${item.detailsUrl}">${item.productName}</a></h5>
-                                                        <div class="fs-11 fs-md--1">
-                                                            <a class="text-danger remove-item" href="javascript:void(0)">Remove</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 py-3 px-x1">
-                                                <div class="row align-items-center">
-                                                    <div class="col-md-6 d-flex justify-content-end justify-content-md-center">
-                                                        <div>
-                                                            <div class="input-group input-group-sm flex-nowrap">
-                                                             <input type="hidden" class="cart-id" value="${item.cartId}">
-                                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="minus">-</button>
-                                                                <input class="form-control text-center px-2 input-spin-none quantity-input" type="number" min="1" value="${item.quantity}" data-cart-id="${item.cartId}"/>
-                                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="plus">+</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                     <div class="col-md-2 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
-                                                    <div class="col-md-2 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
-                                                </div>
-                                            </div>
-                                        </div>`;
-                                });
+                cartHtml += `
+                    <div class="row gx-1 mx-0 align-items-center border-bottom border-200"  >
+                        <div class="col-6 py-3 px-1">
+                            <div class="d-flex align-items-center">
+                                <a href="${item.detailsUrl}">
+                                    <img class="img-fluid rounded-1 me-3 d-none d-md-block"
+                                         src="${item.imageUrl}"
+                                         alt="${item.productName}"
+                                         width="60" />
+                                </a>
+                                <div>
+                                    <h5 class="fs-9 mb-1">
+                                        <a class="text-900" href="${item.detailsUrl}">${item.productName}</a>
+                                    </h5>
+                                    <a class="text-danger remove-item fs-11" href="javascript:void(0)" data-cart-id="${item.cartId}">Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 py-3 px-1">
+                            <div class="row align-items-center">
+                                <!-- Quantity -->
+                                <div class="col-6 d-flex justify-content-end justify-content-md-center">
+                                    <div class="input-group input-group-sm">
+                                        <input type="hidden" class="cart-id" value="${item.cartId}">
+                                        <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="minus">-</button>
+                                        <input class="form-control text-center px-2 input-spin-none quantity-input"
+                                               type="number"
+                                               min="1"
+                                               value="${item.quantity}"
+                                               data-cart-id="${item.cartId}" />
+                                        <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none quantity-change" data-type="plus">+</button>
+                                    </div>
+                                </div>
+                                <!-- Rate -->
+                                <div class="col-3 text-end text-600 rate">$${item.price.toFixed(2)}</div>
+                                <!-- Price -->
+                                <div class="col-3 text-end text-600" price>$${(item.quantity * item.price).toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
 
                         
                         $("#cart-items").html(cartHtml);
                         $("#item-count").text(totalItems);
                         $("#total-items").text(`(${totalItems} items)`);
                         $("#total-price").text(`$${totalPrice.toFixed(2)}`);
-                       
+                         $("#itemCount_notification").text(totalItems);
                         
                     } else {
                         alert(response.message || "Failed to load cart items.");
@@ -1051,20 +1057,27 @@
             console.log("New Quantity:", newQuantity);
             console.log("Cart ID:", cartId);
                  // Dynamically update total quantity and total price
-            let totalItems = 0;
-            let totalPrice = 0;
+            // let totalItems = 0;
+            // let totalPrice = 0;
 
-            $(".quantity-input").each(function () {
-                let quantity = parseInt($(this).val()) || 0;
-                let itemPrice = parseFloat($(this).closest(".row").find(".text-end.text-600").text().replace("$", "")) || 0;
-                totalItems += quantity;
-                totalPrice += quantity * itemPrice;
-            });
+            // $(".quantity-input").each(function () {
+            //     //let quantity = parseInt($(this).val()) || 0;
+            //     let itemPrice =parseFloat($row.find(".text-end.rate").text().replace("$", "")) || 0;
+            //          // Calculate the item's total price
+            //   const itemTotalPrice = newQuantity * itemPrice;
+  
+            // // Update the item's price display in the corresponding column
+            // $row.find(".text-end.price").text(`$${itemTotalPrice.toFixed(2)}`); // Use a specific class for the "Price" column
 
-            $("#item-count").text(totalItems);
-            $("#total-items").text(`(${totalItems} items)`);
-            $("#total-price").text(`$${totalPrice.toFixed(2)}`);
-            $("#itemCount_notification").text(totalItems);
+
+            //     totalItems += newQuantity;
+            //     totalPrice += newQuantity * itemPrice;
+            // });
+
+            // $("#item-count").text(totalItems);
+            // $("#total-items").text(`(${totalItems} items)`);
+            // $("#total-price").text(`$${totalPrice.toFixed(2)}`);
+            // $("#itemCount_notification").text(totalItems);
 
             if (cartId) {
                 updateCartItem(cartId, newQuantity);
@@ -1076,19 +1089,27 @@
 
 
             // Handle remove item
-            $(document).on("click", ".remove-item", function () {
-                let $row = $(this).closest(".row");
-                let itemId = $row.data("item-id");
-
-                $.get(`${apiUrl}/DeleteItemCart`, { cartId: itemId }, function (response) {
-                    if (response.success) {
-                        $row.remove();
-                        loadCartItems();
-                    } else {
-                        alert(response.message || "Failed to remove item.");
+                          $(document).on("click", ".remove-item", function () {
+                   let itemId = $(this).data("cart-id");
+ 
+                    // Check if `itemId` exists
+                    if (!itemId) {
+                        alert("Invalid item ID. Please refresh the page and try again.");
+                        return;
                     }
+
+                    // Make an API call to delete the item
+                    $.get(`${apiUrl}/DeleteItemCart`, { cartId: itemId })
+                        .done(function (response) {
+                            console.log(response)
+                         if(response.isSuccess){
+                           loadCartItems();}
+                        })
+                        .fail(function () {
+                            alert("An error occurred while removing the item. Please try again.");
+                        });
                 });
-            });
+
 
             // Update cart item
                    function updateCartItem(itemId, quantity) {
@@ -1097,7 +1118,7 @@
 
                         // Use $.get() to make the GET request with the parameters in the URL
                         $.get(url, function (response) {
-                            if (response.success) {
+                            if (response.isSuccess) {
                                 loadCartItems(); // Reload cart items after successful update
                             } else {
                                 alert(response.message || "Failed to update item.");
