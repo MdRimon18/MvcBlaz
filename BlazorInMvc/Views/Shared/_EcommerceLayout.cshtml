@@ -278,7 +278,7 @@
                         </div>
                     </li>
                     <li class="nav-item d-none d-sm-block">
-                        <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="/ItemCart/Index" style="cursor:pointer"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
+                        <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="/ItemCart/Index" style="cursor:pointer"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number" id="itemCount_notification">0</span></a>
 
                     </li>
                     <li class="nav-item dropdown">
@@ -934,14 +934,21 @@
                         data: JSON.stringify(cartItem),
                         success: function (response) {
                             console.log("Item added to cart:", response);
-                            alert("Item added to cart!");
-                            loadCartItems();  // Reload the cart items
+
+                             let totalItems = 2;
+                            //update card quantity
+                           
+
+       
+                         $("#itemCount_notification").text(totalItems);
+                         //   alert("Item added to cart!");
+                        //    loadCartItems();  // Reload the cart items
                         },
                         error: function (xhr, status, error) {
                             console.error("Error adding to cart:", error);
                             console.error("XHR status:", xhr.status);  // Log the HTTP status code
                             console.error("Response text:", xhr.responseText);  // Log the response text (could contain more details)
-                            alert("Failed to add item to cart. Please try again.");
+                          //  alert("Failed to add item to cart. Please try again.");
                         }
                     });
 
@@ -975,11 +982,12 @@
 
                                     totalItems += item.quantity;
                                     totalPrice += item.quantity * item.price;
+                                   
 
                                     cartHtml += `
                                         <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
                                          
-                                            <div class="col-8 py-3 px-x1">
+                                            <div class="col-6 py-3 px-x1">
                                                 <div class="d-flex align-items-center">
                                                     <a href="${item.detailsUrl}">
                                                         <img class="img-fluid rounded-1 me-3 d-none d-md-block" src="${item.imageUrl}" alt="${item.productName}" width="60" />
@@ -992,9 +1000,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4 py-3 px-x1">
+                                            <div class="col-6 py-3 px-x1">
                                                 <div class="row align-items-center">
-                                                    <div class="col-md-8 d-flex justify-content-end justify-content-md-center">
+                                                    <div class="col-md-6 d-flex justify-content-end justify-content-md-center">
                                                         <div>
                                                             <div class="input-group input-group-sm flex-nowrap">
                                                              <input type="hidden" class="cart-id" value="${item.cartId}">
@@ -1004,17 +1012,20 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
+                                                     <div class="col-md-2 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
+                                                    <div class="col-md-2 text-end ps-0 text-600">$${(item.price).toFixed(2)}</div>
                                                 </div>
                                             </div>
                                         </div>`;
                                 });
-                                 
 
+                        
                         $("#cart-items").html(cartHtml);
                         $("#item-count").text(totalItems);
                         $("#total-items").text(`(${totalItems} items)`);
                         $("#total-price").text(`$${totalPrice.toFixed(2)}`);
+                       
+                        
                     } else {
                         alert(response.message || "Failed to load cart items.");
                     }
@@ -1039,6 +1050,21 @@
 
             console.log("New Quantity:", newQuantity);
             console.log("Cart ID:", cartId);
+                 // Dynamically update total quantity and total price
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            $(".quantity-input").each(function () {
+                let quantity = parseInt($(this).val()) || 0;
+                let itemPrice = parseFloat($(this).closest(".row").find(".text-end.text-600").text().replace("$", "")) || 0;
+                totalItems += quantity;
+                totalPrice += quantity * itemPrice;
+            });
+
+            $("#item-count").text(totalItems);
+            $("#total-items").text(`(${totalItems} items)`);
+            $("#total-price").text(`$${totalPrice.toFixed(2)}`);
+            $("#itemCount_notification").text(totalItems);
 
             if (cartId) {
                 updateCartItem(cartId, newQuantity);
