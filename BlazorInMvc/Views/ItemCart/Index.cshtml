@@ -1,4 +1,6 @@
-﻿<div class="card">
+﻿@* this page maked dynamic from ecommerce_layout with jquery and javascript *@
+
+<div class="card">
     <div class="card-header">
         <div class="row justify-content-between">
             <div class="col-md-auto">
@@ -8,7 +10,7 @@
                 <a class="btn btn-sm btn-outline-secondary border-300 me-2 shadow-none" href="/EcomProducts/Index">
                     <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-4"></span>Continue Shopping
                 </a>
-                <button class="btn btn-sm btn-primary" id="checkout-button" style="cursor:pointer">Checkout</button>
+                <a class="btn btn-sm btn-primary" id="checkout-button" href="/ItemCart/Checkout" >Checkout</a>
             </div>
         </div>
     </div>
@@ -42,6 +44,6 @@
                 <button class="btn btn-outline-secondary border-300 btn-sm shadow-none" id="apply-promo" type="button">Apply</button>
             </div>
         </form>
-        <button class="btn btn-sm btn-primary" id="checkout-button-footer" style="cursor:pointer">Checkout</button>
+        <a class="btn btn-sm btn-primary" href="/ItemCart/Checkout">Checkout</a>
     </div>
 </div>
