@@ -42,7 +42,7 @@ app.UseAuthorization();
 app.MapRazorPages(); // Add this line to enable Razor Pages routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=EcomProducts}/{action=Index}/{id?}");
 
 
 
