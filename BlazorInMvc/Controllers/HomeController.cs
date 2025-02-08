@@ -25,7 +25,45 @@ namespace BlazorInMvc.Controllers
             return View();
         }
 
+        public IActionResult SignUp(bool isPartial = false)
+        {
+           
 
+            if (isPartial)
+            {
+                return PartialView("SignUp");
+            }
+
+            return View();
+        }
+        public IActionResult Login(bool isPartial = false)
+        {
+
+
+            if (isPartial)
+            {
+                return PartialView("Login");
+            }
+
+            return View();
+        }
+
+        public IActionResult ThankYou()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetOrderDetails()
+        {
+            var orderDetails = new
+            {
+                OrderId = "ORD123456",
+                EstimatedDelivery = "3-5 Business Days",
+                PaymentStatus = "Paid"
+            };
+            return Json(orderDetails);
+        }
         public IActionResult Privacy()
         {
             return PartialView("Privacy");

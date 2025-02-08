@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<main class="main" id="top">
+    <div class="container-fluid">
+        <div class="row min-vh-100 flex-center g-0">
+            <div class="col-lg-8 col-xxl-5 py-3 position-relative">
+                <img class="bg-auth-circle-shape" src="~/assets/img/icons/spot-illustrations/bg-shape.png" alt="" width="250">
+                <img class="bg-auth-circle-shape-2" src="~/assets/img/icons/spot-illustrations/shape-1.png" alt="" width="150">
+                <div class="card overflow-hidden z-1">
+                    <div class="card-body p-0">
+                        <div class="row g-0 h-100">
+                            <!-- Left Side (Info Panel) -->
+                            <div class="col-md-5 text-center bg-card-gradient">
+                                <div class="position-relative p-4 pt-md-5 pb-md-7">
+                                    <div class="bg-holder bg-auth-card-shape" style="background-image:url(~/assets/img/icons/spot-illustrations/half-circle.png);"></div>
+                                    <div class="z-1 position-relative">
+                                        <a class="link-light mb-4 font-sans-serif fs-5 d-inline-block fw-bolder" href="/">falcon</a>
+                                        <p class="opacity-75 text-white">
+                                            With the power of Falcon, you can now focus only on functionaries for your digital products, while leaving the UI design on us!
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-3 mb-4">
+                                    <p class="pt-3 text-white">
+                                        Have an account?<br>
+                                        <a class="btn btn-outline-light mt-2 px-4" href="/Home/Login">Log In</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Right Side (Form Panel) -->
+                            <div class="col-md-7 d-flex flex-center">
+                                <div class="p-4 p-md-5 flex-grow-1">
+                                    <h3>Register</h3>
+                                    <form id="registerForm">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="Name" autocomplete="on">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="email">Email address</label>
+                                            <input type="email" class="form-control" id="email" name="EmailAddress" autocomplete="on">
+                                        </div>
+                                        <div class="row gx-2">
+                                            <div class="mb-3 col-sm-6">
+                                                <label class="form-label" for="password">Password</label>
+                                                <input type="password" class="form-control" id="password" name="Password" autocomplete="on">
+                                            </div>
+                                            <div class="mb-3 col-sm-6">
+                                                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                                                <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" autocomplete="on">
+                                            </div>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="rememberMe" name="RememberMe">
+                                            <label class="form-check-label" for="rememberMe">I accept the <a href="#">terms</a> and <a class="white-space-nowrap" href="#">privacy policy</a></label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary d-block w-100 mt-3">Register</button>
+                                        </div>
+                                    </form>
+
+                                    <div id="registerResult" class="mt-3"></div>
+
+                                    <div class="position-relative mt-4">
+                                        <hr>
+                                        <div class="divider-content-center">or register with</div>
+                                    </div>
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-sm-6"><a class="btn btn-outline-google-plus btn-sm d-block w-100"  ><span class="fab fa-google-plus-g me-2"></span> Google</a></div>
+                                        <div class="col-sm-6"><a class="btn btn-outline-facebook btn-sm d-block w-100"  ><span class="fab fa-facebook-square me-2"></span> Facebook</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Form Panel End -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- jQuery AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#registerForm").submit(function (event) {
+            event.preventDefault();
+
+            var formData = {
+                Name: $("#name").val(),
+                EmailAddress: $("#email").val(),
+                Password: $("#password").val(),
+                ConfirmPassword: $("#confirmPassword").val(),
+                RememberMe: $("#rememberMe").is(":checked")
+            };
+            console.log(formData)
+            $.ajax({
+                type: "POST",
+                url: "/api/Auth/register",
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    $("#registerResult").html('<div class="alert alert-success">Registration Successful!</div>');
+                },
+                error: function (xhr) {
+                    var errors = JSON.parse(xhr.responseText);
+                    $("#registerResult").html('<div class="alert alert-danger">' + errors.message + '</div>');
+                }
+            });
+        });
+    });
+</script>
