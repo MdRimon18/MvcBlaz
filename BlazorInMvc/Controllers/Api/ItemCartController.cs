@@ -20,13 +20,14 @@ namespace BlazorInMvc.Controllers.Api
         [HttpGet("GetItemCart")]
         public async Task<IActionResult> GetItemCart(
             int? cartId = null,
+            string?browserId=null,
             long? customerId = null,
             long? productId = null,
             string? sku = null)
         {
             try
             {
-                var result = (await _itemCardService.GetItemCartAsync(cartId, customerId, productId, sku)).ToList();
+                var result = (await _itemCardService.GetItemCartAsync(cartId, browserId, customerId, productId, sku)).ToList();
                 if (result == null || !result.Any())
                 {
                     return ErrorMessage("No items found in the cart.");
@@ -111,6 +112,7 @@ namespace BlazorInMvc.Controllers.Api
         [HttpGet("DeleteItemCart")]
         public async Task<IActionResult> DeleteItemCart(
             int? cartId = null,
+            string? browserId=null,
             int? customerId = null,
             int? productId = null,
             string sku = null)
@@ -122,7 +124,7 @@ namespace BlazorInMvc.Controllers.Api
 
             try
             {
-                var isDeleted = await _itemCardService.DeleteItemCart(cartId, customerId, productId, sku);
+                var isDeleted = await _itemCardService.DeleteItemCart(cartId, browserId, customerId, productId, sku);
 
                 if (isDeleted)
                 {

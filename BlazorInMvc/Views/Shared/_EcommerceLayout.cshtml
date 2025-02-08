@@ -901,10 +901,15 @@
     <script>
          $(document).ready(function () {
             console.log("Script loaded successfully");
+            //set Browser Unique Id
+             if (!localStorage.getItem("BrowserId")) {
+               localStorage.setItem("BrowserId", crypto.randomUUID()); // Generates a unique ID
+             }
 
             $(".btn-add-to-cart").click(function () {
                 console.log("Add to Cart button clicked");
-
+            const browserId = localStorage.getItem("BrowserId");
+            console.log("Browser ID:", browserId);
                 // Get product data (like ID, SKU, Price, etc.)
                 let productId = $(this).data('product-id');
                 let sku = $(this).data('sku');
@@ -921,6 +926,7 @@
                     Discount: discount,
                     Vat: vat,
                     Quantity: 1,  // Default to 1, or get from quantity input field
+                    BrowserId: browserId,
                     CustomerId: customerId,
                     CreatedAt: new Date(),  // Set the creation date (optional)
                     LastModifyDate: new Date()  // Set last modified date (optional)

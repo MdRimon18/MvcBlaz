@@ -24,15 +24,17 @@ namespace Domain.Services
         }
         public async Task<IEnumerable<ItemCart>> GetItemCartAsync(
          int? CartId = null,
+         string? BrowserId=null,
          long? CustomerId = null,
-        long? ProductId = null,
-        string? Sku = null)
+         long? ProductId = null,
+         string? Sku = null)
         {
             try
             {
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@CartId", CartId);
+                parameters.Add("@BrowserId", BrowserId);
                 parameters.Add("@CustomerId", CustomerId);
                 parameters.Add("@ProductId", ProductId);
                 parameters.Add("@Sku", Sku);
@@ -70,6 +72,7 @@ namespace Domain.Services
                 parameters.Add("@CartId", itemCart.CartId);
                 parameters.Add("@ProductId", itemCart.ProductId);
                 parameters.Add("@Sku", itemCart.Sku);
+                parameters.Add("@BrowserId",itemCart.BrowserId);
                 parameters.Add("@CustomerId", UserInfo.UserId);
                 parameters.Add("@Quantity", itemCart.Quantity);
                 parameters.Add("@Price", itemCart.Price);
@@ -106,13 +109,14 @@ namespace Domain.Services
             }
         }
         //give corresponding parameters
-        public async Task<bool> DeleteItemCart(int? cartId = null, int? customerId = null, int? productId = null, string sku = null)
+        public async Task<bool> DeleteItemCart(int? cartId = null,string? browserId = null,int? customerId = null, int? productId = null, string sku = null)
         {
             try
             {
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@CartId", cartId);
+                parameters.Add("@BrowserId", browserId);
                 parameters.Add("@CustomerId", customerId);
                 parameters.Add("@ProductId", productId);
                 parameters.Add("@Sku", sku);

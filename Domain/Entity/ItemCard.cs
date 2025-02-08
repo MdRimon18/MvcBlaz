@@ -22,8 +22,8 @@ namespace Domain.Entity
         [StringLength(50)]
         public string Sku { get; set; }
 
-        [Required]
-        public long CustomerId { get; set; }
+        public string? BrowserId { get; set; }
+        public long? CustomerId { get; set; }
 
         [Required]
         public int Quantity { get; set; } = 0;
