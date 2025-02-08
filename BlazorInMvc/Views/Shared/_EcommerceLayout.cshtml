@@ -939,14 +939,14 @@
                         contentType: "application/json",
                         data: JSON.stringify(cartItem),
                         success: function (response) {
-                            console.log("Item added to cart:", response);
+                          //  console.log("Item added to cart:", response);
 
-                             let totalItems = 2;
-                            //update card quantity
-                           
+                                  // Get the current value, parse it to an integer, and increment by 1
+                        let totalItems = parseInt($("#itemCount_notification").text()) || 0;
+                        totalItems++; // Increment the value
 
-       
-                         $("#itemCount_notification").text(totalItems);
+                        // Update the UI with the new value
+                        $("#itemCount_notification").text(totalItems);
                          //   alert("Item added to cart!");
                         //    loadCartItems();  // Reload the cart items
                         },

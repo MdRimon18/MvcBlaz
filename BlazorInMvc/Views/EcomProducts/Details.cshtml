@@ -108,7 +108,10 @@
                             <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</button>
                         </div>
                     </div>
-                    <div class="col-auto px-2 px-md-3"><a class="btn btn-sm btn-primary" href="#!"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a></div>
+                    <div class="col-auto px-2 px-md-3">
+                        
+                        <a class="btn btn-sm btn-primary btn-add-to-cart" data-product-id="@Model?.ProductId" data-sku="@Model?.Sku" data-price="@Model?.SellingPrice"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a>
+                        </div>
                     <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border border-300" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart me-1"></span>282</a></div>
                 </div>
             </div>
@@ -237,7 +240,8 @@
                                         <a class="btn btn-sm btn-falcon-default me-2 hover-danger" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wishlist">
                                             <span class="far fa-heart" data-fa-transform="down-2"></span>
                                         </a>
-                                        <a class="btn btn-sm btn-falcon-default hover-primary" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Cart">
+
+                                        <a class="btn btn-sm btn-falcon-default hover-primary btn-add-to-cart" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Cart" data-product-id="@item?.ProductId" data-sku="@item?.Sku" data-price="@item?.SellingPrice">
                                             <span class="fas fa-cart-plus" data-fa-transform="down-2"></span>
                                         </a>
                                     </div>
