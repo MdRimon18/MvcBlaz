@@ -146,11 +146,11 @@
                         </div>
 
                         <div class="col-md-5 col-xl-12 col-xxl-5 ps-lg-4 text-center text-md-start">
-                            <div class="fs-7 fw-semi-bold">All Total: <span class="text-primary">$3320</span></div>
-                            <button class="btn btn-success mt-3 px-5" type="submit" >Confirm &amp; Pay</button>
+                            <div class="fs-7 fw-semi-bold">All Total: <span class="text-primary" id="AllTotal">$3320</span></div>
+                            <a id="confirmPayBtn" class="btn btn-success mt-3 px-5"  >Confirm &amp; Pay</a>
                             <p class="fs-10 mt-3 mb-0">
                                 By clicking <strong>Confirm & Pay</strong> button you agree to the
-                                <a href="/Home/ThankYou">Terms & Conditions</a>
+                                <a >Terms & Conditions</a>
                             </p>
                         </div>
                     </div>
@@ -193,6 +193,8 @@
             $.get(`${apiUrl}/GetItemCart`, function (response) {
                 if (response.isSuccess) {
                     let items = response.result;
+                  
+
                     let tableHtml = "";
                     let subtotal = 0;
                     let discount = 55; // Assume a fixed discount
@@ -239,11 +241,31 @@
 
                     // Inject the generated table content
                     $("#order-summary-table").html(tableHtml);
-                    $("#payable-total").text(`$${total.toFixed(2)}`);
+                    $("#payable-total").text(`Tk. ${total.toFixed(2)}`);
+                    $("#AllTotal").text(`Tk. ${total.toFixed(2)}`);
+                    
                     $("#total-quantity").text(totalQuantity); // Update total quantity
-                } else {
+
+                    if(items.length>0){
+                      let customerId= items[0].customerId;
+                      console.log(customerId)
+                       // Select the anchor tag using ID
+                        let confirmButton = $("#confirmPayBtn");
+                            // Update href based on customerId
+                         if (customerId === 0) {
+                          confirmButton.attr("href", "/Home/SignUp");
+                         } else {
+                            confirmButton.attr("href", "/Home/ThankYou?customerId=" + customerId);
+                         }
+                     }
+                 
+
+                  } else {
                     alert(response.message || "Failed to load order summary.");
-                }
+                  }
+                 
+                      
+
             });
         }
 

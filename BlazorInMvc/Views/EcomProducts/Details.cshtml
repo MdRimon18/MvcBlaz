@@ -101,18 +101,18 @@
                     }
                 </p>
                 <div class="row">
-                    <div class="col-auto pe-0">
+                    @* <div class="col-auto pe-0">
                         <div class="input-group input-group-sm" data-quantity="data-quantity">
-                            <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="minus">-</button>
+                            <button class="btn btn-sm btn-outline-secondary border border-300 quantity-change"  data-type="minus">-</button>
                             <input class="form-control text-center input-quantity input-spin-none" type="number" min="0" value="0" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
-                            <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</button>
+                            <button class="btn btn-sm btn-outline-secondary border border-300 quantity-change"   data-type="plus">+</button>
                         </div>
-                    </div>
+                    </div> *@
                     <div class="col-auto px-2 px-md-3">
                         
                         <a class="btn btn-sm btn-primary btn-add-to-cart" data-product-id="@Model?.ProductId" data-sku="@Model?.Sku" data-price="@Model?.SellingPrice"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a>
                         </div>
-                    <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border border-300" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart me-1"></span>282</a></div>
+                    <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border border-300"   data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart me-1"></span>282</a></div>
                 </div>
             </div>
         </div>
@@ -237,7 +237,7 @@
                                         <p class="mb-0 fs-10 text-800">92,632 Learners Enrolled</p>
                                     </div>
                                     <div class="col-auto pe-3">
-                                        <a class="btn btn-sm btn-falcon-default me-2 hover-danger" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wishlist">
+                                        <a class="btn btn-sm btn-falcon-default me-2 hover-danger"  data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wishlist">
                                             <span class="far fa-heart" data-fa-transform="down-2"></span>
                                         </a>
 
@@ -261,5 +261,5 @@
             </div>
         </div>
     </div>
-    <div class="card-footer text-end py-1"><a class="btn btn-link btn-sm py-2 px-0" href="../../../app/e-learning/course/course-grid.html">All courses<span class="fas fa-external-link-alt ms-1"></span></a></div>
+    <div class="card-footer text-end py-1"><a class="btn btn-link btn-sm py-2 px-0" href="/">All Products<span class="fas fa-external-link-alt ms-1"></span></a></div>
 </div>
