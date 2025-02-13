@@ -1,4 +1,5 @@
 using BlazorInMvc.Models;
+using Domain.Entity.Settings;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -33,8 +34,15 @@ namespace BlazorInMvc.Controllers
             {
                 return PartialView("SignUp");
             }
+            AuthRegister authRegister = new AuthRegister();
+            return View(authRegister);
+        }
+        [HttpPost]
+        public IActionResult SignUp(AuthRegister model)
+        {
 
-            return View();
+ 
+            return View(model);
         }
         public IActionResult Login(bool isPartial = false)
         {

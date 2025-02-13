@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorInMvc.Controllers.Api
 {
-    [Route("api/[controller]")]
+   // [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost("register")]
+        [HttpPost]
+        [Route("api/Auth/Register")]
         public IActionResult Register([FromBody] AuthRegister model)
         {
             if (!ModelState.IsValid)
