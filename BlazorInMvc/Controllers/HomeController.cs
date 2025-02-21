@@ -1,5 +1,6 @@
 using BlazorInMvc.Models;
 using Domain.Entity.Settings;
+using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,10 +9,13 @@ namespace BlazorInMvc.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserService _userService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+            UserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index(string component = null, bool isPartial = false)
@@ -34,14 +38,13 @@ namespace BlazorInMvc.Controllers
             {
                 return PartialView("SignUp");
             }
-            AuthRegister authRegister = new AuthRegister();
-            return View(authRegister);
+            User user = new User();
+            return View(user);
         }
         [HttpPost]
-        public IActionResult SignUp(AuthRegister model)
+        public async Task<IActionResult> SignUp(User model)
         {
-
- 
+            await  _userService.SaveOrUpdate(model);
             return View(model);
         }
         public IActionResult Login(bool isPartial = false)

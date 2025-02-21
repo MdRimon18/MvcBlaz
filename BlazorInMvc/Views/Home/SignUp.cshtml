@@ -1,5 +1,5 @@
 ﻿@using Domain.Entity.Settings
- @model AuthRegister
+ @model User
 @{
     ViewData["Title"] = "Register";
 }
@@ -14,8 +14,8 @@
                             <!-- Left Side -->
                             <div class="col-md-5 text-center bg-card-gradient">
                                 <div class="position-relative p-4 pt-md-5 pb-md-7">
-                                    <a class="link-light mb-4 font-sans-serif fs-5 d-inline-block fw-bolder" href="/">Falcon</a>
-                                    <p class="opacity-75 text-white">With Falcon, you can focus on building your product while we handle the UI design.</p>
+                                    <a class="link-light mb-4 font-sans-serif fs-5 d-inline-block fw-bolder" href="/">RCell-E</a>
+                                    <p class="opacity-75 text-white">With RCellE, you can focus on building your product while we handle the UI design.</p>
                                 </div>
                                 <div class="mt-3 mb-4">
                                     <p class="pt-3 text-white">
@@ -31,26 +31,22 @@
                                     <h3>Register</h3>
                                     <form asp-action="SignUp" asp-controller="Home" method="post">
                                         <div class="mb-3">
-                                            <label class="form-label" asp-for="Name"></label>
-                                            <input type="text" class="form-control" asp-for="Name" autocomplete="on">
-                                            <span class="text-danger" asp-validation-for="Name"></span>
+                                            <label class="form-label" asp-for="UserName">User Name</label>
+                                            <input type="text" class="form-control" asp-for="UserName" autocomplete="on">
+                                            <span class="text-danger" asp-validation-for="UserName"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label" asp-for="Email"></label>
-                                            <input type="email" class="form-control" asp-for="Email" autocomplete="on">
-                                            <span class="text-danger" asp-validation-for="Email"></span>
+                                            <label class="form-label" asp-for="UserPhoneNo">Phone No.</label>
+                                            <input type="text" class="form-control" asp-for="UserPhoneNo" autocomplete="on">
+                                            <span class="text-danger" asp-validation-for="UserPhoneNo"></span>
                                         </div>
                                         <div class="row gx-2">
-                                            <div class="mb-3 col-sm-6">
-                                                <label class="form-label" asp-for="Password"></label>
-                                                <input type="password" class="form-control" asp-for="Password" autocomplete="on">
-                                                <span class="text-danger" asp-validation-for="Password"></span>
+                                            <div class="mb-3">
+                                                <label class="form-label" asp-for="UserPassword">Password</label>
+                                                <input type="password" class="form-control" asp-for="UserPassword" autocomplete="on">
+                                                <span class="text-danger" asp-validation-for="UserPassword"></span>
                                             </div>
-                                            <div class="mb-3 col-sm-6">
-                                                <label class="form-label" asp-for="ConfirmPassword"></label>
-                                                <input type="password" class="form-control" asp-for="ConfirmPassword" autocomplete="on">
-                                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
-                                            </div>
+                                             
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" asp-for="RememberMe" />

@@ -60,14 +60,14 @@ namespace Domain.Services.Inventory
         {
             try
             {
-                if (colors.ColorId > 0)
-                {
-                    EntityHelper.SetUpdateAuditFields(colors);
-                }
-                else
-                {
-                    EntityHelper.SetCreateAuditFields(colors);
-                }
+                    if (colors.ColorId > 0)
+                    {
+                        EntityHelper.SetUpdateAuditFields(colors);
+                    }
+                    else
+                    {
+                        EntityHelper.SetCreateAuditFields(colors);
+                    }
                 
 
                 var parameters = new DynamicParameters();

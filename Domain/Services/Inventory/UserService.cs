@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Domain.DbContex;
+using Domain.Entity;
 using Domain.Entity.Settings;
+using Domain.Services.Shared;
 using System.Data;
 
 namespace Domain.Services.Inventory
@@ -15,7 +17,9 @@ namespace Domain.Services.Inventory
             _db = db.GetDbConnection();
 
         }
-        public async Task<IEnumerable<User>> Get(long? UserId, string? UserKey, string? UserName, string? UserPhoneNo, string? UserPassword, string UserDesignation,string UserImgLink, int? PageNumber, int? PageSize)
+        public async Task<IEnumerable<User>> Get(long? UserId, string? UserKey, string? UserName, 
+            string? UserPhoneNo, string? UserPassword, string UserDesignation,string UserImgLink,
+            int? PageNumber, int? PageSize)
         {
             try
             {
@@ -60,6 +64,15 @@ namespace Domain.Services.Inventory
         {
             try
             {
+
+                if (user.UserId > 0)
+                {
+                    EntityHelper.SetUpdateAuditFields(user);
+                }
+                else
+                {
+                    EntityHelper.SetCreateAuditFields(user);
+                }
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@UserId", user.UserId);
@@ -69,13 +82,16 @@ namespace Domain.Services.Inventory
                 parameters.Add("@UserPassword", user.UserPassword);
                 parameters.Add("@UserDesignation", user.UserDesignation);
                 parameters.Add("@UserImgLink", user.UserImgLink);
-                parameters.Add("@EntryDateTime", user.EntryDateTime);
-                parameters.Add("@EntryBy", user.EntryBy);
-                parameters.Add("@LastModifyDate", user.LastModifyDate);
-                parameters.Add("@LastModifyBy", user.LastModifyBy);
-                parameters.Add("@DeletedDate", user.DeletedDate);
-                parameters.Add("@DeletedBy", user.DeletedBy);
-                parameters.Add("@Status", user.Status);
+                //parameters.Add("@EntryDateTime", user.EntryDateTime);
+                //parameters.Add("@EntryBy", user.EntryBy);
+                //parameters.Add("@LastModifyDate", user.LastModifyDate);
+                //parameters.Add("@LastModifyBy", user.LastModifyBy);
+                //parameters.Add("@DeletedDate", user.DeletedDate);
+                //parameters.Add("@DeletedBy", user.DeletedBy);
+                //parameters.Add("@Status", user.Status);
+
+                ParameterHelper.AddAuditParameters(user, parameters);
+
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await _db.ExecuteAsync("User_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
