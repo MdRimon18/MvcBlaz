@@ -24,11 +24,11 @@ namespace Domain.Entity.Settings
         public string Address { get; set; } // Primary address line
       
 
-        //[Required(ErrorMessage = "City is required.")]
+        [Required(ErrorMessage = "City is required.")]
         [StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
         public string? City { get; set; } // City
 
-        [Required(ErrorMessage = "State is required.")]
+        //[Required(ErrorMessage = "State is required.")]
         [StringLength(100, ErrorMessage = "State cannot exceed 100 characters.")]
         public string? State { get; set; } // State or province
 
@@ -36,11 +36,12 @@ namespace Domain.Entity.Settings
         [StringLength(20, ErrorMessage = "Postal code cannot exceed 20 characters.")]
         public string? PostalCode { get; set; } // Postal or ZIP code
 
-        //[Required(ErrorMessage = "Country is required.")]
+        [Required(ErrorMessage = "Country is required.")]
         [StringLength(100, ErrorMessage = "Country cannot exceed 100 characters.")]
-        public string? Country { get; set; } // Country
+        public string Country { get; set; } // Country
 
-
+        [StringLength(100, ErrorMessage = "Phone Number cannot exceed 100 characters.")]
+        public string? PhoneNumber { get; set; }
         public bool IsDefault { get; set; } = false; // Indicates if this is the default address
 
 

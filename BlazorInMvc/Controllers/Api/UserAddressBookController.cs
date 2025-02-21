@@ -1,14 +1,17 @@
-﻿using Domain.Entity.Settings;
+﻿using Domain.CommonServices;
+using Domain.Entity.Settings;
 using Domain.Services.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using System.Net;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorInMvc.Controllers.Api
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserAddressBookController : ControllerBase
     {
         private readonly UserAddressBookService _userAddressBookService;
@@ -18,8 +21,8 @@ namespace BlazorInMvc.Controllers.Api
             _userAddressBookService = userAddressBookService;
         }
 
-        [HttpGet]
-        // GET: api/GetAllAddresses
+        // GET: api/UserAddressBook/GetAllAddresses
+        [HttpGet("GetAllAddresses")]
         public async Task<IActionResult> GetAllAddresses()
         {
             var addresses = await _userAddressBookService.GetAllAddressesAsync();
@@ -31,9 +34,13 @@ namespace BlazorInMvc.Controllers.Api
                     userID = address.UserID,
                     addressType = address.AddressType,
                     address = address.Address,
+                    city = address.City,
+                    state = address.State,
+                    postalCode = address.PostalCode,
+                    phoneNumber = address.PhoneNumber,
+                    country = address.Country,
                     isDefault = address.IsDefault
                 }).ToList(),
-
                 code = HttpStatusCode.OK,
                 message = "Success",
                 isSuccess = true
@@ -41,7 +48,7 @@ namespace BlazorInMvc.Controllers.Api
         }
 
         // GET: api/UserAddressBook/5
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetAddressById(int id)
         {
             var address = await _userAddressBookService.GetAddressByIdAsync(id);
@@ -64,6 +71,11 @@ namespace BlazorInMvc.Controllers.Api
                     userID = address.UserID,
                     addressType = address.AddressType,
                     address = address.Address,
+                    city = address.City,
+                    state = address.State,
+                    postalCode = address.PostalCode,
+                    phoneNumber = address.PhoneNumber,
+                    country = address.Country,
                     isDefault = address.IsDefault
                 },
                 code = HttpStatusCode.OK,
@@ -87,21 +99,27 @@ namespace BlazorInMvc.Controllers.Api
                 });
             }
 
+            address.UserID = UserInfo.UserId;
             var createdAddress = await _userAddressBookService.CreateOrUpdateAddressAsync(address);
             return Ok(new
             {
-                response =new {
-                    addressID= createdAddress.AddressID,
-                    userID=createdAddress.UserID,
-                    addressType= createdAddress.AddressType,
-                    address= createdAddress.Address,
-                    isDefault=createdAddress.IsDefault
+                response = new
+                {
+                    addressID = createdAddress.AddressID,
+                    userID = createdAddress.UserID,
+                    addressType = createdAddress.AddressType,
+                    address = createdAddress.Address,
+                    city = createdAddress.City,
+                    state = createdAddress.State,
+                    postalCode = createdAddress.PostalCode,
+                    phoneNumber = createdAddress.PhoneNumber,
+                    country = createdAddress.Country,
+                    isDefault = createdAddress.IsDefault
                 },
                 code = HttpStatusCode.OK,
                 message = "Success",
                 isSuccess = true
             });
         }
-
     }
 }

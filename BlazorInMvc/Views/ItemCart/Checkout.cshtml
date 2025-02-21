@@ -10,6 +10,7 @@
         
         <form id="userAddressForm">
             <div class="row">
+                <input type="hidden" id="addressId" />
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Address Type</label>
                     <select class="form-control" id="addressType">
@@ -112,8 +113,8 @@
                 </div>  
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12 mb-3 mb-md-0">
+                <div class="row" id="address-container">
+                    @* <div class="col-md-12 mb-3 mb-md-0">
                         <div class="form-check mb-0 custom-radio radio-select">
                             <input class="form-check-input" id="address-1" type="radio" name="clientName" checked="checked" />
                             <label class="form-check-label mb-0 fw-bold d-block" for="address-1">
@@ -132,7 +133,7 @@
                                 <label class="form-check-label mb-0 fw-bold d-block" for="address-2">Robert Bruce<span class="radio-select-content"><span>3448 Ile De France St #242<br />Fort Wainwright, <br />Alaska, 99703<span class="d-block mb-0 pt-2">+(901) 637-734</span></span></span></label><a class="fs-10" href="#!">Edit</a>
                             </div>
                         </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </div>
@@ -349,12 +350,8 @@
 
         // Load order summary on page load
         loadOrderSummary();
-    });
-</script>
- 
-<script>
-    $(document).ready(function () {
-        $("#submitBtn").click(function () {
+
+          $("#submitBtn").click(function () {
             // Clear previous error highlighting and messages
             $(".form-control").removeClass("is-invalid");
             $(".invalid-feedback").remove();
@@ -362,6 +359,7 @@
 
             // Collect form data
             var userAddress = {
+                AddressID: $("#addressId").val(), // Use the existing addressId
                 AddressType: $("#addressType").val(),
                 Address: $("#address").val(),
                 City: $("#city").val(),
@@ -409,6 +407,9 @@
                 success: function (response) {
                     $("#responseMessage").html('<div class="alert alert-success">Address saved successfully!</div>');
                     $("#userAddressForm")[0].reset();  // Reset form after submission
+
+
+                    loadOrderSummary();
                 },
                 error: function (xhr) {
                     let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Error saving address!";
@@ -417,4 +418,91 @@
             });
         });
     });
+
+    
 </script>
+ 
+ 
+<script>
+        $(document).ready(function () {
+        // Fetch all addresses from the API
+        $.ajax({
+            url: '/api/UserAddressBook/GetAllAddresses', // Adjust the API endpoint as needed
+            type: 'GET',
+            success: function (response) {
+                // Ensure response is successful
+                if (response.isSuccess) {
+                    // Clear any existing addresses in the target element by ID
+                    $('#address-container').empty();
+
+                    // Iterate through each address and create dynamic HTML
+                    response.response.forEach(function (address, index) {
+                        // Create the HTML for each address
+                        var addressHtml = `
+                            <div class="col-md-12 mb-3 mb-md-0">
+                                <div class="form-check mb-0 custom-radio radio-select">
+                                    <input class="form-check-input" id="address-${index + 1}" type="radio" name="clientName" ${index === 0 ? 'checked="checked"' : ''} />
+                                    <label class="form-check-label mb-0 fw-bold d-block" for="address-${index + 1}">
+                                        ${address.addressType} Address
+                                        <span class="radio-select-content">
+                                            <span>
+                                                ${address.address},<br />
+                                                ${address.city},<br />
+                                                ${address.state} ${address.postalCode},<br />
+                                                ${address.country} <br />
+                                                <span class="d-block mb-0 pt-2">${address.phoneNumber}</span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <a class="fs-10 edit-address-link" href="javascript:void(0);" data-id="${address.addressID}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Edit</a>
+                                </div>
+                            </div>
+                        `;
+                        // Append the new address HTML to the element with ID 'address-container'
+                        $('#address-container').append(addressHtml);
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching addresses: ", error);
+            }
+        });
+    });
+
+</script>
+
+ <script>
+         $(document).on('click', '.edit-address-link', function () {
+        var addressId = $(this).data('id');
+
+        // Fetch address details using AJAX (assuming you have an API endpoint for this)
+        $.ajax({
+            url: `/api/UserAddressBook/${addressId}`,  // Adjust the API endpoint as necessary
+            method: 'GET',
+            success: function (response) {
+                if (response.isSuccess) {
+                    var address = response.response;
+                    console.log(address)
+               var address = response.response;  // Get address data from the response
+                $("#addressId").val(address.addressID);  // Set the Address ID in the hidden field
+                $("#addressType").val(address.addressType);
+                $("#address").val(address.address);
+                $("#city").val(address.city);
+                $("#state").val(address.state);
+                $("#postalCode").val(address.postalCode);
+                $("#PhoneNumber").val(address.phoneNumber);
+                $("#country").val(address.country);
+                $("#isDefault").prop("checked", address.isDefault);
+
+                    // Show the modal
+                    
+                } else {
+                    alert('Address not found!');
+                }
+            },
+            error: function () {
+                alert('Failed to fetch address details.');
+            }
+        });
+    });
+ </script>

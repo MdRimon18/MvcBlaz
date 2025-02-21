@@ -35,26 +35,26 @@ namespace Domain.Services.Settings
 
         public async Task<UserAddressBook> CreateOrUpdateAddressAsync(UserAddressBook address)
         {
+            
             if (address.AddressID > 0)
             {
- var existingAddress = await _context.UserAddressBooks.FindAsync(address.AddressID);
+             var existingAddress = await _context.UserAddressBooks.FindAsync(address.AddressID);
 
             if (existingAddress != null)
             {
                 // Update existing address
                 existingAddress.UserID = address.UserID;
                 existingAddress.Address = address.Address;
-                //existingAddress.AddressType = address.AddressType;
+                existingAddress.AddressType = address.AddressType;
                 //existingAddress.FullName = address.FullName;
-                //existingAddress.AddressLine2 = address.AddressLine2;
-                //existingAddress.City = address.City;
-                //existingAddress.State = address.State;
-                //existingAddress.PostalCode = address.PostalCode;
-                //existingAddress.Country = address.Country;
-                //existingAddress.PhoneNumber = address.PhoneNumber;
-                //existingAddress.IsDefault = address.IsDefault;
-                //existingAddress.UpdatedAt = DateTime.UtcNow;
-
+                
+                existingAddress.City = address.City;
+                existingAddress.State = address.State;
+                existingAddress.PostalCode = address.PostalCode;
+                existingAddress.Country = address.Country;
+                existingAddress.PhoneNumber = address.PhoneNumber;
+                existingAddress.IsDefault = address.IsDefault;
+                
                 _context.UserAddressBooks.Update(existingAddress);
             }
             }
