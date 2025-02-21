@@ -1,4 +1,5 @@
-﻿using Domain.Entity.Settings;
+﻿using Domain.Entity;
+using Domain.Entity.Settings;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,9 @@ namespace Domain.DbContex
         }
 
         // Define your DbSet properties for each entity you want to include in the database.
-       // public DbSet<User> Users { get; set; }
-      //  public DbSet<BillingPlans> BillingPlans { get; set; }
+        public DbSet<UserAddressBook> UserAddressBooks { get; set; }
+        public DbSet<UserPhoneNumbers> UserPhoneNumbers { get; set; }
+        //  public DbSet<BillingPlans> BillingPlans { get; set; }
         // Optional: Override OnModelCreating to configure entity mappings.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +28,34 @@ namespace Domain.DbContex
 
             // Configure entity relationships, constraints, etc., here.
             //modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique(); // Example: Unique email constraint
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+             
+
+            var entries = ChangeTracker.Entries().Where(e => e.Entity is BaseEntity &&
+                 (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                var entity = (BaseEntity)entityEntry.Entity;
+                //var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    entity.Status = "Active";
+                    entity.key = Guid.NewGuid();
+                    entity.EntryDateTime =DateTime.UtcNow;
+                    //entity.CreatedBy = null;
+                }
+                else if (entityEntry.State == EntityState.Modified)
+                {
+                    entity.LastModifyDate = DateTime.UtcNow; 
+                    //entity.UpdatedBy = null;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

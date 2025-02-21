@@ -8,6 +8,7 @@ namespace Domain.Entity
 {
     public abstract class BaseEntity
     {
+        public Guid key { get; set; }
         public DateTime? EntryDateTime { get; set; }
         public long? EntryBy { get; set; }
         public DateTime? LastModifyDate { get; set; }

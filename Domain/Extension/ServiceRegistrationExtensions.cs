@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Domain.Interface;
 using Domain.Services.Shared;
 using Microsoft.AspNetCore.Http;
+using Domain.Services.Settings;
 
 
 public static class ServiceRegistrationExtensions
@@ -71,5 +72,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<BodyPartService>();
         services.AddScoped<ProductVariantService>();
         services.AddScoped<ItemCardService>();
+
+        services.AddScoped<UserAddressBookService>();
     }
 }

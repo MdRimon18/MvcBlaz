@@ -4,6 +4,7 @@ using Domain.DbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250221102556_UserAddressBook")]
+    partial class UserAddressBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,56 +69,9 @@ namespace Domain.Migrations
                     b.Property<long>("UserID")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("key")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("AddressID");
 
                     b.ToTable("UserAddressBooks");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Settings.UserPhoneNumbers", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<long?>("DeletedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("EntryBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("EntryDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifyBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("key")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserPhoneNumbers");
                 });
 #pragma warning restore 612, 618
         }
