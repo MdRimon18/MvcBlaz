@@ -1,4 +1,81 @@
-﻿<div class="row g-3">
+﻿<div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel" style="width: 30%;">
+     
+        <div class="container mt-5">
+        <h3 class="mb-4">User Address Form
+
+            <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+        </h3>
+
+        
+        <form id="userAddressForm">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address Type</label>
+                    <select class="form-control" id="addressType">
+                        <option value="">Select Type</option>
+                        <option value="Home">Home</option>
+                        <option value="Office">Office</option>
+                        <option value="Office">Others</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" id="address" rows="3" required></textarea>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">State</label>
+                    <input type="text" class="form-control" id="state" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postalCode">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="PhoneNumber" required>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Country</label>
+                    <select class="form-control" id="country" required>
+                        <option value="">Select Country</option>
+                        <option value="Bangladesh" selected>Bangladesh</option>
+                        <option value="USA">USA</option>
+                        <option value="Canada">Canada</option>
+                        <option value="UK">UK</option>
+                        <option value="India">India</option>
+                        <option value="Australia">Australia</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <input type="checkbox" id="isDefault"> Set as Default Address
+                </div>
+
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+                </div>
+
+            </div>
+        </form>
+
+        <div id="responseMessage" class="mt-3"></div>
+
+        </div>
+
+  </div>
+     
+ 
+<div class="row g-3">
     <div class="col-xl-4 order-xl-1">
         <div class="card">
             <div class="card-header bg-body-tertiary d-flex flex-between-center">
@@ -30,8 +107,9 @@
                     <div class="col-sm-auto">
                         <h5 class="mb-2 mb-sm-0">Your Shipping Address</h5>
                     </div>
-                    @* <div class="col-sm-auto"><a class="btn btn-falcon-default btn-sm" href="#!"><span class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>Add New Address </a></div> *@
-                </div>
+                    
+                    <div class="col-sm-auto"><a class="btn btn-falcon-default btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><span class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>Add New Address </a></div>
+                </div>  
             </div>
             <div class="card-body">
                 <div class="row">
@@ -47,14 +125,14 @@
                                 </span></label><a class="fs-10" href="#!">Edit</a>
                         </div>
                     </div>
-                   @*  <div class="col-md-6">
+                    <div class="col-md-6">
                         <div class="position-relative">
                             <div class="form-check mb-0 custom-radio radio-select">
                                 <input class="form-check-input" id="address-2" type="radio" name="clientName" />
                                 <label class="form-check-label mb-0 fw-bold d-block" for="address-2">Robert Bruce<span class="radio-select-content"><span>3448 Ile De France St #242<br />Fort Wainwright, <br />Alaska, 99703<span class="d-block mb-0 pt-2">+(901) 637-734</span></span></span></label><a class="fs-10" href="#!">Edit</a>
                             </div>
                         </div>
-                    </div> *@
+                    </div>
                 </div>
             </div>
         </div>
@@ -271,5 +349,72 @@
 
         // Load order summary on page load
         loadOrderSummary();
+    });
+</script>
+ 
+<script>
+    $(document).ready(function () {
+        $("#submitBtn").click(function () {
+            // Clear previous error highlighting and messages
+            $(".form-control").removeClass("is-invalid");
+            $(".invalid-feedback").remove();
+            $("#responseMessage").html('');
+
+            // Collect form data
+            var userAddress = {
+                AddressType: $("#addressType").val(),
+                Address: $("#address").val(),
+                City: $("#city").val(),
+                State: $("#state").val(),
+                PostalCode: $("#postalCode").val(),
+                PhoneNumber: $("#PhoneNumber").val(),
+                Country: $("#country").val(),
+                IsDefault: $("#isDefault").is(":checked")
+            };
+
+            var isValid = true;
+
+            // Validate required fields and highlight invalid ones
+            if (!userAddress.Address) {
+                isValid = false;
+                $("#address").addClass("is-invalid").after('<div class="invalid-feedback">Address is required.</div>');
+            }
+            if (!userAddress.City) {
+                isValid = false;
+                $("#city").addClass("is-invalid").after('<div class="invalid-feedback">City is required.</div>');
+            }
+            if (!userAddress.State) {
+                isValid = false;
+                $("#state").addClass("is-invalid").after('<div class="invalid-feedback">State is required.</div>');
+            }
+            if (!userAddress.PhoneNumber) {
+                isValid = false;
+                $("#PhoneNumber").addClass("is-invalid").after('<div class="invalid-feedback">Phone Number is required.</div>');
+            }
+            if (!userAddress.Country) {
+                isValid = false;
+                $("#country").addClass("is-invalid").after('<div class="invalid-feedback">Country is required.</div>');
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // AJAX request to .NET Core API
+            $.ajax({
+                url: "/api/UserAddressBook",  // Update this with your actual API endpoint
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(userAddress),
+                success: function (response) {
+                    $("#responseMessage").html('<div class="alert alert-success">Address saved successfully!</div>');
+                    $("#userAddressForm")[0].reset();  // Reset form after submission
+                },
+                error: function (xhr) {
+                    let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Error saving address!";
+                    $("#responseMessage").html('<div class="alert alert-danger">' + errorMsg + '</div>');
+                }
+            });
+        });
     });
 </script>

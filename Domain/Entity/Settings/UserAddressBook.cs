@@ -22,29 +22,27 @@ namespace Domain.Entity.Settings
         [Required(ErrorMessage = "Address line 1 is required.")]
         [StringLength(255, ErrorMessage = "Address line 1 cannot exceed 255 characters.")]
         public string Address { get; set; } // Primary address line
+      
+
+        //[Required(ErrorMessage = "City is required.")]
+        [StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
+        public string? City { get; set; } // City
+
+        [Required(ErrorMessage = "State is required.")]
+        [StringLength(100, ErrorMessage = "State cannot exceed 100 characters.")]
+        public string? State { get; set; } // State or province
+
+        //[Required(ErrorMessage = "Postal code is required.")]
+        [StringLength(20, ErrorMessage = "Postal code cannot exceed 20 characters.")]
+        public string? PostalCode { get; set; } // Postal or ZIP code
+
+        //[Required(ErrorMessage = "Country is required.")]
+        [StringLength(100, ErrorMessage = "Country cannot exceed 100 characters.")]
+        public string? Country { get; set; } // Country
+
+
         public bool IsDefault { get; set; } = false; // Indicates if this is the default address
 
-        //[StringLength(255, ErrorMessage = "Address line 2 cannot exceed 255 characters.")]
-        //public string AddressLine2 { get; set; } // Secondary address line (optional)
-
-        ////[Required(ErrorMessage = "City is required.")]
-        //[StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
-        //public string? City { get; set; } // City
-
-        //[Required(ErrorMessage = "State is required.")]
-        //[StringLength(100, ErrorMessage = "State cannot exceed 100 characters.")]
-        //public string State { get; set; } // State or province
-
-        ////[Required(ErrorMessage = "Postal code is required.")]
-        //[StringLength(20, ErrorMessage = "Postal code cannot exceed 20 characters.")]
-        //public string? PostalCode { get; set; } // Postal or ZIP code
-
-        ////[Required(ErrorMessage = "Country is required.")]
-        //[StringLength(100, ErrorMessage = "Country cannot exceed 100 characters.")]
-        //public string? Country { get; set; } // Country
-
-
-            
 
     }
 }
