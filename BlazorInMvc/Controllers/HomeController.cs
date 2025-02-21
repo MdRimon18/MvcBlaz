@@ -43,8 +43,8 @@ namespace BlazorInMvc.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> SignUp(User model)
-        {
-            await  _userService.SaveOrUpdate(model);
+        {   
+            long userId=  await  _userService.SaveOrUpdate(model);
             return View(model);
         }
         public IActionResult Login(bool isPartial = false)

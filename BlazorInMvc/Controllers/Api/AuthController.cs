@@ -1,6 +1,9 @@
 ﻿using Domain.Entity.Settings;
+using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace BlazorInMvc.Controllers.Api
 {
@@ -8,22 +11,29 @@ namespace BlazorInMvc.Controllers.Api
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly UserService _userService;
+        public AuthController(UserService userService)
+        {
+            _userService = userService;
+        }
         [HttpPost]
         [Route("api/Auth/Register")]
-        public IActionResult Register([FromBody] AuthRegister model)
+        public async Task<IActionResult> Register([FromBody] User model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { message = "Invalid input. Please check your data." });
             }
 
-            // Simulate user registration logic
-            if (model.Password != model.ConfirmPassword)
-            {
-                return BadRequest(new { message = "Passwords do not match." });
-            }
+            long userId = await _userService.SaveOrUpdate(model);
 
-            return Ok(new { message = "Registration successful!" });
+            return Ok(new
+            {
+                userId = userId,
+                code = (int)HttpStatusCode.OK,
+                message = "success",
+                isSuccess = true
+            });
         }
     }
 }
