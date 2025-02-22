@@ -7,5 +7,12 @@ namespace BlazorInMvc.Controllers.Api
     [ApiController]
     public class UserController : ControllerBase
     {
+        [HttpGet("GetCurrentUserId")]
+        public IActionResult GetCurrentUserId()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+ 
+            return Ok(new { CurrentUserId = userId });
+        }
     }
 }

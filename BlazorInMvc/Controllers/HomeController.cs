@@ -59,7 +59,7 @@ namespace BlazorInMvc.Controllers
             return View();
         }
 
-        public IActionResult ThankYou()
+        public IActionResult ThankYou(long? orderId)
         {
             return View();
         }

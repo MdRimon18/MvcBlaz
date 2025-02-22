@@ -324,21 +324,7 @@
                     $("#AllTotal").text(`Tk. ${total.toFixed(2)}`);
                     
                     $("#total-quantity").text(totalQuantity); // Update total quantity
-
-                    if(items.length>0){
-                      let customerId= items[0].customerId;
-                      console.log(customerId)
-                       // Select the anchor tag using ID
-                        let confirmButton = $("#confirmPayBtn");
-                            // Update href based on customerId
-                         if (customerId === 0) {
-                          confirmButton.attr("href", "/Home/SignUp");
-                         } else {
-                            confirmButton.attr("href", "/Home/ThankYou?customerId=" + customerId);
-                         }
-                     }
-                 
-
+                     
                   } else {
                     alert(response.message || "Failed to load order summary.");
                   }
@@ -515,4 +501,93 @@
             }
         });
     });
+
+    
+
  </script>
+
+ <script>
+    $(document).on('click', '#confirmPayBtn', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior if needed
+             // Get the selected address ID
+              var selectedAddressId = $('input[name="clientName"]:checked')
+                  .closest('.form-check')
+                  .find('.edit-address-link')
+                  .data('id');
+
+
+          console.log("Selected Address ID:", selectedAddressId);
+              $.ajax({
+              url: '/api/User/GetCurrentUserId',
+              type: 'GET',
+              success: function (response) {
+                console.log("Current User ID:", response.currentUserId);
+                response.currentUserId=1;
+
+                if(response.currentUserId>0){
+
+                  if (!selectedAddressId) {
+                      alert("Please select an address before proceeding.");
+                      return;
+                  }
+                         $.ajax({
+                          url: '/api/Order/Place',
+                          type: 'GET',  // Change to 'POST' if necessary
+                          data: { AddressId: selectedAddressId ,UserId:response.currentUserId},
+                          success: function (orderResponse) {   
+                              console.log(orderResponse)
+                              console.log("Order placed successfully.");
+                              // Handle response (e.g., redirect, show a message)
+                             // window.location.href = '/Home/ThankYou?orderId=' + orderResponse.OrderId;
+                          window.location.href = '/Home/ThankYou';
+                          },
+                          error: function (xhr, status, error) {
+                              console.error("Error placing order:", error);
+                          }
+                      });
+                }else{
+                    window.location.href = '/Home/SignUp';
+                }
+            },
+            error: function (xhr) {
+                console.error("Error fetching user ID:", xhr.responseText);
+            }
+        });
+      // Call the controller action via AJAX
+      // $.ajax({
+      //     url: '/Order/Place',
+      //     type: 'GET',  // Change to 'POST' if necessary
+      //     data: { AddressId: selectedAddressId },
+      //     success: function (response) {
+      //         console.log("Order placed successfully.");
+      //         // Handle response (e.g., redirect, show a message)
+      //         //window.location.href = '/Order/Place?AddressId=' + selectedAddressId;
+      //     },
+      //     error: function (xhr, status, error) {
+      //         console.error("Error placing order:", error);
+      //     }
+      // });
+    });
+        // $(document).on('change', 'input[name="clientName"]', function () {
+        // var selectedAddressId = $(this).closest('.form-check').find('.edit-address-link').data('id');
+        // console.log("Selected Address ID:", selectedAddressId);
+
+        // if(items.length>0){
+        //               let customerId= items[0].customerId;
+        //               console.log(customerId)
+        //                // Select the anchor tag using ID
+        //                 let confirmButton = $("#confirmPayBtn");
+
+
+        //                     // Update href based on customerId
+        //                  if (customerId === 0) {
+        //                   confirmButton.attr("href", "/Home/SignUp");
+        //                  } else {
+        //                     confirmButton.attr("href", "/Home/ThankYou?customerId=" + customerId);
+        //                  }
+                    
+        //           }
+        //  });
+
+
+   </script>
