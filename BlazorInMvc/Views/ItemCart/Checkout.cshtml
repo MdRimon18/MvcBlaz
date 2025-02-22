@@ -351,72 +351,7 @@
         // Load order summary on page load
         loadOrderSummary();
 
-          $("#submitBtn").click(function () {
-            // Clear previous error highlighting and messages
-            $(".form-control").removeClass("is-invalid");
-            $(".invalid-feedback").remove();
-            $("#responseMessage").html('');
-
-            // Collect form data
-            var userAddress = {
-                AddressID: $("#addressId").val(), // Use the existing addressId
-                AddressType: $("#addressType").val(),
-                Address: $("#address").val(),
-                City: $("#city").val(),
-                State: $("#state").val(),
-                PostalCode: $("#postalCode").val(),
-                PhoneNumber: $("#PhoneNumber").val(),
-                Country: $("#country").val(),
-                IsDefault: $("#isDefault").is(":checked")
-            };
-
-            var isValid = true;
-
-            // Validate required fields and highlight invalid ones
-            if (!userAddress.Address) {
-                isValid = false;
-                $("#address").addClass("is-invalid").after('<div class="invalid-feedback">Address is required.</div>');
-            }
-            if (!userAddress.City) {
-                isValid = false;
-                $("#city").addClass("is-invalid").after('<div class="invalid-feedback">City is required.</div>');
-            }
-            if (!userAddress.State) {
-                isValid = false;
-                $("#state").addClass("is-invalid").after('<div class="invalid-feedback">State is required.</div>');
-            }
-            if (!userAddress.PhoneNumber) {
-                isValid = false;
-                $("#PhoneNumber").addClass("is-invalid").after('<div class="invalid-feedback">Phone Number is required.</div>');
-            }
-            if (!userAddress.Country) {
-                isValid = false;
-                $("#country").addClass("is-invalid").after('<div class="invalid-feedback">Country is required.</div>');
-            }
-
-            if (!isValid) {
-                return;
-            }
-
-            // AJAX request to .NET Core API
-            $.ajax({
-                url: "/api/UserAddressBook",  // Update this with your actual API endpoint
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(userAddress),
-                success: function (response) {
-                    $("#responseMessage").html('<div class="alert alert-success">Address saved successfully!</div>');
-                    $("#userAddressForm")[0].reset();  // Reset form after submission
-
-
-                    loadOrderSummary();
-                },
-                error: function (xhr) {
-                    let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Error saving address!";
-                    $("#responseMessage").html('<div class="alert alert-danger">' + errorMsg + '</div>');
-                }
-            });
-        });
+          
     });
 
     
@@ -426,6 +361,7 @@
 <script>
         $(document).ready(function () {
         // Fetch all addresses from the API
+        function LoadAddresses() {
         $.ajax({
             url: '/api/UserAddressBook/GetAllAddresses', // Adjust the API endpoint as needed
             type: 'GET',
@@ -467,6 +403,80 @@
                 console.error("Error fetching addresses: ", error);
             }
         });
+    
+       }
+    LoadAddresses();
+    //Save Or Update Address
+    $("#submitBtn").click(function () {
+            // Clear previous error highlighting and messages
+            $(".form-control").removeClass("is-invalid");
+            $(".invalid-feedback").remove();
+            $("#responseMessage").html('');
+
+            // Collect form data
+            var userAddress = {
+                AddressID: $("#addressId").val(), // Use the existing addressId
+                AddressType: $("#addressType").val(),
+                Address: $("#address").val(),
+                City: $("#city").val(),
+                State: $("#state").val(),
+                PostalCode: $("#postalCode").val(),
+                PhoneNumber: $("#PhoneNumber").val(),
+                Country: $("#country").val(),
+                IsDefault: $("#isDefault").is(":checked")
+            };
+
+            var isValid = true;
+
+            // Validate required fields and highlight invalid ones
+            if (!userAddress.Address) {
+                isValid = false;
+                $("#address").addClass("is-invalid").after('<div class="invalid-feedback">Address is required.</div>');
+            }
+            if (!userAddress.City) {
+                isValid = false;
+                $("#city").addClass("is-invalid").after('<div class="invalid-feedback">City is required.</div>');
+            }
+            if (!userAddress.State) {
+                isValid = false;
+                $("#state").addClass("is-invalid").after('<div class="invalid-feedback">State is required.</div>');
+            }
+            if (!userAddress.PhoneNumber) {
+                isValid = false;
+                $("#PhoneNumber").addClass("is-invalid").after('<div class="invalid-feedback">Phone Number is required.</div>');
+            }
+            if (!userAddress.Country) {
+                isValid = false;
+                $("#country").addClass("is-invalid").after('<div class="invalid-feedback">Country is required.</div>');
+            }
+            if (userAddress.AddressID=="") {
+                userAddress.AddressID=0;
+            }
+            if (!isValid) {
+                return;
+            }
+            console.log('insertobj',userAddress)
+            // AJAX request to .NET Core API
+            $.ajax({
+                url: "/api/UserAddressBook",  // Update this with your actual API endpoint
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(userAddress),
+                success: function (response) {
+                   // $("#responseMessage").html('<div class="alert alert-success">Address saved successfully!</div>');
+                    $("#userAddressForm")[0].reset();  // Reset form after submission
+
+                    LoadAddresses();
+                    document.querySelector('#offcanvasRight .btn-close').click();
+
+                },
+                error: function (xhr) {
+                    let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Error saving address!";
+                    $("#responseMessage").html('<div class="alert alert-danger">' + errorMsg + '</div>');
+                }
+            });
+        });
+    
     });
 
 </script>
