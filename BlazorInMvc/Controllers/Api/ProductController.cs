@@ -6,7 +6,9 @@ using Domain.Helper;
 using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
+using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
 using System.Net;
 
@@ -252,6 +254,117 @@ namespace BlazorInMvc.Controllers.Api
         }
 
 
+        [HttpGet]
+        [Route("api/Product/categories")]
+        public IActionResult GetCategories()
+        {
+            var categories = new List<object>
+            {
+                new { Id = "free", Name = "Free", Icon = "fas fa-file-alt" },
+                new { Id = "paid", Name = "Paid", Icon = "fas fa-file-invoice-dollar" },
+                new { Id = "on-sale", Name = "On Sale", Icon = "fas fa-tags" }
+            };
+
+            return Ok(categories);
+        }
+
+        [HttpGet]
+        [Route("api/Product/subjects")]
+        public IActionResult GetSubjects()
+        {
+            var subjects = new List<object>
+            {
+                new { Id = "design", Name = "Design", Icon = "fas fa-brush" },
+                new { Id = "web-development", Name = "Web Development", Icon = "fas fa-globe" },
+                new { Id = "software", Name = "Software", Icon = "fas fa-code" },
+                new { Id = "business", Name = "Business", Icon = "fas fa-balance-scale-left" },
+                new { Id = "miscellaneous", Name = "Miscellaneous", Icon = "fas fa-thumbtack" }
+            };
+
+            return Ok(subjects);
+        }
+
+        [HttpPost]
+        [Route("api/Product/filter-products")]
+        public IActionResult GetFilteredProducts([FromBody] FilterModel filters)
+        {
+            // Dummy data
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "UI Design Basics", Price = 0, Category = "Free", Subject = "Design" },
+            new Product { Id = 2, Name = "Advanced Web Dev", Price = 49.99, Category = "Paid", Subject = "Web Development" },
+            new Product { Id = 3, Name = "Business Strategy", Price = 29.99, Category = "On Sale", Subject = "Business" },
+            new Product { Id = 4, Name = "Software Patterns", Price = 39.99, Category = "Paid", Subject = "Software" }
+        };
+
+            // Filter logic
+            var filtered = products.Where(p =>
+                (filters.Free && p.Category == "Free") ||
+                (filters.Paid && p.Category == "Paid") ||
+                (filters.OnSale && p.Category == "On Sale") ||
+                (filters.Subjects?.Contains(p.Subject) == true)
+                ).ToList();
+
+            return Ok(new FilterResult
+            {
+                Products = filtered,
+                ActiveFilters = GetActiveFilters(filters)
+            });
+        }
+
+        private List<string> GetActiveFilters(FilterModel filters)
+        {
+            var active = new List<string>();
+            if (filters.Free) active.Add("Free");
+            if (filters.Paid) active.Add("Paid");
+            if (filters.OnSale) active.Add("On Sale");
+            if (filters.Subjects?.Any() == true) active.AddRange(filters.Subjects);
+            return active;
+        }
+
+
+        [HttpGet]
+        [Route("api/Product/filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var product_list = (await _productService.Get(null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, GlobalPageConfig.PageNumber,
+                            GlobalPageConfig.PageSize)).ToList();
+
+            var categories = product_list
+                .GroupBy(p => p.ProdCtgName)
+                .Select(g => new { Name = g.Key, Count = g.Count() })
+             .Where(w => w.Name is not null).ToList();
+
+            var brands = product_list
+                .GroupBy(p => p.BrandName)
+                .Select(g => new { Name = g.Key, Count = g.Count() })
+                .Where(w => w.Name is not null).ToList();
+
+            return Ok(new { categories, brands });
+        }
+    }
+    public class FilterModel
+    {
+        public bool Free { get; set; }
+        public bool Paid { get; set; }
+        public bool OnSale { get; set; }
+        public List<string> Subjects { get; set; }
     }
 
+    public class FilterResult
+    {
+        public List<Product> Products { get; set; }
+        public List<string> ActiveFilters { get; set; }
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Category { get; set; }
+        public string Subject { get; set; }
+    }
 }
