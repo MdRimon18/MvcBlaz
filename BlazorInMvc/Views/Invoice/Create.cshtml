@@ -375,13 +375,13 @@
                                                     <td>
                                                         <input readonly type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Amount" value="@itm.TotalPrice">
                                                     </td>
-                                                    @* <td class="treeview">
+                                                    <td class="treeview">
                                                         <div class="treeview-list-item">
                                                             <a data-bs-toggle="collapse" href="#treeviewExample-1_@indexx" role="button" aria-expanded="false">
                                                                 <p class="treeview-text">Serial</p>
                                                             </a>
                                                         </div>
-                                                    </td> *@
+                                                    </td>
                                                     <td>
                                                         <button type="button" title="Info" class="btn btn-sm a-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                                             <i class="fa fa-info-circle" style="font-size:18px"></i>
@@ -408,7 +408,7 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            @foreach (var srl in Model.SelectedSerialNumbers.Where(w => w.ProductId == itm.ProductId))
+                                                                        @foreach (var srl in itm.SelectedSerialNumbers)
                                                                             {
                                                                                 <tr class="hover-actions-trigger">
                                                                                     <td class="align-middle text-nowrap">

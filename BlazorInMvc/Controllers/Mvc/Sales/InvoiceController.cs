@@ -123,7 +123,13 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
         LastModifyBy = 1003,
         DeletedDate = null,
         DeletedBy = null,
-        Status = "Active"
+        Status = "Active",
+        SelectedSerialNumbers = new List<ProductSerialNumbers>
+        {
+            new ProductSerialNumbers { SerialNumber = "ABC123", ProdSerialNmbrId = 1 },
+            new ProductSerialNumbers { SerialNumber = "DEF456", ProdSerialNmbrId = 2 },
+            new ProductSerialNumbers { SerialNumber = "GHI789", ProdSerialNmbrId = 3 }
+              }
     }
 };
             var model = new InvoiceViewModel

@@ -1,4 +1,6 @@
-﻿namespace Domain.Entity.Settings
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Entity.Settings
 {
 	public class InvoiceItems
 	{
@@ -25,5 +27,7 @@
 		public DateTime? DeletedDate { get; set; }
 		public long? DeletedBy { get; set; }
 		public string Status { get; set; }
-	}
+		[NotMapped]
+        public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
+    }
 }

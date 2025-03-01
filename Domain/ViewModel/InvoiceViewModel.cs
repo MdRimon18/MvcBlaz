@@ -20,7 +20,7 @@ namespace Domain.ViewModel
         public List<PaymentTypes> PaymentTypesList { get; set; } = new List<PaymentTypes>();
         public List<Customers> CustomersList { get; set; } =new List<Customers>();
         public List<ProductSerialNumbers> SerialNumbers { get; set; } = new List<ProductSerialNumbers>();
-        public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
+       
         public string CustomerEmail { get; set; }
         public string SearchQuery { get; set; }
         public string SrchQuery { get; set; }
