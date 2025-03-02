@@ -4,6 +4,8 @@ using System.Data;
 using Domain.Entity.Settings;
 using Domain.CommonServices;
 using Domain.DbContex;
+using Domain.Entity;
+using Domain.Services.Shared;
 
 namespace Domain.Services.Inventory
 {
@@ -61,14 +63,15 @@ namespace Domain.Services.Inventory
         {
             try
             {
+                EntityHelper.SetCreateAuditFields(invoiceType);
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@InvoiceTypeId", dbType: DbType.Int64, direction: ParameterDirection.Output);
 
                 parameters.Add("@LanguageId", invoiceType.LanguageId);
-                parameters.Add("@InvoiceTypeName", invoiceType.InvoiceTypeName);      
-                parameters.Add("@entryDateTime", invoiceType.EntryDateTime);
-                parameters.Add("@entryBy", invoiceType.EntryBy);
+                parameters.Add("@InvoiceTypeName", invoiceType.InvoiceTypeName);
+                ParameterHelper.AddAuditParameters(invoiceType, parameters);
+
                 await _db.ExecuteAsync("invoice_type_Insert_SP", parameters, commandType: CommandType.StoredProcedure);
 
 
@@ -86,17 +89,15 @@ namespace Domain.Services.Inventory
 
         public async Task<bool> Update(InvoiceType invoiceType)
         {
+            EntityHelper.SetUpdateAuditFields(invoiceType);
             var parameters = new DynamicParameters();
             parameters.Add("@InvoiceTypeId", invoiceType.InvoiceTypeId);
 
             parameters.Add("@LanguageId", invoiceType.LanguageId);
             parameters.Add("@InvoiceTypeName", invoiceType.InvoiceTypeName);
-           
-            parameters.Add("@lastModifyDate", invoiceType.LastModifyDate);
-            parameters.Add("@lastModifyBy", invoiceType.LastModifyBy);
-            parameters.Add("@deletedDate", invoiceType.DeletedDate);
-            parameters.Add("@DeletedBy", invoiceType.DeletedBy);
-            parameters.Add("@Status", invoiceType.Status);
+
+            ParameterHelper.AddAuditParameters(invoiceType, parameters);
+
             parameters.Add("@success", dbType: DbType.Int32, direction: ParameterDirection.Output);
             await _db.ExecuteAsync("invoice_type_Update_SP",
                   parameters, commandType: CommandType.StoredProcedure);
@@ -113,9 +114,8 @@ namespace Domain.Services.Inventory
             bool isDeleted = false;
             if (deleteObj != null)
             {
-                deleteObj.DeletedBy = UserInfo.UserId;
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
+                EntityHelper.SetDeleteAuditFields(deleteObj);
+                
                 isDeleted = await Update(deleteObj);
             }
 

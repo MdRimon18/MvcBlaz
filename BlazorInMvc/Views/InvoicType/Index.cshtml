@@ -16,6 +16,12 @@
                         <a class="mb-4 d-block d-flex align-items-center" href="#experience-form" data-bs-toggle="collapse" aria-expanded="true" aria-controls="experience-form"><span class="circle-dashed"><span class="fas fa-plus"></span></span><span class="ms-3">Add new Invoice Type</span></a>
                         <div class="collapse show" id="experience-form">
                             <form id="invoiceTypeForm">
+                                <input type="hidden" id="InvoiceTypeId" name="InvoiceTypeId" />
+                                <input type="hidden" id="InvoiceTypeKey" name="InvoiceTypeKey" />  
+                                <input type="hidden" id="EntryDateTime" name="EntryDateTime" />
+                                <input type="hidden" id="EntryBy" name="EntryBy" />
+                
+                                <input type="hidden" id="Status" name="Status" />
                                 <div class="row">
                                     <div class="col-3 mb-3 text-lg-end">
                                         <label class="form-label fw-semi-bold" for="InvoiceTypeName">Invoice Type Name<span class="error-star">*</span></label>
@@ -64,7 +70,11 @@
                         <button class="btn btn-sm btn-falcon-default dropdown-toggle dropdown-caret-none" type="button" id="dashboard-layout" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="d-none d-sm-inline-block d-xl-none d-xxl-inline-block me-1 table-layout">Table View</span><span class="fas fa-chevron-down" data-fa-transform="shrink-3 down-1"></span></button>
                         <div class="dropdown-menu dropdown-toggle-item dropdown-menu-end border py-2" aria-labelledby="dashboard-layout" role="tablist"><a class="dropdown-item active" id="tableView" data-bs-toggle="tab" href="#table-view" role="tab" aria-controls="table-view">Table View</a><a class="dropdown-item" id="cardView" data-bs-toggle="tab" href="#card-view" role="tab" aria-controls="card-view">Card View</a></div>
                     </div>
-                    <a class="btn btn-falcon-default btn-sm mx-2" href="#!" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><span class="fas fa-plus" data-fa-transform="shrink-3"></span><span class="d-none d-sm-inline-block d-xl-none d-xxl-inline-block ms-1">New</span></a>
+                    <a class="btn btn-falcon-default btn-sm mx-2" href="#!" data-bs-toggle="offcanvas"
+                       data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" onclick="resetForm()">
+                        <span class="fas fa-plus" data-fa-transform="shrink-3"></span>
+                        <span class="d-none d-sm-inline-block d-xl-none d-xxl-inline-block ms-1">New</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -113,6 +123,7 @@
                         </div>
                         <div class="col-md-2">
                             <select id="PageSize" class="form-select form-select-sm" onchange="handlePageSizeChanged(this.value)">
+                                <option value="2">2</option>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>
@@ -154,8 +165,10 @@
                         row.innerHTML = `
                             <td class="align-middle fs-9 py-3">
                                 <div class="form-check mb-0">
-                                    <a href="#" class="btn btn-falcon-default btn-sm" onclick="editLoadData(${item.invoiceTypeId})"><span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span></a>
-                                    <a href="#" class="btn btn-falcon-default btn-sm" onclick="deleteItem(${item.invoiceTypeId})"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>
+                                 <a class="btn btn-falcon-default btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" onclick="editLoadData(${item.invoiceTypeId})">
+                           <span class="fas fa-external-link-alt" data-fa-transform="shrink-3"></span>
+                                </a>
+                                    <a   class="btn btn-falcon-default btn-sm" onclick="deleteItem(${item.invoiceTypeId})"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>
                                 </div>
                             </td>
                             <td class="align-middle fs-9 py-3">${item.invoiceTypeName}</td>
@@ -169,12 +182,15 @@
 
                     const pagination = document.getElementById("pagination");
                     pagination.innerHTML = "";
-                    for (let i = 1; i <= data.totalPages; i++) {
-                        const li = document.createElement("li");
-                        li.className = "page-item";
-                        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
-                        pagination.appendChild(li);
-                    }
+                    if(data.totalPages > 0){
+                      for (let i = 1; i <= data.totalPages; i++) {
+                            const li = document.createElement("li");
+                            li.className = "page-item";
+                            li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                            pagination.appendChild(li);
+                        }
+                   }
+                    
                 } else {
                     document.getElementById("tickets-table-fallback").classList.remove("d-none");
                 }
@@ -185,14 +201,38 @@
     function saveOrUpdate() {
         const form = document.getElementById("invoiceTypeForm");
         const formData = new FormData(form);
-        const invoiceTypeId = formData.get("InvoiceTypeId");
-        const status = invoiceTypeId ? "Active" : "Delete";
+        
+        let invoiceTypeId = formData.get("InvoiceTypeId");
+         invoiceTypeId = invoiceTypeId ? parseInt(invoiceTypeId) : 0;
+         console.log(invoiceTypeId)
+        const invoiceTypeName = formData.get("InvoiceTypeName");
+        const invoiceTypeKey = formData.get("InvoiceTypeKey");
+
+        const entryDateTime = formData.get("EntryDateTime");
+        const entryBy = formData.get("EntryBy");
+        let status = formData.get("Status");
+          status = status ? status : "Active";
+
+       
+         if (!invoiceTypeName) {
+        const errorElement = document.getElementById("InvoiceTypeNameError");
+        if (errorElement) {
+            errorElement.innerText = "Invoice Type Name is required.";
+        } else {
+            console.error("Error element not found: InvoiceTypeNameError");
+        }
+        return;
+    }
+
 
         fetch(`/api/InvoiceType/ManageInvoiceType`, {
             method: "POST",
             body: JSON.stringify({
                 InvoiceTypeId: invoiceTypeId,
-                InvoiceTypeName: formData.get("InvoiceTypeName"),
+                InvoiceTypeName: invoiceTypeName,
+                InvoiceTypeKey: invoiceTypeKey,
+                EntryDateTime: entryDateTime,
+                EntryBy: entryBy,
                 Status: status
             }),
             headers: {
@@ -204,12 +244,14 @@
                 if (data.success) {
                     loadInvoiceTypes();
                     form.reset();
-                    document.getElementById("offcanvasRight").classList.remove("show");
+                      document.querySelector('#offcanvasRight .btn-close').click();
+                  
                 } else {
                     // Handle validation errors
-                    for (const key in data.errors) {
-                        document.getElementById(`${key}Error`).innerText = data.errors[key];
-                    }
+                    console.log(data.errors);
+                    // for (const key in data.errors) {
+                    //     document.getElementById(`${key}Error`).innerText = data.errors[key];
+                    // }
                 }
             })
             .catch(error => console.error("Error saving invoice type:", error));
@@ -219,23 +261,35 @@
         fetch(`/api/InvoiceType/GetById?id=${invoiceTypeId}`)
             .then(response => response.json())
             .then(data => {
-                const form = document.getElementById("invoiceTypeForm");
-                for (const key in data) {
-                    if (form.elements[key]) {
-                        form.elements[key].value = data[key];
-                    }
-                }
-                document.getElementById("offcanvasRight").classList.add("show");
-            })
+              //  console.log(data)
+            const form = document.getElementById("invoiceTypeForm");
+            form.elements["InvoiceTypeId"].value = data.invoiceTypeId;
+            form.elements["InvoiceTypeKey"].value = data.invoiceTypeKey;
+           
+            form.elements["EntryDateTime"].value = data.entryDateTime ? data.entryDateTime.split('T')[0] : '';
+            form.elements["EntryBy"].value = data.entryBy;
+          
+            form.elements["Status"].value = data.status;
+            form.elements["InvoiceTypeName"].value = data.invoiceTypeName;
+      
+           // console.log(form.elements)
+        })
             .catch(error => console.error("Error loading invoice type data:", error));
     }
 
     function deleteItem(invoiceTypeId) {
+         const form = document.getElementById("invoiceTypeForm");
+        const formData = new FormData(form);
+        const invoiceTypeName = formData.get("InvoiceTypeName");
+        const invoiceTypeKey = formData.get("InvoiceTypeKey");
+
         if (confirm("Are you sure you want to delete this item?")) {
-            fetch(`/api/invoicetype`, {
+            fetch(`/api/InvoiceType/ManageInvoiceType`, {
                 method: "POST",
                 body: JSON.stringify({
                     InvoiceTypeId: invoiceTypeId,
+                    InvoiceTypeName: invoiceTypeName,
+                    InvoiceTypeKey: invoiceTypeKey,
                     Status: "Delete"
                 }),
                 headers: {
@@ -269,4 +323,15 @@
         document.getElementById("InvoiceTypeNameSearch").value = "";
         loadInvoiceTypes();
     }
+     
+    function resetForm() {
+        const form = document.getElementById("invoiceTypeForm");
+        form.reset();
+        form.elements["InvoiceTypeId"].value = 0;
+        form.elements["InvoiceTypeKey"].value = "00000000-0000-0000-0000-000000000000";
+            form.elements["EntryDateTime"].value = new Date().toISOString();
+        form.elements["EntryBy"].value =0;
+        form.elements["Status"].value = "Active";
+    }
+ 
 </script>

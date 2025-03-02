@@ -76,8 +76,7 @@ namespace BlazorInMvc.Controllers.Api.Settings
                 }
 
                 invoiceType.InvoiceTypeName = request.InvoiceTypeName;
-                invoiceType.LastModifyDate = DateTime.Now;
-                invoiceType.LastModifyBy = 1; // Replace with actual user ID
+                
                 invoiceType.LanguageId = 1; // Replace with actual language ID
 
                 var isUpdated = await _invoiceTypeService.Update(invoiceType);
@@ -93,8 +92,7 @@ namespace BlazorInMvc.Controllers.Api.Settings
                 {
                     InvoiceTypeName = request.InvoiceTypeName,
                     EntryDateTime = DateTime.Now,
-                    EntryBy = 1, // Replace with actual user ID
-                    LanguageId = 1 // Replace with actual language ID
+                  
                 };
 
                 var invoiceTypeId = await _invoiceTypeService.Save(invoiceType);

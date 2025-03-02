@@ -16,6 +16,9 @@ namespace Domain.Entity
         public DateTime? DeletedDate { get; set; }
         public long? DeletedBy { get; set; }
         public string? Status { get; set; }
+
+
+
     }
 
 }
