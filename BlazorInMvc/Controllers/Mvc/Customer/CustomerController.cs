@@ -1,5 +1,6 @@
 ﻿using Domain.Entity.Settings;
 using Domain.Services.Inventory;
+using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorInMvc.Controllers.Mvc.Customer
@@ -14,7 +15,17 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
             _customerService = customerService;
             _countryServiceV2 = countryServiceV2;
         }
+        [HttpGet]
+        public IActionResult Index(bool isPartial = false)
+        {
+            
+            if (isPartial)
+            {
+                return PartialView("Index");
+            }
+            return View("Index");
 
+        }
         [HttpGet]
         public async Task<IActionResult> Create(Guid? key)
         {
@@ -72,11 +83,11 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
             return View("Edit", customer);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var customers = await _customerService.Get(null, null, null, null, null, null, null, 1, 10);
-            return View(customers);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Index()
+        //{
+        //    var customers = await _customerService.Get(null, null, null, null, null, null, null, 1, 10);
+        //    return View(customers);
+        //}
     }
 }
