@@ -18,9 +18,9 @@ namespace Domain.Services.Inventory
 
         }
         public async Task<IEnumerable<Customers>> Get(long? CustomerId, string CustomerKey,
-            string CustomerName, 
-            string MobileNo, string Email, string Occupation, string StateName,
-            int? PageNumber, int? PageSize)
+     string CustomerName,
+     string MobileNo, string Email, string Occupation, string StateName,
+     int? PageNumber, int? PageSize)
         {
             try
             {
@@ -35,17 +35,16 @@ namespace Domain.Services.Inventory
                 parameters.Add("@Occupation", Occupation);
                 parameters.Add("@PageNumber", PageNumber);
                 parameters.Add("@PageSize", PageSize);
+              
 
                 return await _db.QueryAsync<Customers>("Customers_Get_SP", parameters, commandType: CommandType.StoredProcedure);
 
             }
             catch (Exception ex)
             {
-
                 return Enumerable.Empty<Customers>();
             }
         }
-
         public async Task<Customers> GetById(long CustomerId)
 
         {
