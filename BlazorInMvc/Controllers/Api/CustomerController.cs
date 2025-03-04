@@ -43,5 +43,24 @@ namespace BlazorInMvc.Controllers.Api
                 totalRecord
             });
         }
+        [HttpPost]
+        [Route("api/Customer/BulkAction")]
+        public async Task<IActionResult> BulkAction([FromBody] BulkActionRequest request)
+        {
+            //var customers = await _context.Customers.Where(c => customerIds.Contains(c.CustomerId)).ToListAsync();
+            //_context.Customers.RemoveRange(customers);
+            //await _context.SaveChangesAsync();
+            return Ok(new
+            {
+               request
+
+            });
+        }
+
+    }
+    public class BulkActionRequest
+    {
+        public string Action { get; set; }
+        public List<long> CustomerIds { get; set; }
     }
 }
