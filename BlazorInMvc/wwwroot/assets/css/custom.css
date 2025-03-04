@@ -86,3 +86,9 @@ button {
         transform: scale(1.05); /* Slight zoom-in effect */
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Adding a shadow for a subtle effect */
     }
+ 
+.sortable-header {
+    cursor: pointer;
+}
+
+ 

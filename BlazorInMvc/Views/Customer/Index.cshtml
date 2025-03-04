@@ -1,4 +1,4 @@
-﻿<div class="card mb-3" id="customersTable" data-list='{"valueNames":["customerName","email","mobileNo","custAddrssOne","entryDateTime"],"page":10,"pagination":true}'>
+﻿<div class="card mb-3" id="customersTable">
     <div class="card-header">
         <div class="row flex-between-center">
             <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
@@ -34,11 +34,11 @@
                                 <input class="form-check-input" id="checkbox-bulk-customers-select" type="checkbox" data-bulk-select='{"body":"table-customers-body","actions":"table-customers-actions","replacedElement":"table-customers-replace-element"}' />
                             </div>
                         </th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="name" onclick="sortTable('customerName')">Name</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="email" onclick="sortTable('email')">Email</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="phone" onclick="sortTable('mobileNo')">Phone</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5" data-sort="address" style="min-width: 200px;" onclick="sortTable('custAddrssOne')">Billing Address</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="joined" onclick="sortTable('entryDateTime')">Joined</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="name" onclick="sortTable('customerName')">Name <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="email" onclick="sortTable('email')">Email <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="phone" onclick="sortTable('mobileNo')">Phone <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5 sortable-header" data-sort="address" style="min-width: 200px;" onclick="sortTable('custAddrssOne')">Billing Address <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="joined" onclick="sortTable('entryDateTime')">Joined <i class="fas fa-sort"></i></th>
                         <th class="align-middle no-sort"></th>
                     </tr>
                 </thead>
@@ -60,7 +60,7 @@
 </div>
 
 
-<script src="~/vendors/list.js/list.min.js"></script>
+@* <script src="~/vendors/list.js/list.min.js"></script> *@
 <script>
     let currentPage = 1;
     let pageSize = 10;
@@ -201,13 +201,13 @@
     }
 
     // Initialize List.js
-    var options = {
-        valueNames: ['customerName', 'email', 'mobileNo', 'custAddrssOne', 'entryDateTime'],
-        page: 10,
-        pagination: true
-    };
+    // var options = {
+    //     valueNames: ['customerName', 'email', 'mobileNo', 'custAddrssOne', 'entryDateTime'],
+    //     page: 10,
+    //     pagination: true
+    // };
 
-    var customerList = new List('customersTable', options);
+    // var customerList = new List('customersTable', options);
 </script>
 @* <script>
     let currentPage = 1;
