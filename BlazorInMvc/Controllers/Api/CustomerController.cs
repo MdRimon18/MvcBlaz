@@ -15,7 +15,7 @@ namespace BlazorInMvc.Controllers.Api
         {
 
             _customerService = customerService;
-
+                
         }
         [HttpGet]
         [Route("api/Customer/GetAll")]
