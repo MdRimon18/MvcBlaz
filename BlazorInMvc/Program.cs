@@ -42,9 +42,11 @@ app.UseAuthorization();
 app.MapRazorPages(); // Add this line to enable Razor Pages routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=EcomProducts}/{action=Index}/{id?}");
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
-
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=EcomProducts}/{action=Index}/{id?}");
 
 // Map Blazor Hub for server-side Blazor
 //app.MapBlazorHub();

@@ -28,6 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\assets\CustomJs\CreateInvoice.js" />
+    <None Include="wwwroot\assets\CustomJs\Customer.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\ProductCategory\Index.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
