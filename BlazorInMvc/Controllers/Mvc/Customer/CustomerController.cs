@@ -58,12 +58,19 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
             ViewBag.SortField = sortField;
             ViewBag.SortOrder = sortOrder;
 
-            if (isPartial)
+            //if (isPartial)    
+            //{
+            //    return PartialView("Index", customers);
+            //}
+
+            //else return View(customers);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("Index", customers);
+                return PartialView("Index", customers); // Return partial view for AJAX requests
             }
 
-            else return View(customers);
+            return View("Index", customers);
         }
         [HttpGet]
         public async Task<IActionResult> Create(Guid? key)

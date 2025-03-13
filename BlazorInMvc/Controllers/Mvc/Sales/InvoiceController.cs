@@ -148,11 +148,10 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             model.FilteredItemsOffCanva = model.Products;
 
             model.ItemsList = invoiceItems;
-            if (isPartial)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("Create", model);
+                return PartialView("Create", model); // Return partial view for AJAX requests
             }
-
 
             return View("Create", model);
 
