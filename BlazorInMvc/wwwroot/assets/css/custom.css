@@ -90,5 +90,7 @@ button {
 .sortable-header {
     cursor: pointer;
 }
-
+.spa-link {
+    cursor: pointer;
+}
  

@@ -50,7 +50,7 @@
     <link href="~/assets/css/user-rtl.css" rel="stylesheet" id="user-style-rtl">
     <link href="~/assets/css/user.css" rel="stylesheet" id="user-style-default">
 
-   @*  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+ 
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -187,7 +187,7 @@
                         <ul class="nav collapse" id="i-sale">
 
                                       <li class="nav-item">
-                                        <a class="nav-link" onclick="loadPage('/Invoice/Create')">
+                                        <a class="nav-link spa-link" onclick="loadPage('/Invoice/Create')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Sales Point</span>
                                             </div>
@@ -195,7 +195,7 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" onclick="loadPage('/Customer/Index')">
+                                        <a class="nav-link" >
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Invoice Details</span>
                                             </div>
@@ -515,7 +515,7 @@
                                 </a>
                                 <ul class="nav collapse" id="i-Customer">
                                     <li class="nav-item">
-                                        <a class="nav-link"   href="/Customer/Index">
+                                        <a class="nav-link spa-link" onclick="loadPage('/Customer/Index')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Customer Info</span>
                                             </div>
@@ -1953,13 +1953,18 @@
                     @RenderBody()
                    
                 </div>
+                <script src="~/assets/js/jquery-3.6.0.min.js"></script>
                 <script src="~/assets/customjs/customer.js"></script>
                 <script src="~/assets/customjs/createinvoice.js"></script>
-               
+                <script src="~/assets/customjs/SPA.js"></script>
+
+                
+                
+
                @*  <script src="~/assets/customjs/common.js"></script>
                 <script src="~/assets/customjs/customer.js"></script>
                 <script src="~/assets/customjs/createinvoice.js"></script> *@
-               @*  <script src="~/assets/customjs/SPA.js"></script> *@
+              
               @*   <script>
                     document.addEventListener('click', function (event) {
                         const target = event.target.closest('a');
@@ -2191,38 +2196,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
-    <script>
-        function loadPage(url) {
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function (data) {
-                    console.log(data)
-                    $('#MainContainer').html(data); // Update only the content
-                    window.history.pushState({}, '', url); // Update URL without reloading
-
-                 //   window.fetchAllProducts();
-                    window.initializeInvoiceSearch();
-                    window.handleSearch();
-                },
-                error: function () {
-                    alert('Error loading page.');
-                }
-            });
-            }
-
-        // $(document).on('click', 'a.nav-link', function (e) {
-        //     e.preventDefault(); // Prevent full page reload
-        // var url =$(this).attr('href');
-        // loadPage(url);
-        //     });
-
-        // Handle back button navigation
-        window.onpopstate = function () {
-            loadPage(location.pathname);
-            };
-    </script>
+   
     <script>
             function RenderProductSettings(route) {
                  
@@ -2342,8 +2316,8 @@
     <script src="~/vendors/anchorjs/anchor.min.js"></script>
     <script src="~/vendors/is/is.min.js"></script>
     <script src="~/vendors/glightbox/glightbox.min.js"></script>
-    <script src="https://unpkg.com/picmo@5.7.6/dist/umd/index.js"></script>
-    <script src="https://unpkg.com/@@picmo/popup-picker@5.7.6/dist/umd/index.js"></script>
+   @*  <script src="https://unpkg.com/picmo@5.7.6/dist/umd/index.js"></script>
+    <script src="https://unpkg.com/@@picmo/popup-picker@5.7.6/dist/umd/index.js"></script> *@
     <script src="~/vendors/fullcalendar/main.min.js"></script>
     <script src="~/assets/js/flatpickr.js"></script>
     <script src="~/vendors/dayjs/dayjs.min.js"></script>
