@@ -72,7 +72,7 @@
         document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll);
     });
 
-    async function loadCustomers() {
+    window.loadCustomers = async function () {
         const tbody = document.getElementById("table-customers-body");
         tbody.innerHTML = "";
 

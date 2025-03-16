@@ -1954,9 +1954,53 @@
                    
                 </div>
                 <script src="~/assets/js/jquery-3.6.0.min.js"></script>
-                <script src="~/assets/customjs/customer.js"></script>
+               @*  <script src="~/assets/customjs/customer.js"></script> *@
                 <script src="~/assets/customjs/createinvoice.js"></script>
                 <script src="~/assets/customjs/SPA.js"></script>
+                <script>
+                    let currentPage = 1;
+                    let pageSize = 7;
+                    let sortOrder = 'asc';
+                    let sortField = 'customerName';
+                    let customers = [];
+                    let totalPages = 0;
+                    let totalRecords = 0;
+
+                    function updatePagination() {
+                            const pagination = document.querySelector('.pagination');
+                            pagination.innerHTML = '';
+
+                            const maxPagesToShow = 5;
+                            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+                            if (startPage > 1) {
+                                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="changePage(1)">1</a></li>`;
+                                if (startPage > 2) {
+                                    pagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="changePage(${startPage - 1})">...</a></li>`;
+                                }
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
+                                const li = document.createElement('li');
+                                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                                li.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+                                pagination.appendChild(li);
+                            }
+
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    pagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="changePage(${endPage + 1})">...</a></li>`;
+                                }
+                                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="changePage(${totalPages})">${totalPages}</a></li>`;
+                            }
+                        }
+                          function updatePaginationInfo() {
+                            const paginationInfo = document.getElementById("pagination-info");
+                            paginationInfo.innerText = `Page ${currentPage} of ${totalPages}, Total Records: ${totalRecords}`;
+                        }
+
+                </script>
 
                 
                 

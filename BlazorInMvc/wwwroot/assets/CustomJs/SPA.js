@@ -88,37 +88,89 @@
 
 
 
+//function loadPage(url) {
+//    $.ajax({
+//        url: url,
+//        type: 'GET',
+//        success: function (data) {
+//            console.log(data)
+//            $('#MainContainer').html(data); // Update only the content
+//            window.history.pushState({}, '', url); // Update URL without reloading
+
+//            if (url == "/Invoice/Create") {
+//                window.initializeInvoiceSearch();
+//               // window.handleSearch();
+//            }
+//            else if (url == "/Customer/Index") { 
+               
+//                    window.loadCustomers();
+//                    document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll);
+                 
+               
+//              //  window.loadCustomers();
+//               // window.changePage();
+//                //window.onRefresh();
+//                //window.handlePageSizeChanged();
+//                //window.sortTable();
+//               // window.bindEvents();
+//            } else {
+//                loadPage('/home/index')
+//            }
+           
+//        },
+//        error: function () {
+//            alert('Error loading page.');
+//        }
+//    });
+//}
+ 
+//window.onpopstate = function () {
+//    loadPage(location.pathname);
+//};
+
+
+ 
+/////
+
 function loadPage(url) {
     $.ajax({
         url: url,
         type: 'GET',
         success: function (data) {
-            console.log(data)
+            console.log(data);
             $('#MainContainer').html(data); // Update only the content
             window.history.pushState({}, '', url); // Update URL without reloading
 
-            if (url == "/Invoice/Create") {
-                window.initializeInvoiceSearch();
-               // window.handleSearch();
-            }
-            else if (url == "/Customer/Index") {    
-              //  window.loadCustomers();
-               // window.changePage();
-                //window.onRefresh();
-                //window.handlePageSizeChanged();
-                //window.sortTable();
-               // window.bindEvents();
-            } else {
-                loadPage('/home/index')
-            }
-           
+            initializePage(url); // Call the function to initialize required scripts
         },
         error: function () {
             alert('Error loading page.');
         }
     });
 }
- 
+
+function initializePage(url) {
+    if (url === "/Invoice/Create") {
+        if (window.initializeInvoiceSearch) window.initializeInvoiceSearch();
+    } else if (url === "/Customer/Index") {
+        if (window.loadCustomers) window.loadCustomers();
+        document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll);
+        // Ensure the bulk select checkbox event is added after the page loads
+        //document.addEventListener("DOMContentLoaded", function () {
+        //    const bulkCheckbox = document.getElementById("checkbox-bulk-customers-select");
+        //    if (bulkCheckbox) {
+        //        bulkCheckbox.addEventListener("change", toggleSelectAll);
+        //    }
+        //});
+    }
+}
+
+// Handle browser back/forward navigation
 window.onpopstate = function () {
     loadPage(location.pathname);
 };
+
+// Ensure page-specific functions are called on initial page load
+document.addEventListener("DOMContentLoaded", function () {
+    initializePage(location.pathname);
+});
