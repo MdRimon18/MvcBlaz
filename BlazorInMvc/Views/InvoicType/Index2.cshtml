@@ -1,0 +1,281 @@
+﻿<div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <div class="card-header">
+            <h5 class="mb-0"> Add New Invoice Types</h5>
+        </div>
+        <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="col-lg-12 ps-lg-2 mb-3">
+            <div class="row g-0 h-100 align-items-stretch">
+                <div class="col-lg-12 mb-3">
+                    <div class="pb-0">
+                       @*  <a class="mb-4 d-block d-flex align-items-center" 
+                        href="#experience-form" data-bs-toggle="collapse" 
+                        aria-expanded="true" aria-controls="experience-form">
+                        <span class="circle-dashed"><span class="fas fa-plus"></span></span>
+                        <span class="ms-3">Add new Invoice Type</span></a> *@
+                     @*    <h6>Add new Invoice Type</h6> *@
+
+                        <div class="collapse show" id="experience-form">
+                            <form id="invoiceTypeForm">
+                                <input type="hidden" id="InvoiceTypeId" name="InvoiceTypeId" />
+                                <input type="hidden" id="InvoiceTypeKey" name="InvoiceTypeKey" />
+                                <input type="hidden" id="EntryDateTime" name="EntryDateTime" />
+                                <input type="hidden" id="EntryBy" name="EntryBy" />
+
+                                <input type="hidden" id="Status" name="Status" />
+                                <div class="row">
+                                    <div class="col-3 mb-3 text-lg-end">
+                                        <label class="form-label fw-semi-bold" for="InvoiceTypeName">Invoice Type Name<span class="error-star">*</span></label>
+                                    </div>
+                                    <div class="col-9 col-sm-7 mb-3">
+                                        <input type="text" class="form-control form-control-sm form-rounded" id="InvoiceTypeName" name="InvoiceTypeName" />
+                                        <span class="text-danger" id="InvoiceTypeNameError"></span>
+                                    </div>
+                                    <div class="col-9 col-sm-7 offset-3">
+                                        <button class="btn btn-primary" type="button" onclick="saveOrUpdate()">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="border-dashed-bottom my-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-3" id="customersTable" >
+    <div class="card-header">
+        <div class="row flex-between-center">
+            <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
+                <h5 class="fs-9 mb-0 text-nowrap py-2 py-xl-0">Customers</h5>
+            </div>  
+            <div class="col-8 col-sm-auto text-end ps-2">
+                <div class="d-none" id="table-customers-actions">
+                    <div class="d-flex">
+                        <select class="form-select form-select-sm" aria-label="Bulk actions">
+                            <option selected="">Bulk actions</option>
+                            <option value="Refund">Refund</option>
+                            <option value="Delete">Delete</option>
+                            <option value="Archive">Archive</option>
+                        </select>
+                        <button class="btn btn-falcon-default btn-sm ms-2" type="button">Apply</button>
+                    </div>
+                </div>
+                <div id="table-customers-replace-element">
+                    <button class="btn btn-falcon-default btn-sm" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">New</span>
+                    </button>
+                    <button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">Filter</span></button>
+                    <button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">Export</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive scrollbar">
+            <table class="table table-sm table-striped fs-10 mb-0 overflow-hidden">
+                <thead class="bg-200">
+                    <tr>
+                        <th>
+                            <div class="form-check fs-9 mb-0 d-flex align-items-center">
+                                <input class="form-check-input" id="checkbox-bulk-customers-select" type="checkbox" data-bulk-select='{"body":"table-customers-body","actions":"table-customers-actions","replacedElement":"table-customers-replace-element"}' />
+                            </div>
+                        </th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="name">Name</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="email">Email</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="phone">Phone</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5" data-sort="address" style="min-width: 200px;">Billing Address</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="joined">Joined</th>
+                        <th class="align-middle no-sort"></th>
+                    </tr>
+                </thead>
+                <tbody class="list" id="table-customers-body">
+                    <tr class="btn-reveal-trigger">
+                        <td class="align-middle py-2" style="width: 28px;">
+                            <div class="form-check fs-9 mb-0 d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" id="customer-0" data-bulk-select-row="data-bulk-select-row" />
+                            </div>
+                        </td>
+                        <td class="name align-middle white-space-nowrap py-2">
+                            <a href="../../app/e-commerce/customer-details.html">
+                                <div class="d-flex d-flex align-items-center">
+                                    <div class="avatar avatar-xl me-2">
+                                        <div class="avatar-name rounded-circle"><span>RA</span></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h5 class="mb-0 fs-10">Ricky Antony</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </td>
+                        <td class="email align-middle py-2"><a href="mailto:ricky@example.com">ricky@example.com</a></td>
+                        <td class="phone align-middle white-space-nowrap py-2"><a href="tel:2012001851">(201) 200-1851</a></td>
+                        <td class="address align-middle white-space-nowrap ps-5 py-2">2392 Main Avenue, Penasauka, New Jersey 02139</td>
+                        <td class="joined align-middle py-2">30/03/2018</td>
+                        <td class="align-middle white-space-nowrap py-2 text-end">
+                            <div class="dropdown font-sans-serif position-static">
+                                <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal" type="button" id="customer-dropdown-0" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                                <div class="dropdown-menu dropdown-menu-end border py-0" aria-labelledby="customer-dropdown-0">
+                                    <div class="py-2"><a class="dropdown-item" href="#!">Edit</a><a class="dropdown-item text-danger" href="#!">Delete</a></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                 
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-center">
+        <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+        <ul class="pagination mb-0"></ul>
+        <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    let currentPage = 1;
+    let pageSize = 5;
+    let search = '';
+    let sortColumn = 'ServiceCategoryId';
+    let sortDirection = 'asc';
+
+    function loadTable() {
+        $.ajax({
+            url: '@Url.Action("LoadTable", "Customer")',
+            type: 'GET',
+            data: {
+                page: currentPage,
+                pageSize: pageSize,
+                search: search,
+                sortColumn: sortColumn,
+                sortDirection: sortDirection
+            },
+            success: function (response) {
+                $('#tableContainer').html(response);
+                bindEvents(); // Rebind events after updating the table
+            },
+            error: function () {
+                alert('Error loading table data.');
+            }
+        });
+    }
+
+    function bindEvents() {
+        // Pagination click
+        $('.page-link').on('click', function (e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            if (page && !$(this).parent().hasClass('disabled')) {
+                currentPage = page;
+                loadTable();
+            }
+        });
+
+        // Sorting click on <th>
+        $('.sort-th').on('click', function (e) {
+            e.preventDefault();
+            sortColumn = $(this).data('column');
+            sortDirection = $(this).data('direction');
+            loadTable();
+        });
+    }
+
+    // Search input
+    // $('#searchInput').on('keyup', function () {
+    //     search = $(this).val();
+    //     currentPage = 1; // Reset to first page on search
+    //     loadTable();
+    // });
+    // Search on Enter key
+    $('#searchInput').on('keypress', function (e) {
+        if (e.which === 13) { // Enter key
+            search = $(this).val();
+            currentPage = 1; // Reset to first page on search
+            loadTable();
+        }
+    });
+    // Remove data function (unchanged)
+
+    // Show/hide clear icon and handle input changes
+    $('#searchInput').on('input', function () {
+        const value = $(this).val();
+        if (value.length > 0) {
+            $('#clearSearch').show();
+        } else {
+            $('#clearSearch').hide();
+            // Auto-refresh to page 1 when input is cleared
+            if (search !== '') { // Only refresh if there was a previous search
+                search = '';
+                currentPage = 1;
+                loadTable();
+            }
+        }
+    });
+
+    // Clear search on icon click
+    $('#clearSearch').on('click', function () {
+        $('#searchInput').val('');
+        $(this).hide();
+        search = '';
+        currentPage = 1;
+        loadTable();
+    });
+
+    function RemoveData(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("RemoveData", "Driver")?id=' + id,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            ).then(() => {
+                                loadTable(); // Refresh table after delete
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+    // Initial binding of events
+    $(document).ready(function () {
+        bindEvents();
+        loadTable();
+    });
+</script>

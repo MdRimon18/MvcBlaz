@@ -118,17 +118,17 @@ namespace BlazorInMvc.Controllers.Mvc.Supplier
         //    }
         //    return View(customers);
         //}
-        public async Task<IActionResult> Index(bool isPartial = false,int page = 1, int pageSize = 10, string sortField = "customerName", string sortOrder = "asc")
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string sortField = "customerName", string sortOrder = "asc")
         {
             var customers = (await _customerService.Get(null, null, null, null, null, null, null, page, pageSize)).ToList();
             if (customers.Count == 0)
             {
-                if (isPartial)
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return PartialView("Index", customers);
+                    return PartialView("Index", customers); // Return partial view for AJAX requests
                 }
 
-                else return View(customers);
+                return View("Index", customers);
             }
 
             var totalPages = (int)Math.Ceiling((double)customers[0].total_row / pageSize);
@@ -159,13 +159,13 @@ namespace BlazorInMvc.Controllers.Mvc.Supplier
             ViewBag.PageSize=pageSize;
             ViewBag.SortField = sortField;
             ViewBag.SortOrder = sortOrder;
-
-            if (isPartial)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("Index", customers);
+                return PartialView("Index", customers); // Return partial view for AJAX requests
             }
-          
-            else return View(customers);
+
+            return View("Index", customers);
+            
         }
     }
 }

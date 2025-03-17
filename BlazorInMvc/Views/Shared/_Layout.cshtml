@@ -523,6 +523,14 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link spa-link" onclick="loadPage('/Customer/IndexV2')">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text ps-1">Customer v2 Info</span>
+                                            </div>
+                                        </a>
+                                        <!-- more inner pages-->
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" href="/Customer/Create">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1"> New Customer</span>
@@ -558,7 +566,7 @@
                                 </a>
                                 <ul class="nav collapse" id="i-supplier">
                                     <li class="nav-item">
-                                        <a class="nav-link" style="cursor:pointer" data-spa="Supplier/Index" >
+                                        <a class="nav-link spa-link"   onclick="loadPage('Supplier/Index')" >
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Supplier Info</span>
                                             </div>
@@ -939,9 +947,17 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/invoice_type">
+                                        <a class="nav-link" href="/InvoicType/Index">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Invoice Type</span>
+                                            </div>
+                                        </a>
+                                        <!-- more inner pages-->
+                                    </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link spa-link" onclick="loadPage('/InvoicType/index2')">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text ps-1">Invoice Type 2</span>
                                             </div>
                                         </a>
                                         <!-- more inner pages-->

@@ -8,5 +8,17 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
         {
             return View();
         }
+        public IActionResult Index2()
+        {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("Index2"); // Return partial view for AJAX requests
+            }
+
+            return View("Index2");
+            
+        }
+
+
     }
 }
