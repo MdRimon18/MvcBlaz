@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Settings
 {
@@ -20,6 +21,9 @@ namespace Domain.Entity.Settings
         public long? DeletedBy { get; set; }
         public string Status { get; set; }
         public int total_row { get; set; }
+       
+        [NotMapped] 
+        public int TotalCount { get; set; }
     }
 }
 
