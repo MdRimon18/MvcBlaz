@@ -1,4 +1,5 @@
-﻿using Domain.Services.Inventory;
+﻿using Domain.Entity.Settings;
+using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,13 +20,16 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("Index2"); // Return partial view for AJAX requests
+                return PartialView("Index2",new List<InvoiceType>()); // Return partial view for AJAX requests
             }
 
-            return View("Index2");
+            return View("Index2",new List<InvoiceType>());
             
         }
-        public async Task<IActionResult> LoadTable(int page = 1, int pageSize = 10, string search = "", string sortColumn = "InvoiceTypeId", string sortDirection = "desc")
+        public async Task<IActionResult> LoadTable(int page = 1,
+            int pageSize = 10, string search = "",  
+            string sortColumn = "InvoiceTypeId",
+            string sortDirection = "desc")
         {
             var invoiceTypes = await _invoiceTypeService.GetInvoiceTypesAsync(page, pageSize, search, sortColumn, sortDirection);
             int totalRecords = invoiceTypes.Any() ? invoiceTypes.First().TotalCount : 0;
@@ -43,7 +47,7 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
                 SortDirection = sortDirection
             };
 
-            return PartialView("_InvoiceTypeTable", viewModel);
+            return PartialView("_InvoiceList", viewModel);
         }
 
     }

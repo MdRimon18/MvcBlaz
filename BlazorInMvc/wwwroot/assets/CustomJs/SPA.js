@@ -162,6 +162,8 @@ function initializePage(url) {
         //        bulkCheckbox.addEventListener("change", toggleSelectAll);
         //    }
         //});
+    } else if (url == "/InvoicType/index2") {
+        if (window.loadTable) window.loadTable();
     }
 }
 
