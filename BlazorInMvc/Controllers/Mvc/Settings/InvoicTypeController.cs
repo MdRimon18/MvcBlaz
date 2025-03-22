@@ -2,6 +2,7 @@
 using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorInMvc.Controllers.Mvc.Settings
 {
@@ -49,6 +50,6 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
 
             return PartialView("_InvoiceList", viewModel);
         }
-
+      
     }
 }

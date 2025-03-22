@@ -10,6 +10,7 @@ namespace Domain.ViewModel
     public class InvoiceTypeViewModel
     {   
         public IEnumerable<InvoiceType> InvoiceTypes { get; set; }
+        public InvoiceType InvoiceType { get; set; } = new InvoiceType();
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public int PageSize { get; set; }
