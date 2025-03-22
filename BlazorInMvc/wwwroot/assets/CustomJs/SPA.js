@@ -131,17 +131,46 @@
 
  
 /////
+// Mapping object for page-specific initialization logic
+const pageInitializers = {
+    "/Invoice/Create": () => {
+        if (window.initializeInvoiceSearch) window.initializeInvoiceSearch();
+    },
+    "/Customer/Index": [
+        () => { if (window.loadCustomers) window.loadCustomers(); },
+        () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
+    ],
+    "/InvoicType/index2": (isAjax) => {
+        if (isAjax && window.loadTable) window.loadTable();
+    }
+    // Add more URLs and their initialization functions here as needed
+};
 
+// Function to initialize page-specific logic based on URL
+function initializePage(url, isAjax = false) {
+    const initializers = pageInitializers[url];
+    if (initializers) {
+        if (Array.isArray(initializers)) {
+            // If it's an array, call each function with isAjax
+            initializers.forEach(init => init(isAjax));
+        } else {
+            // If it's a single function, call it with isAjax
+            initializers(isAjax);
+        }
+    } else {
+        console.warn(`No initializer found for URL: ${url}`);
+    }
+}
+
+// Function to load page content via AJAX and update the URL
 function loadPage(url) {
     $.ajax({
         url: url,
         type: 'GET',
         success: function (data) {
-            console.log(data);
-            $('#MainContainer').html(data); // Update only the content
-            window.history.pushState({}, '', url); // Update URL without reloading
-
-            initializePage(url); // Call the function to initialize required scripts
+            $('#MainContainer').html(data); // Update the content container
+            window.history.pushState({}, '', url); // Update the browser URL
+            initializePage(url, true); // Initialize with isAjax=true
         },
         error: function () {
             alert('Error loading page.');
@@ -149,30 +178,12 @@ function loadPage(url) {
     });
 }
 
-function initializePage(url) {
-    if (url === "/Invoice/Create") {
-        if (window.initializeInvoiceSearch) window.initializeInvoiceSearch();
-    } else if (url === "/Customer/Index") {
-        if (window.loadCustomers) window.loadCustomers();
-        document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll);
-        // Ensure the bulk select checkbox event is added after the page loads
-        //document.addEventListener("DOMContentLoaded", function () {
-        //    const bulkCheckbox = document.getElementById("checkbox-bulk-customers-select");
-        //    if (bulkCheckbox) {
-        //        bulkCheckbox.addEventListener("change", toggleSelectAll);
-        //    }
-        //});
-    } else if (url == "/InvoicType/index2") {
-        if (window.loadTable) window.loadTable();
-    }
-}
-
 // Handle browser back/forward navigation
 window.onpopstate = function () {
     loadPage(location.pathname);
 };
 
-// Ensure page-specific functions are called on initial page load
+// Initialize the page on initial load or full reload
 document.addEventListener("DOMContentLoaded", function () {
-    initializePage(location.pathname);
+    initializePage(location.pathname); // Initialize with isAjax=false
 });

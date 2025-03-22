@@ -81,7 +81,7 @@ namespace Domain.Services.Inventory
             Status,
             COUNT(*) OVER() AS TotalCount 
         FROM [stt].[InvoiceTypes]
-        WHERE Status IS NULL {searchFilter}
+        WHERE Status='Active'  {searchFilter}
         )
         SELECT * FROM InvoiceData
         ORDER BY {validSortColumn} {sortDirection}
