@@ -10,7 +10,8 @@
                     <input class="form-check-input" id="checkbox-bulk-customers-select" type="checkbox" data-bulk-select='{"body":"table-customers-body","actions":"table-customers-actions","replacedElement":"table-customers-replace-element"}' />
                 </div>
             </th> *@
-            <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="name">Name</th>
+                    <th class="text-900 sort pe-1 align-middle white-space-nowrap text-center" data-sort="name">Name</th>
+
             @* <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="email">Email</th>
             <th class="text-900 sort pe-1 align-middle white-space-nowrap" data-sort="phone">Phone</th>
             <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5" data-sort="address" style="min-width: 200px;">Billing Address</th>
@@ -26,18 +27,21 @@
                     <input class="form-check-input" type="checkbox" id="customer-0" data-bulk-select-row="data-bulk-select-row" />
                 </div>
             </td> *@
-            <td class="name align-middle white-space-nowrap py-2">
-                <a href="../../app/e-commerce/customer-details.html">
-                    <div class="d-flex d-flex align-items-center">
-                        <div class="avatar avatar-xl me-2">
-                            <div class="avatar-name rounded-circle"><span>RA</span></div>
-                        </div>
-                        <div class="flex-1">
-                            <h5 class="mb-0 fs-10">@item.InvoiceTypeName</h5>
-                        </div>
-                    </div>
-                </a>
-            </td>
+                        <td class="name align-middle white-space-nowrap py-2 text-center">
+                            <a>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="avatar avatar-xl me-2">
+                                        <div class="avatar-name rounded-circle">
+                                            <span>@item.InvoiceTypeName.Substring(0, Math.Min(2, item.InvoiceTypeName.Length))</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 text-center">
+                                        <h5 class="mb-0 fs-10">@item.InvoiceTypeName</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </td>
+
            @*  <td class="email align-middle py-2"><a href="mailto:ricky@example.com">ricky@example.com</a></td>
             <td class="phone align-middle white-space-nowrap py-2"><a href="tel:2012001851">(201) 200-1851</a></td>
             <td class="address align-middle white-space-nowrap ps-5 py-2">2392 Main Avenue, Penasauka, New Jersey 02139</td>
