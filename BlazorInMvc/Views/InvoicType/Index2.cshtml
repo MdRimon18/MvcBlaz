@@ -10,19 +10,39 @@
     <div class="card-header">
         <div class="row flex-between-center">
             <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
+           
                 <h5 class="fs-9 mb-0 text-nowrap py-2 py-xl-0">Customers</h5>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search (Press Enter to search)" value="">
-                            <div class="input-group-append">
-                                <span class="input-group-text clear-icon" id="clearSearch" style="display: none; cursor: pointer;">✖</span>
+                <div class="row mb-0 ml-2 g-3 align-items-center">
+                    @* <div class="card-body pt-0 pt-md-3">
+                        <div class="row g-3 align-items-center">
+
+                            <div class="col">
+                                <form class="position-relative">
+                                    <input class="form-control form-control-sm search-input lh-1 rounded-2 ps-4" id="searchInput" type="search" placeholder="Search..." aria-label="Search" />
+                                    <div class="position-absolute top-50 start-0 translate-middle-y ms-2"><span class="fas fa-search text-400 fs-10"></span></div>
+                                    <span class="input-group-text clear-icon position-absolute" id="clearSearch" style="display: none; cursor: pointer;">✖</span>
+                                </form>
                             </div>
+
+                        </div>
+                    </div> *@
+                    
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            
+                                <input class="form-control form-control-sm search-input lh-1 rounded-2 ps-4"
+                                       id="searchInput"
+                                type="search"
+                                       placeholder="Search.. (Press Enter to search)" aria-label="Search" value="" />
+                                <div class="position-absolute top-50 start-0 translate-middle-y ms-2"><span class="fas fa-search text-400 fs-10"></span></div>
+                                <span class="input-group-text clear-icon" id="clearSearch" style="display: none; cursor: pointer;">✖</span>
+                             
+                            
                         </div>
                     </div>
                 </div>
             </div>  
-            <div class="col-8 col-sm-auto text-end ps-2">
+            <div class="col-4 col-sm-auto text-end ps-2">
                 <div class="d-none" id="table-customers-actions">
                     <div class="d-flex">
                         <select class="form-select form-select-sm" aria-label="Bulk actions">
@@ -61,7 +81,7 @@
     let sortColumn = 'InvoiceTypeId';
     let sortDirection = 'asc';
 
-    window.loadTable= function () {
+    window.loadTable=function () {
         $.ajax({
             url: '@Url.Action("LoadTable", "InvoicType")',
             type: 'GET',
