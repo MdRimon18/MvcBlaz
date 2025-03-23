@@ -51,11 +51,12 @@
                     <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal" type="button" id="customer-dropdown-0" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h fs-10"></span></button>
                     <div class="dropdown-menu dropdown-menu-end border py-0" aria-labelledby="customer-dropdown-0">
                         <div class="py-2">
-                                        <a class="dropdown-item" data-bs-toggle="offcanvas"
+                                        <a class="dropdown-item mouse-pointer" data-bs-toggle="offcanvas"
                                            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
                                            onclick="editLoadInvoiceData('@item.InvoiceTypeId')">Edit</a>
 
-                            <a class="dropdown-item text-danger" href="#!">Delete</a></div>
+                                        <a class="dropdown-item text-danger mouse-pointer" onclick="RemoveData('@item.InvoiceTypeKey')">Delete</a>
+                                    </div>
                     </div>
                 </div>
             </td>

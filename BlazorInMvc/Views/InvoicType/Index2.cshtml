@@ -51,7 +51,7 @@
         <div class="row flex-between-center">
             <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
            
-                <h5 class="fs-9 mb-0 text-nowrap py-2 py-xl-0 me-3">Customers</h5>
+                <h5 class="fs-9 mb-0 text-nowrap py-2 py-xl-0 me-3">Invoice Types</h5>
                 <div class="row  mb-0 ml-2 g-3 align-items-center">
                     @* <div class="card-body pt-0 pt-md-3">
                         <div class="row g-3 align-items-center">
@@ -205,7 +205,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '@Url.Action("RemoveData", "Driver")?id=' + id,
+                    url: '@Url.Action("RemoveData", "InvoicType")?id=' + id,
                     type: 'GET',
                     success: function (response) {
                         if (response) {
@@ -249,8 +249,8 @@
          const formData = new FormData(form);
 
          let invoiceTypeId = formData.get("InvoiceTypeId");
-          invoiceTypeId = invoiceTypeId ? parseInt(invoiceTypeId) : 0;
-          console.log(invoiceTypeId)
+         invoiceTypeId = invoiceTypeId ? parseInt(invoiceTypeId) : 0;
+         console.log(invoiceTypeId)
          const invoiceTypeName = formData.get("InvoiceTypeName");
          const invoiceTypeKey = formData.get("InvoiceTypeKey");
 
@@ -270,7 +270,7 @@
          return;
      }
 
-         fetch(`/api/InvoiceType/ManageInvoiceType`, {
+         fetch(`/InvoicType/ManageInvoiceType`, {
              method: "POST",
              body: JSON.stringify({
                  InvoiceTypeId: invoiceTypeId,

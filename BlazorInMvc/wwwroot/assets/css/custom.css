@@ -93,4 +93,7 @@ button {
 .spa-link {
     cursor: pointer;
 }
- 
+
+.mouse-pointer {
+    cursor: pointer;
+}

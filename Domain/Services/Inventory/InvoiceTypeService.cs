@@ -175,6 +175,20 @@ namespace Domain.Services.Inventory
 
             return isDeleted;
         }
+        public async Task<bool> DeleteByKey(Guid key)
+        {
+            var invoiceType = await (Get(null, key.ToString(), null, null, 1, 1));
+            var deleteObj = invoiceType.FirstOrDefault();
+            bool isDeleted = false;
+            if (deleteObj != null)
+            {
+                EntityHelper.SetDeleteAuditFields(deleteObj);
+
+                isDeleted = await Update(deleteObj);
+            }
+
+            return isDeleted;
+        }
         //Example of Pagination sorting searching using efficient and performanceable code 
         public async Task<IEnumerable<User>> GetUsersAsync(int page = 1, int pageSize = 10,
             string search = "", string sortColumn = "Id", string sortDirection = "desc",
