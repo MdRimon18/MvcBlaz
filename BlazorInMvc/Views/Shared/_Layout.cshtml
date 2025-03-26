@@ -947,21 +947,14 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/InvoicType/Index">
+                                        <a class="nav-link spa-link" onclick="loadPage('/InvoicType/index')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Invoice Type</span>
                                             </div>
                                         </a>
                                         <!-- more inner pages-->
                                     </li>
-                                     <li class="nav-item">
-                                        <a class="nav-link spa-link" onclick="loadPage('/InvoicType/index2')">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text ps-1">Invoice Type 2</span>
-                                            </div>
-                                        </a>
-                                        <!-- more inner pages-->
-                                    </li>
+                                    
                                     <li class="nav-item">
                                         <a class="nav-link" href="/language">
                                             <div class="d-flex align-items-center">
@@ -1981,6 +1974,10 @@
                     let customers = [];
                     let totalPages = 0;
                     let totalRecords = 0;
+
+                     let searchPartial = '';
+                      let sortColumn = '';
+                      let sortDirection = 'asc';
 
                     function updatePagination() {
                             const pagination = document.querySelector('.pagination');

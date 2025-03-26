@@ -13,18 +13,15 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
         {
             _invoiceTypeService= invoiceTypeService;
         }
+      
         public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult Index2()
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("Index2",new List<InvoiceType>()); // Return partial view for AJAX requests
+                return PartialView("Index",new List<InvoiceType>()); // Return partial view for AJAX requests
             }
 
-            return View("Index2",new List<InvoiceType>());
+            return View("Index",new List<InvoiceType>());
             
         }
         public async Task<IActionResult> LoadTable(int page = 1,
