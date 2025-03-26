@@ -11,7 +11,7 @@ const pageInitializers = {
     ],
     "/InvoicType/index": (isAjax) => {
         if (isAjax && window.loadTable) window.loadTable();
-    }
+    } 
     // Add more URLs and their initialization functions here as needed
 };
 
@@ -26,6 +26,8 @@ function initializePage(url, isAjax = false) {
             // If it's a single function, call it with isAjax
             initializers(isAjax);
         }
+        
+
     } else {
         console.warn(`No initializer found for URL: ${url}`);
     }

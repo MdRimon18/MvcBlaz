@@ -49,8 +49,7 @@
     <link href="~/assets/css/theme.css" rel="stylesheet" id="style-default">
     <link href="~/assets/css/user-rtl.css" rel="stylesheet" id="user-style-rtl">
     <link href="~/assets/css/user.css" rel="stylesheet" id="user-style-default">
-
- 
+   
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -1958,7 +1957,9 @@
 
                 <script src="~/assets/js/jquery-3.6.0.min.js"></script>
                 <div id="MainContainer">
+                   
                     @await Html.PartialAsync("_ToastNotifications")
+                     
                     @RenderBody()
                    
                 </div>
@@ -2222,15 +2223,16 @@
             </div><small class="text-uppercase text-primary fw-bold bg-primary-subtle py-2 pe-2 ps-1 rounded-end">customize</small>
         </div>
     </a>
+   
 
     <script>
-        function showSuccessToast(message = "Your action was successful!") {
-            var successToast = document.getElementById('successToast');
-            successToast.classList.remove('d-none'); // Remove the d-none class to show the toast
-            document.querySelector('#successToast .toast-body').textContent = message;
-            var toastElement = new bootstrap.Toast(successToast);
-            toastElement.show();
-        }
+       window.showSuccessToast = function (message = "Your action was successful!") {
+        var successToast = document.getElementById('successToast');
+        successToast.classList.remove('d-none'); // Remove the d-none class to show the toast
+        document.querySelector('#successToast .toast-body').textContent = message;
+        var toastElement = new bootstrap.Toast(successToast);
+        toastElement.show();
+       };
 
         function showDangerToast(message = "Something went wrong!") {
             var dangerToast = document.getElementById('dangerToast');
@@ -2249,6 +2251,30 @@
         }
 
     </script>
+
+    <script>
+        window.showToast = function (type = "success", message = "Your action was successful!") {
+            var toastContainer = document.getElementById("globalToast");
+
+            // Set toast type classes dynamically
+            toastContainer.className = `toast align-items-center text-white d-none bg-${type}`;
+
+            // Change text color for warning (better visibility)
+            if (type === "warning") {
+                toastContainer.classList.add("text-dark");
+            }
+
+            // Set the message
+            document.querySelector("#globalToast .toast-body").textContent = message;
+
+            // Show the toast
+            toastContainer.classList.remove("d-none");
+            var toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+        };
+    </script>
+   
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -2298,6 +2324,9 @@
             });
         });
     </script>
+
+
+     
 
 @* 
     <script>

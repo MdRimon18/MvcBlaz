@@ -2,11 +2,23 @@
 @using Domain.Entity.Settings
 @using Domain.ViewModel
  @model IEnumerable<InvoiceType>
+<div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 9999;">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Single Reusable Toast -->
+        <div id="globalToast" class="toast align-items-center text-white d-none" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
         <div class="card-header">
             <h5 class="mb-0">Add New Invoice Types</h5>
         </div>
+       
         <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -45,8 +57,7 @@
     </div>
 </div>
 
-
-
+ 
 <div class="card mb-3" id="customersTable">
     <div class="card-header">
         <div class="row flex-between-center">
@@ -291,15 +302,20 @@
                      if(invoiceTypeId==0){
                       sortColumn = 'InvoiceTypeId';
                       sortDirection = 'desc';
-                      showSuccessToast('Save Successfull');
-                     }else {
-                       showSuccessToast('Update Successfull!');
-                        }
-                   loadTable();
+                     
+                       showToast("success",data.message);
+                    }else{
+                   
+                     showToast("success",data.message);
+                   }
+
+                   loadTable(); 
                      form.reset();
                        document.querySelector('#offcanvasRight .btn-close').click();
 
                  } else {
+                     showToast("danger",data.message);
+                     //showToast("warning", "Be cautious while performing this action.");
                      // Handle validation errors
                      console.log(data.errors);
                      // for (const key in data.errors) {
@@ -307,7 +323,7 @@
                      // }
                  }
              })
-             .catch(error => console.error("Error saving invoice type:", error));
+             .catch(error => showToast("Error saving invoice type:", error));
      }
 
      function editLoadInvoiceData(invoiceTypeId) {

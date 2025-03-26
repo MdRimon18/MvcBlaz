@@ -1,4 +1,5 @@
-﻿using Domain.Entity.Settings;
+﻿using Domain.CommonServices;
+using Domain.Entity.Settings;
 using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -84,7 +85,7 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
                 var invoiceType = await _invoiceTypeService.GetById(request.InvoiceTypeId);
                 if (invoiceType == null)
                 {
-                    return NotFound(new { success = false, message = "Invoice type not found" });
+                    return NotFound(new { success = false, message = MessageManager.NotFound });
                 }
 
                 invoiceType.InvoiceTypeName = request.InvoiceTypeName;
@@ -93,9 +94,9 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
                 var isUpdated = await _invoiceTypeService.Update(invoiceType);
                 if (isUpdated)
                 {
-                    return Json(new { success = true });
+                    return Json(new { success = true , message = $"{request.InvoiceTypeName} {MessageManager.UpdateSuccess}" });
                 }
-                return BadRequest(new { success = false, message = "Failed to update invoice type" });
+                return BadRequest(new { success = false,message = MessageManager.UpdateFaild });
             }
             else
             {
@@ -108,9 +109,13 @@ namespace BlazorInMvc.Controllers.Mvc.Settings
                 var invoiceTypeId = await _invoiceTypeService.Save(invoiceType);
                 if (invoiceTypeId > 0)
                 {
-                    return Json(new { success = true });
+                    return Json(new { success = true,message= $"{request.InvoiceTypeName} {MessageManager.SaveSuccess}" });
                 }
-                return BadRequest(new { success = false, message = "Failed to create invoice type" });
+                if(invoiceTypeId == -1)
+                {
+                    return Json(new { success = false, message =$"{request.InvoiceTypeName} {MessageManager.Exist}"});
+                }
+                return BadRequest(new { success = false, message = MessageManager.SaveFaild });
             }
         }
     }
