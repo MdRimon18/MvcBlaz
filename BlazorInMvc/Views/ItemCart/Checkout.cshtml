@@ -1,80 +1,103 @@
-﻿<div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel" style="width: 30%;">
-     
-        <div class="container mt-5">
-        <h3 class="mb-4">User Address Form
+﻿ <style>
+    /* Responsive width for offcanvas */
+    @@media (max-width: 768px) {
+        #offcanvasRight {
+            width: 100% !important;
+        }
+    }
 
+    @@media (max-width: 1024px) {
+        #offcanvasRight {
+            width: 50% !important;
+        }
+    }
+
+    @@media (min-width: 1025px) {
+        #offcanvasRight {
+            width: 30% !important;
+        }
+    }
+
+    /* Ensure offcanvas has scrolling enabled */
+    #offcanvasRight {
+        overflow-y: auto;
+        max-height: 100vh; /* Prevents overflow */
+        padding-bottom: 20px;
+    }
+</style>
+
+<div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+    <div class="container p-4">
+        <h3 class="mb-4 d-flex justify-content-between align-items-center">
+            User Address Form
             <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-
         </h3>
 
-        
-        <form id="userAddressForm">
-            <div class="row">
-                <input type="hidden" id="addressId" />
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Address Type</label>
-                    <select class="form-control" id="addressType">
-                        <option value="">Select Type</option>
-                        <option value="Home">Home</option>
-                        <option value="Office">Office</option>
-                        <option value="Office">Others</option>
-                    </select>
-                </div>
+        <form id="userAddressForm" class="row g-3">
+            <input type="hidden" id="addressId" />
 
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Address</label>
-                    <textarea class="form-control" id="address" rows="3" required></textarea>
-                </div>
+            <div class="col-12">
+                <label class="form-label">Address Type</label>
+                <select class="form-control" id="addressType">
+                    <option value="">Select Type</option>
+                    <option value="Home">Home</option>
+                    <option value="Office">Office</option>
+                    <option value="Other">Others</option>
+                </select>
+            </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" required>
-                </div>
+            <div class="col-12">
+                <label class="form-label">Address</label>
+                <textarea class="form-control" id="address" rows="2" required></textarea>
+            </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">State</label>
-                    <input type="text" class="form-control" id="state" required>
-                </div>
+            <div class="col-md-6 col-12">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" id="city" required>
+            </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Postal Code</label>
-                    <input type="text" class="form-control" id="postalCode">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Phone Number</label>
-                    <input type="text" class="form-control" id="PhoneNumber" required>
-                </div>
+            <div class="col-md-6 col-12">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" id="state" required>
+            </div>
 
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Country</label>
-                    <select class="form-control" id="country" required>
-                        <option value="">Select Country</option>
-                        <option value="Bangladesh" selected>Bangladesh</option>
-                        <option value="USA">USA</option>
-                        <option value="Canada">Canada</option>
-                        <option value="UK">UK</option>
-                        <option value="India">India</option>
-                        <option value="Australia">Australia</option>
-                    </select>
-                </div>
+            <div class="col-md-6 col-12">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" id="postalCode">
+            </div>
 
-                <div class="col-md-6 mb-3">
-                    <input type="checkbox" id="isDefault"> Set as Default Address
-                </div>
+            <div class="col-md-6 col-12">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="PhoneNumber" required>
+            </div>
 
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
-                </div>
+            <div class="col-12">
+                <label class="form-label">Country</label>
+                <select class="form-control" id="country" required>
+                    <option value="">Select Country</option>
+                    <option value="Bangladesh" selected>Bangladesh</option>
+                    <option value="USA">USA</option>
+                    <option value="Canada">Canada</option>
+                    <option value="UK">UK</option>
+                    <option value="India">India</option>
+                    <option value="Australia">Australia</option>
+                </select>
+            </div>
 
+            <div class="col-12">
+                <input type="checkbox" id="isDefault"> Set as Default Address
+            </div>
+
+            <!-- Ensure button is visible -->
+            <div class="col-12 text-center">
+                <button type="button" class="btn btn-primary w-100 mt-2" id="submitBtn">Submit</button>
             </div>
         </form>
 
         <div id="responseMessage" class="mt-3"></div>
+    </div>
+</div>
 
-        </div>
-
-  </div>
-     
  
 <div class="row g-3">
     <div class="col-xl-4 order-xl-1">

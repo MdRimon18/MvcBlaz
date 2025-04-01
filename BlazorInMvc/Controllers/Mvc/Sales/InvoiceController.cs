@@ -166,24 +166,24 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             return View("Index", invoiceViewModel);
 
         }
-        public IActionResult ShippingWithPayment(bool isPartial = false)
+        public IActionResult ShippingWithPayment()
         {
-
-            if (isPartial)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("ShippingWithPayment");
+                return PartialView("ShippingWithPayment"); // Return partial view for AJAX requests
             }
             return View("ShippingWithPayment");
-
         }
+        
         public IActionResult PrintInvoice(bool isPartial = false)
         {
 
-            if (isPartial)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PrintInvoice");
+                return PartialView("PrintInvoice"); // Return partial view for AJAX requests
             }
             return View("PrintInvoice");
+           
 
         }
     }
