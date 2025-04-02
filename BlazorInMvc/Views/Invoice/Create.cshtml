@@ -287,7 +287,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-12 animated-div">
                                     <div class="form-group">
                                         <label for="subCategorySelect" class="form-label fw-semi-bold">Sub Category</label>
                                         <select id="subCategorySelect" class="form-select form-rounded form-select-sm">
@@ -309,7 +309,7 @@
                                         </div>
                                     </div>
                                 </div> *@
-                            <div class="col-lg-4 col-md-4 col-sm-6 col-9 animated-div">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-12 animated-div">
                                 <div class="form-group position-relative">
                                     <label for="chooseProduct" class="form-label fw-semi-bold">Search by Product Name/Sku/Code</label><span class="error-star text-danger">*</span>
                                     <div class="input-group input-group-sm">
@@ -383,6 +383,7 @@
                                             <tr>
                                                 <th class="form-label fw-bold">Image</th>
                                                 <th scope="col" class="form-label fw-bold">Category</th>
+                                               <th scope="col" class="form-label fw-bold">Sub Ctg.</th>
                                                 <th scope="col" class="form-label fw-bold">Name</th>
                                                 <th scope="col" class="form-label fw-bold">Quantity <span class="error-star"><strong class="bigger-asterisk">*</strong></span></th>
                                                 <th scope="col" class="form-label fw-bold">Unit</th>
@@ -410,6 +411,9 @@
                                                     <td>
                                                         <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Category" readonly value="@itm.CategoryName">
                                                     </td>
+                                                <td>
+                                                    <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Sub Ctg." readonly value="@itm.SubCtgName">
+                                                </td>
                                                     <td>
                                                         <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Name" readonly value="@itm.ProductName">
                                                     </td>
