@@ -218,9 +218,9 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6 col-9 animated-div">
                                 <div class="form-group">
-                                    <label for="chooseProduct" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
+                                    <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
                                     <div class="position-relative input-group">
-                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseProduct" />
+                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" />
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">+</button>
                                     </div>
                                 </div>
@@ -314,9 +314,12 @@
                                     <label for="chooseProduct" class="form-label fw-semi-bold">Search by Product Name/Sku/Code</label><span class="error-star text-danger">*</span>
                                     <div class="input-group input-group-sm">
                                         <input type="text" class="form-control form-control-sm form-rounded border-start-0" placeholder="Search..." id="chooseProduct" aria-label="Search" oninput="handleSearch(this.value)" />
+                                        <!-- Clear (X) button -->
+                                        <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtn">×</button>
+
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-1" aria-controls="offcanvasRight-1">+</button>
                                     </div>
-                                    <div class="dropdown-menu border font-base mt-1 w-100" id="searchDropdown" style="display: none;">
+                                    <div class="dropdown-menu border font-base mt-1 w-100 spa-link" id="searchDropdown" style="display: none;">
                                         <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
                                         <div class="text-center">
                                             <p class="fw-bold fs-8 d-none">No Results Found.</p>
@@ -666,7 +669,7 @@
 </div>
 
 <script>
-       (function () {
+    (function () {
         let allProducts = [];
         let isInitialized = false;
 
@@ -691,7 +694,8 @@
                 searchInput: document.getElementById('chooseProduct'),
                 searchDropdown: document.getElementById('searchDropdown'),
                 dropdownList: document.querySelector('#searchDropdown .list'),
-                noResultsMessage: document.querySelector('#searchDropdown .text-center p')
+                noResultsMessage: document.querySelector('#searchDropdown .text-center p'),
+                clearBtn : document.getElementById('clearBtn')
             };
         }
 
@@ -710,6 +714,7 @@
 
         // Populate dropdown
         function populateDropdown(products, elements) {
+
             elements.dropdownList.innerHTML = '';
             console.log('[DEBUG] Populating dropdown with:', products);
             if (products.length > 0) {
@@ -717,9 +722,9 @@
                 products.forEach(product => {
                     const item = document.createElement('a');
                     item.className = 'dropdown-item px-x1 py-2';
-                    item.href = '#';
+                    //item.href = '#';
                     item.innerHTML = `
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center ">
                             <div class="avatar avatar-l me-2">
                                 <img class="rounded-circle" src="${product.imageUrl || '../../assets/img/default-product.jpg'}" alt="${product.prodName}" />
                             </div>
@@ -730,14 +735,30 @@
                         </div>
                     `;
                     item.addEventListener('click', () => {
-                        elements.searchInput.value = product.prodName;
-                        elements.searchDropdown.style.display = 'none';
+                         elements.searchInput.value = product.prodName;
+                         elements.clearBtn.classList.remove('d-none');
+                         elements.searchDropdown.style.display = 'none';
+                        // Call your function
+                       AddItemToProductList(product);
+
                     });
+
                     elements.dropdownList.appendChild(item);
                 });
             } else {
                 elements.noResultsMessage.classList.remove('d-none');
             }
+               const searchInput = document.getElementById('chooseProduct');
+               const clearBtn = document.getElementById('clearBtn');
+               //const dropdownList = document.getElementById('dropdownList');
+
+                clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearBtn.classList.add('d-none'); // Hide the ❌ again
+              //  dropdownList.style.display = 'block'; // Show dropdown list again
+
+               // handleSearch(''); // Optional: re-trigger filtering if needed
+               });
         }
 
         // Global handleSearch for oninput
@@ -784,6 +805,15 @@
 
         // Expose fetchAllProducts for debugging (optional)
         //window.fetchAllProducts = fetchAllProducts;
+
+         function AddItemToProductList(item) {
+           console.log('product',item);
+         }
+
     })();
+
+
 </script>
+
+
   
