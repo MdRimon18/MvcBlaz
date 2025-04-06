@@ -685,6 +685,10 @@
                      console.log('item',item);
                     const rowHtml = generateItemRowHtml(item, itemRowIndex);
                     tableBody.insertAdjacentHTML('beforeend', rowHtml);
+
+
+                    appendSerialRows(item.selectedSerialNumbers, itemRowIndex); // THEN append serials
+
                     itemRowIndex++;
                  });
               }
@@ -831,7 +835,7 @@
           itemRowIndex++;
         }
 
-            function generateItemRowHtml(item, index) {
+        function generateItemRowHtml(item, index) {
         return `
             <tr>
                 <td>
@@ -921,7 +925,25 @@
             </tr>
         `;
     }
+        function appendSerialRows(selectedSerialNumbers, index) {
+        const tbody = document.getElementById(`serial-body-${index}`);
+        if (!tbody || !Array.isArray(selectedSerialNumbers) || selectedSerialNumbers.length === 0) return;
 
+        selectedSerialNumbers.forEach((serial, serialIndex) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${serial.serialNumber || ''}</td>
+                <td>${serial.prodSerialNmbrId || ''}</td>
+                <td>${serial.supplierOrgName || ''}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteSerialRow(this)">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
 
              window.deleteDynamicRow = function (btn) {
             // Find the main item row and remove it
@@ -1027,7 +1049,11 @@
                 console.error("Save failed", err);
             });
         }
-            
+
+       window.deleteSerialRow= function (btn) {
+          const row = btn.closest('tr');
+         if (row) row.remove();
+       }
 
     })();
 
