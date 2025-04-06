@@ -923,30 +923,41 @@
     }
 
 
-     window.deleteDynamicRow = function (btn) {
-        // Find and remove the main item row (this is the row where the delete button was clicked)
-        const row = btn.closest('tr');
-        row.remove();
+             window.deleteDynamicRow = function (btn) {
+            // Find the main item row and remove it
+            const row = btn.closest('tr');
+            const nextRow = row.nextElementSibling;
 
-        // Find and remove the corresponding collapsible serial row
-        const index = row.querySelector('input[name^="ItemsList"]').name.match(/\[(\d+)\]/)[1];
-        const serialRow = document.querySelector(`#treeviewExample-1_${index}`).closest('tr');
-        if (serialRow) {
-            serialRow.remove();  // Remove the collapsible row
-        }
+            // Try to get index for optional logging or operations
+            let index = null;
+            const input = row.querySelector('input[name^="ItemsList"]');
+            if (input) {
+                const match = input.name.match(/\[(\d+)\]/);
+                if (match) {
+                    index = match[1];
+                }
+            }
 
-        // Optionally, collapse the corresponding serial view if needed
-        const collapseElement = document.querySelector(`#treeviewExample-1_${index}`);
-        if (collapseElement) {
-            collapseElement.classList.remove('show');  // Hide the collapse if it's still shown
-        }
+            // Remove the main row
+            row.remove();
 
-        // Optional: Clean up any CSS if borders or extra space is still showing
-        const tableBody = document.querySelector('.table-view-tickets tbody');
-        if (tableBody) {
-            tableBody.style.borderCollapse = 'collapse'; // Ensure no leftover spacing
-        }
-    }
+            // Remove the collapsible serial row (next <tr>)
+            if (nextRow && nextRow.querySelector(`#treeviewExample-1_${index}`)) {
+                nextRow.remove();
+            }
+
+            // Optional: Collapse cleanup
+            const collapseElement = document.querySelector(`#treeviewExample-1_${index}`);
+            if (collapseElement) {
+                collapseElement.classList.remove('show');
+            }
+
+            // Optional UI cleanup
+            const tableBody = document.querySelector('.table-view-tickets tbody');
+            if (tableBody) {
+                tableBody.style.borderCollapse = 'collapse';
+            }
+        };
 
 
       window.postItemsToApi = function () {
