@@ -517,7 +517,7 @@
 
                             <div class="row align-items-center mt-2">
                                 <div class="col-auto d-flex">
-                                <a class="btn btn-outline-primary btn-sm me-1 mb-1 spa-link" onclick="loadPage('/Invoice/PrintInvoice')">Create Invoice</a>
+                                <a class="btn btn-outline-primary btn-sm me-1 mb-1 spa-link" onclick="postItemsToApi()">Create Invoice</a>
 
                                 <a   class="btn btn-outline-primary btn-sm me-1 mb-1 spa-link"   onclick="loadPage('/Invoice/ShippingWithPayment')">Shipping</a>
 
@@ -581,7 +581,7 @@
                     <div class="d-flex">
                         <img class="me-3" src="../../assets/img/icons/shield.png" alt="" width="60" height="60" />
                         <div class="flex-1">
-                            <h5 class="mb-2">Patient/Customer Protection</h5>
+                            <h5 class="mb-2">Buyer/Customer Protection</h5>
                             <div class="form-check mb-0">
                                 <input class="form-check-input" id="protection-option-1" type="checkbox" checked="checked" />
                                 <label class="form-check-label mb-0" for="protection-option-1"> <strong>Full Refund </strong>If you don't <br class="d-none d-md-block d-lg-none" />receive your order</label>
@@ -806,9 +806,134 @@
         // Expose fetchAllProducts for debugging (optional)
         //window.fetchAllProducts = fetchAllProducts;
 
-         function AddItemToProductList(item) {
-           console.log('product',item);
-         }
+        let itemRowIndex = 0;
+
+             function AddItemToProductList(item) {
+            console.log('product', item);
+
+            const tableBody = document.querySelector('.table-view-tickets tbody');
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="col-auto">
+                        <div class="avatar avatar-2xl">
+                            <img class="rounded-circle" src="${item.imageUrl}" alt="${item.prodName}" />
+                        </div>
+                    </div>
+                    <input type="hidden" name="ItemsList[${itemRowIndex}].ProductId" value="${item.productId}" />
+                </td>
+                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
+                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
+                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
+
+                <td>
+                    <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold"
+                           placeholder="Quantity" name="ItemsList[${itemRowIndex}].Quantity" value="1" />
+                    <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
+                </td>
+
+                <td><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
+
+                <td>
+                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
+                           name="ItemsList[${itemRowIndex}].SellingPrice" value="${item.sellingPrice}" />
+                    <span class="text-danger validation-error" data-field="SellingPrice" style="display:none;">Selling Price is required</span>
+                </td>
+
+                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.vatPercent}" /></td>
+
+                <td>
+                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
+                           name="ItemsList[${itemRowIndex}].DiscountPercentg" value="${item.discountPercentg}" />
+                    <span class="text-danger validation-error" data-field="DiscountPercentg" style="display:none;">Discount is required</span>
+                </td>
+
+                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.sellingPrice}" /></td>
+
+                <td>
+                    <button type="button" title="Delete" class="btn btn-sm btn-light" onclick="deleteDynamicRow(this)">
+                        <i class="far fa-trash-alt fa-lg text-danger"></i>
+                    </button>
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+            itemRowIndex++;
+        }
+
+
+       window.deleteDynamicRow= function (btn) {
+            btn.closest('tr').remove();
+        }
+      window.postItemsToApi = function () {
+              const rows = document.querySelectorAll('.table-view-tickets tbody tr');
+            const items = [];
+            let rowIndex = 0;
+            let isValid = true;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+
+                const quantityInput = row.querySelector('[name^="ItemsList["][name$="].Quantity"]');
+                if (!quantityInput) continue; // Skip non-data rows
+
+                const productIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductId"]');
+                const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
+                const discountPercentInput = row.querySelector('[name^="ItemsList["][name$="].DiscountPercentg"]');
+
+                // Hide all error spans first
+                row.querySelectorAll('.validation-error').forEach(e => e.style.display = 'none');
+
+                // Manual validation
+                if (!quantityInput.value || parseFloat(quantityInput.value) <= 0) {
+                    const errSpan = row.querySelector('[data-field="Quantity"]');
+                    if (errSpan) errSpan.style.display = 'block';
+                    isValid = false;
+                }
+
+                if (!sellingPriceInput.value || parseFloat(sellingPriceInput.value) <= 0) {
+                    const errSpan = row.querySelector('[data-field="SellingPrice"]');
+                    if (errSpan) errSpan.style.display = 'block';
+                    isValid = false;
+                }
+
+                // Optional: validate discountPercentInput if needed
+
+                items.push({
+                    rowIndex: rowIndex,
+                    productId: parseInt(productIdInput?.value || 0),
+                    quantity: parseFloat(quantityInput?.value || 0),
+                    sellingPrice: parseFloat(sellingPriceInput?.value || 0),
+                    discountPercentg: parseFloat(discountPercentInput?.value || 0),
+                });
+
+                rowIndex++;
+            }
+
+            if (!isValid) {
+                console.warn("Validation failed!");
+                return;
+            }
+
+            console.log("Items to send:", items);
+
+            fetch('/api/Invoice/save-items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(items)
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Saved!", data);
+            })
+            .catch(err => {
+                console.error("Save failed", err);
+            });
+        }
+            
 
     })();
 
