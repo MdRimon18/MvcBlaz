@@ -673,26 +673,32 @@
         let allProducts = [];
         let isInitialized = false;
          let itemRowIndex = 0;
-          const initialItems = @Html.Raw(Json.Serialize(Model.ItemsList)); // Or ViewBag.InitialItems
-          console.log('int',initialItems);
+        
 
-         
-          document.addEventListener("DOMContentLoaded", () => {
-             const tableBody = document.querySelector('.table-view-tickets tbody');
+         window.LoadInvoiceItems = function () {
+             
+               const initialItems = @Html.Raw(Json.Serialize(Model.ItemsListViewModel)); // Or ViewBag.InitialItems
+               console.log('int',initialItems);
+           // document.addEventListener("DOMContentLoaded", () => {
+                const tableBody = document.querySelector('.table-view-tickets tbody');
+               
+                
+                if (initialItems && Array.isArray(initialItems)) {
+                    initialItems.forEach(item => {
+                         
+                        const rowHtml = generateItemRowHtml(item, itemRowIndex);
+                        tableBody.insertAdjacentHTML('beforeend', rowHtml);
 
-             if (initialItems && Array.isArray(initialItems)) {
-                 initialItems.forEach(item => {
-                     console.log('item',item);
-                    const rowHtml = generateItemRowHtml(item, itemRowIndex);
-                    tableBody.insertAdjacentHTML('beforeend', rowHtml);
+                        appendSerialRows(item.selectedSerialNumbers, itemRowIndex); // THEN append serials
 
+                        itemRowIndex++;
+                    });
+                }
+            //});
+        };
 
-                    appendSerialRows(item.selectedSerialNumbers, itemRowIndex); // THEN append serials
+          
 
-                    itemRowIndex++;
-                 });
-              }
-          });
         // Fetch products
         async function fetchAllProducts() {
             try {
@@ -936,8 +942,8 @@
                 <td>${serial.prodSerialNmbrId || ''}</td>
                 <td>${serial.supplierOrgName || ''}</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteSerialRow(this)">
-                        <i class="fas fa-trash-alt"></i>
+                    <button type="button" class="btn btn-tertiary ps-2" onclick="deleteSerialRow(this)">
+                        <i class="fas fa-trash-alt text-danger"></i>
                     </button>
                 </td>
             `;

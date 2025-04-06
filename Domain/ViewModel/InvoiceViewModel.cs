@@ -11,6 +11,7 @@ namespace Domain.ViewModel
     {
         public Invoice Invoice { get; set; }=new Invoice();
         public List<InvoiceItems> ItemsList { get; set; } = new List<InvoiceItems>();
+        public List<InvoiceItemViewModel> ItemsListViewModel { get; set; } = new List<InvoiceItemViewModel>();
         public List<Products> Products { get; set; } = new List<Products>();
         public List<Products> FilteredItemsOffCanva=new List<Products>();
         public List<NotificationBy> NotificationByList { get; set; } = new List<NotificationBy>();

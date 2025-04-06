@@ -43,7 +43,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             _productSerialNumbersService = productSerialNumbersService;
         }
 
-        public async Task<IActionResult> Create(bool isPartial = false)
+        public async Task<IActionResult> Create()
         {
             var invoiceItems = new List<InvoiceItems>
 {
@@ -132,6 +132,36 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
               }
     }
 };
+
+          var invoiceItemViewModels = invoiceItems.Select(item => new InvoiceItemViewModel
+            {
+                InvoiceItemId = item.InvoiceItemId,
+                InvoiceId = item.InvoiceId,
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                SellingPrice = item.SellingPrice,
+                TotalPrice = item.TotalPrice,
+                VatPercentg = item.VatPercentg,
+               // VatAmount = item.VatAmount,
+                DiscountPercentg = item.DiscountPercentg,
+             //   DiscountAmount = item.DiscountAmount,
+             //   ExpirationDate = item.ExpirationDate,
+              //  PromoOrCuppnAppliedId = item.PromoOrCuppnAppliedId,
+                ProductImage = item.ProductImage,
+                CategoryName = item.CategoryName,
+                ProductName = item.ProductName,
+                SubCtgName = item.SubCtgName,
+                Unit = item.Unit,
+               
+            SelectedSerialNumbers = item.SelectedSerialNumbers != null
+               ? item.SelectedSerialNumbers.Select(s => new SerialNumberViewModel
+              {
+               SerialNumber = s.SerialNumber,
+               ProdSerialNmbrId = s.ProdSerialNmbrId
+              }).ToList()
+            : new List<SerialNumberViewModel>()
+            }).ToList();
+
             var model = new InvoiceViewModel
             {
                 InvoiceTypeList = (await _invoiceTypeService.Get(null, null, null, null, 1, 1000)).ToList(),
@@ -147,13 +177,13 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             // Set default values for other model properties if needed
             model.FilteredItemsOffCanva = model.Products;
 
-            model.ItemsList = invoiceItems;
+            model.ItemsListViewModel = invoiceItemViewModels;
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return PartialView("Create", model); // Return partial view for AJAX requests
             }
 
-            return View("Create", model);
+            return View("Create", model);   
 
         }
         public IActionResult Index(bool isPartial = false)

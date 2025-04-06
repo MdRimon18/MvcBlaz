@@ -4,6 +4,8 @@
 const pageInitializers = {
     "/Invoice/Create": () => {
         if (window.initializeInvoiceSearch) window.initializeInvoiceSearch();
+        if (window.LoadInvoiceItems) window.LoadInvoiceItems();
+        
     },
     "/Customer/Index": [
         () => { if (window.loadCustomers) window.loadCustomers(); },
