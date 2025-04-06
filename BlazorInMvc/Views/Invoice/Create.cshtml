@@ -672,7 +672,23 @@
     (function () {
         let allProducts = [];
         let isInitialized = false;
+         let itemRowIndex = 0;
+          const initialItems = @Html.Raw(Json.Serialize(Model.ItemsList)); // Or ViewBag.InitialItems
+          console.log('int',initialItems);
 
+         
+          document.addEventListener("DOMContentLoaded", () => {
+             const tableBody = document.querySelector('.table-view-tickets tbody');
+
+             if (initialItems && Array.isArray(initialItems)) {
+                 initialItems.forEach(item => {
+                     console.log('item',item);
+                    const rowHtml = generateItemRowHtml(item, itemRowIndex);
+                    tableBody.insertAdjacentHTML('beforeend', rowHtml);
+                    itemRowIndex++;
+                 });
+              }
+          });
         // Fetch products
         async function fetchAllProducts() {
             try {
@@ -806,66 +822,133 @@
         // Expose fetchAllProducts for debugging (optional)
         //window.fetchAllProducts = fetchAllProducts;
 
-        let itemRowIndex = 0;
-
+       
              function AddItemToProductList(item) {
             console.log('product', item);
+          const tableBody = document.querySelector('.table-view-tickets tbody');
+          const rowHtml = generateItemRowHtml(item, itemRowIndex);
+          tableBody.insertAdjacentHTML('beforeend', rowHtml);
+          itemRowIndex++;
+        }
 
-            const tableBody = document.querySelector('.table-view-tickets tbody');
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
+            function generateItemRowHtml(item, index) {
+        return `
+            <tr>
                 <td>
                     <div class="col-auto">
                         <div class="avatar avatar-2xl">
                             <img class="rounded-circle" src="${item.imageUrl}" alt="${item.prodName}" />
                         </div>
                     </div>
-                    <input type="hidden" name="ItemsList[${itemRowIndex}].ProductId" value="${item.productId}" />
+                    <input type="hidden" name="ItemsList[${index}].ProductId" value="${item.productId}" />
                 </td>
                 <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
                 <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
                 <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
-
                 <td>
                     <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold"
-                           placeholder="Quantity" name="ItemsList[${itemRowIndex}].Quantity" value="1" />
+                           placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1" />
                     <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
                 </td>
-
                 <td><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
-
                 <td>
                     <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
-                           name="ItemsList[${itemRowIndex}].SellingPrice" value="${item.sellingPrice}" />
+                           name="ItemsList[${index}].SellingPrice" value="${item.sellingPrice}" />
                     <span class="text-danger validation-error" data-field="SellingPrice" style="display:none;">Selling Price is required</span>
                 </td>
-
                 <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.vatPercent}" /></td>
-
                 <td>
                     <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
-                           name="ItemsList[${itemRowIndex}].DiscountPercentg" value="${item.discountPercentg}" />
+                           name="ItemsList[${index}].DiscountPercentg" value="${item.discountPercentg}" />
                     <span class="text-danger validation-error" data-field="DiscountPercentg" style="display:none;">Discount is required</span>
                 </td>
+                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.totalPrice}" /></td>
 
-                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.sellingPrice}" /></td>
+                <!-- Serial Toggle Column -->
+                <td class="treeview">
+                    <div class="treeview-list-item">
+                        <a data-bs-toggle="collapse" href="#treeviewExample-1_${index}" role="button" aria-expanded="false">
+                            <p class="treeview-text">Serial</p>
+                        </a>
+                    </div>
+                </td>
+                 <td>
+                    <button type="button" title="Info" class="btn btn-sm a-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                      <i class="fa fa-info-circle" style="font-size:18px"></i>
+                    </button>
+                  </td>
 
+                <!-- Delete Button -->
                 <td>
                     <button type="button" title="Delete" class="btn btn-sm btn-light" onclick="deleteDynamicRow(this)">
                         <i class="far fa-trash-alt fa-lg text-danger"></i>
                     </button>
                 </td>
-            `;
+            </tr>
 
-            tableBody.appendChild(row);
-            itemRowIndex++;
+            <!-- Collapsible Row -->
+            <tr>
+                <td colspan="12">
+                    <div class="collapse treeview-list" id="treeviewExample-1_${index}">
+                        <div class="table-responsive scrollbar row">
+                            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="fw-semi-bold" scope="col">Product Name</th>
+                                            <th scope="col">Serial No</th>
+                                            <th scope="col">Supplier Org</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serial-body-${index}">
+                                        <!-- Serial rows will be appended dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <label class="form-label fw-semi-bold">Add Serial Number</label>
+                                <div class="position-relative">
+                                    <button class="btn btn-sm btn-light position-absolute end-0 h-100" type="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-2" aria-controls="offcanvasRight-2">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+
+     window.deleteDynamicRow = function (btn) {
+        // Find and remove the main item row (this is the row where the delete button was clicked)
+        const row = btn.closest('tr');
+        row.remove();
+
+        // Find and remove the corresponding collapsible serial row
+        const index = row.querySelector('input[name^="ItemsList"]').name.match(/\[(\d+)\]/)[1];
+        const serialRow = document.querySelector(`#treeviewExample-1_${index}`).closest('tr');
+        if (serialRow) {
+            serialRow.remove();  // Remove the collapsible row
         }
 
-
-       window.deleteDynamicRow= function (btn) {
-            btn.closest('tr').remove();
+        // Optionally, collapse the corresponding serial view if needed
+        const collapseElement = document.querySelector(`#treeviewExample-1_${index}`);
+        if (collapseElement) {
+            collapseElement.classList.remove('show');  // Hide the collapse if it's still shown
         }
+
+        // Optional: Clean up any CSS if borders or extra space is still showing
+        const tableBody = document.querySelector('.table-view-tickets tbody');
+        if (tableBody) {
+            tableBody.style.borderCollapse = 'collapse'; // Ensure no leftover spacing
+        }
+    }
+
+
       window.postItemsToApi = function () {
               const rows = document.querySelectorAll('.table-view-tickets tbody tr');
             const items = [];
