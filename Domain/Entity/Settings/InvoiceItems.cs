@@ -29,5 +29,8 @@ namespace Domain.Entity.Settings
 		public string Status { get; set; }
 		[NotMapped]
         public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
-    }
+		[NotMapped]
+		public string ImageUrl { get; set; }
+	
+	}
 }

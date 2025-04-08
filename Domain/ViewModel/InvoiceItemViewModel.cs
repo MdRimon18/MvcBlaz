@@ -16,12 +16,12 @@ namespace Domain.ViewModel
         public decimal DiscountPercentg { get; set; }
         public decimal TotalPrice { get; set; }
         public decimal VatPercentg { get; set; }
-        public string ProductImage { get; set; }
-        public string CategoryName { get; set; }
-        public string ProductName { get; set; }
-        public string SubCtgName { get; set; }
-        public string Unit { get; set; }
-
+         
+        public string ProdCtgName { get; set; }
+        public string ProdName { get; set; }
+        public string ProdSubCtgName { get; set; }
+        public string UnitName { get; set; }
+        public string ImageUrl { get; set; }
         public List<SerialNumberViewModel> SelectedSerialNumbers { get; set; } = new();
     }
 

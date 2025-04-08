@@ -58,16 +58,15 @@
                         </div>
                     </div>
 
-                    <div class="row g-0">
+                    <div class="row g-0" id="product-container">
+                     
 
 
-                        @foreach (var item in  Model.FilteredItemsOffCanva)
+                      @*   @foreach (var item in  Model.FilteredItemsOffCanva)
                         {
                             <div class="col-md-4 ps-md-2">
                                 <div class="card mb-3 zoom-card">
-                                    @* <div class="card-header">
-                                <h5 class="mb-0">Laptop</h5>
-                                </div> *@
+                                    
                                     <div class="card-body bg-body-tertiary">
                                         <div class="tab-content">
                                             <div class="tab-pane preview-tab-pane active" role="tabpanel">
@@ -95,7 +94,7 @@
 
 
 
-                        }
+                        } *@
 
 
 
@@ -695,6 +694,10 @@
                     });
                 }
             //});
+
+              const offCanvaProducts = @Html.Raw(Json.Serialize(Model.FilteredItemsOffCanva)); // Or ViewBag.InitialItems
+              console.log(offCanvaProducts);
+              window.renderOffCanfaProducts(offCanvaProducts);
         };
 
           
@@ -833,7 +836,7 @@
         //window.fetchAllProducts = fetchAllProducts;
 
        
-             function AddItemToProductList(item) {
+           window.AddItemToProductList=  function (item) {
             console.log('product', item);
           const tableBody = document.querySelector('.table-view-tickets tbody');
           const rowHtml = generateItemRowHtml(item, itemRowIndex);
@@ -1060,6 +1063,46 @@
           const row = btn.closest('tr');
          if (row) row.remove();
        }
+
+      window.renderOffCanfaProducts = function(filteredItems) {
+        const container = document.getElementById("product-container"); // Ensure this div exists in your HTML
+        container.innerHTML = ""; // Clear existing content
+
+        filteredItems.forEach(item => {
+            const col = document.createElement("div");
+            col.className = "col-md-4 ps-md-2";
+
+            col.innerHTML = `
+                <div class="card mb-3 zoom-card">
+                    <div class="card-body bg-body-tertiary">
+                        <div class="tab-content">
+                            <div class="tab-pane preview-tab-pane active" role="tabpanel">
+                                <div class="avatar avatar-4xl mb-3">
+                                    <img class="rounded-soft" src="${item.imageUrl || '../../assets/img/default-product.jpg'}" alt="${item.prodName}" />
+                                </div>
+                                <div class="product-info">
+                                    <p class="mb-1"><strong>Category:</strong> ${item.prodCtgName}</p>
+                                    <p class="mb-1"><strong>Brand:</strong> BrandName</p>
+                                    <p class="mb-1"><strong>Name:</strong> ${item.prodName}</p>
+                                    <p class="mb-1"><strong>Price:</strong> ${item.sellingPrice}</p>
+                                    <p class="mb-1"><strong>SKU:</strong> ${item.sku}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-sm btn-falcon-primary" type="button" onclick="AddItemToProductList(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(col);
+        });
+    }
+
+     
 
     })();
 

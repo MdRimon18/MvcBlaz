@@ -124,6 +124,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
         DeletedDate = null,
         DeletedBy = null,
         Status = "Active",
+        ImageUrl="https://localhost:7118/Content/Images/January-2025/es5v2qmo.jpg",
         SelectedSerialNumbers = new List<ProductSerialNumbers>
         {
             new ProductSerialNumbers { SerialNumber = "ABC123", ProdSerialNmbrId = 1 },
@@ -144,14 +145,14 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
                 VatPercentg = item.VatPercentg,
                // VatAmount = item.VatAmount,
                 DiscountPercentg = item.DiscountPercentg,
-             //   DiscountAmount = item.DiscountAmount,
-             //   ExpirationDate = item.ExpirationDate,
+              //   DiscountAmount = item.DiscountAmount,
+              //   ExpirationDate = item.ExpirationDate,
               //  PromoOrCuppnAppliedId = item.PromoOrCuppnAppliedId,
-                ProductImage = item.ProductImage,
-                CategoryName = item.CategoryName,
-                ProductName = item.ProductName,
-                SubCtgName = item.SubCtgName,
-                Unit = item.Unit,
+              ImageUrl = item.ImageUrl,
+              ProdName = item.ProductName,
+              ProdCtgName = item.CategoryName,
+              ProdSubCtgName = item.SubCtgName,
+              UnitName = item.Unit,
                
             SelectedSerialNumbers = item.SelectedSerialNumbers != null
                ? item.SelectedSerialNumbers.Select(s => new SerialNumberViewModel
