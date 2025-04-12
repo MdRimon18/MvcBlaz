@@ -8,7 +8,18 @@
         border-radius: 5px; /* Adjust as desired */
     }
 </style>
-
+@* show toaster *@
+<div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 9999;">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Single Reusable Toast -->
+        <div id="globalToast" class="toast align-items-center text-white d-none" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="offcanvas offcanvas-end" id="offcanvasRight" tabindex="-1" aria-labelledby="offcanvasRightLabel" style="width: 55%;">
     <div class="offcanvas-header">
         @*  <div class="card-header">
@@ -869,6 +880,7 @@
           const rowHtml = generateItemRowHtml(item, itemRowIndex);
           tableBody.insertAdjacentHTML('beforeend', rowHtml);
           itemRowIndex++;
+          showToast("success",`${item.prodName} Added Successfully.`);
         }
 
         function generateItemRowHtml(item, index) {
@@ -1002,6 +1014,8 @@
             </td>
         `;
         tbody.appendChild(row);
+        showToast("success","A Serial Number Added Successfully.");
+        
     }
 
              window.deleteDynamicRow = function (btn) {
