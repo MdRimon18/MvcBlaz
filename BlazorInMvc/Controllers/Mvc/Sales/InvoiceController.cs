@@ -77,7 +77,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
     {
         InvoiceItemId = 2,
         InvoiceId = 102,
-        ProductId = 502,
+        ProductId = 16,
         Quantity = 1,
         BuyingPrice = 300.00m,
         SellingPrice = 450.00m,
@@ -103,7 +103,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
     {
         InvoiceItemId = 3,
         InvoiceId = 103,
-        ProductId = 503,
+        ProductId = 15,
         Quantity = 3,
         BuyingPrice = 50.00m,
         SellingPrice = 80.00m,
@@ -178,7 +178,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             // Set default values for other model properties if needed
             model.FilteredItemsOffCanva = model.Products;
 
-            model.ItemsListViewModel = invoiceItemViewModels;
+            model.ItemsListViewModel = invoiceItemViewModels;//for showing invoice items
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return PartialView("Create", model); // Return partial view for AJAX requests

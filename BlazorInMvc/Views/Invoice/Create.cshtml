@@ -136,14 +136,41 @@
         <div class="card-header">
             <h5 class="mb-0">
                 @*  <i class="fas fa-arrow-left"></i> *@
-                Choose Product
+                Choose Serial Number
             </h5>
         </div>
         <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
 
-       <p>Set Page Serial</p>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content border-0">
+                <div class="modal-body p-0">
+                    <div class="d-lg-flex justify-content-between">
+                        <div class="row flex-between-center gy-2 px-1 mb-2">
+                            <div class="col-auto pe-0">
+                                <div class="input-group" style="max-width: 350px; width: 100%;">
+                                    <input class="form-control form-control-sm shadow-none"
+                                           type="search"
+                                           placeholder="Search by Name/SKU/Code"
+                                           aria-label="search"
+                                           asp-for="SrchQuery"
+                                           />
+
+                                    <button type="button" class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
+                                        <span class="fa fa-search fs-10"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-0" id="product-serial-container">
+                         
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     @* <div class="card-footer">
     <div class="row">
@@ -923,7 +950,12 @@
                                 <label class="form-label fw-semi-bold">Add Serial Number</label>
                                 <div class="position-relative">
                                     <button class="btn btn-sm btn-light position-absolute end-0 h-100" type="button"
-                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-2" aria-controls="offcanvasRight-2">
+                                            data-bs-toggle="offcanvas" 
+                                            data-bs-target="#offcanvasRight-2"
+                                            aria-controls="offcanvasRight-2"
+                                            onclick="loadSerials(${item.productId},${index})" >
+
+                                     
                                         +
                                     </button>
                                 </div>
@@ -952,6 +984,24 @@
             `;
             tbody.appendChild(row);
         });
+    }
+
+     window.appendSingleSerialRow= function (serial, index) {
+        const tbody = document.getElementById(`serial-body-${index}`);
+        if (!tbody || !serial) return;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${serial.serialNumber || ''}</td>
+            <td>${serial.prodSerialNmbrId || ''}</td>
+            <td>${serial.supplierOrgName || ''}</td>
+            <td>
+                <button type="button" class="btn btn-tertiary ps-2" onclick="deleteSerialRow(this)">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
     }
 
              window.deleteDynamicRow = function (btn) {
@@ -1102,7 +1152,51 @@
         });
     }
 
-     
+      window.loadSerials = function (productId,index) {
+        fetch(`/api/ProductSerial/GetSerialNumbersByProductId/${productId}`)
+            .then(response => response.json())
+            .then(serials => {
+                console.log(serials)
+                const container = document.getElementById("product-serial-container"); // Ensure this div exists in your HTML
+                container.innerHTML = ""; // Clear existing content
+
+                serials.data.forEach(item => {
+                    const col = document.createElement("div");
+                    col.className = "col-md-4 ps-md-2";
+
+                    col.innerHTML = `
+                        <div class="card mb-3 zoom-card">
+                            <div class="card-body bg-body-tertiary">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel">
+                                        <div class="avatar avatar-4xl mb-3">
+                                            <img class="rounded-soft" src="../../assets/img/default-product.jpg" alt="" />
+                                        </div>
+                                        <div class="product-info">
+                                            <p class="mb-1"><strong>Category:</strong> ${item.serialNumber}</p>
+                                            <p class="mb-1"><strong>Brand:</strong> BrandName</p>
+                                            <p class="mb-1"><strong>Name:</strong> ${item.supplierName}</p>
+                                            <p class="mb-1"><strong>Price:</strong> ${item.serialNumber}</p>
+                                            <p class="mb-1"><strong>SKU:</strong> ${item.serialNumber}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button class="btn btn-sm btn-falcon-primary" type="button" onclick="appendSingleSerialRow(${JSON.stringify(item).replace(/"/g, '&quot;')},${index})">
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.appendChild(col);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching serials:', error);
+            });
+    }
 
     })();
 

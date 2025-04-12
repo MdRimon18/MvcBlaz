@@ -76,6 +76,21 @@ namespace BlazorInMvc.Controllers.Api
                 data = serialNumber
             });
         }
+        [HttpGet("GetSerialNumbersByProductId/{productId}")]
+        public async Task<IActionResult> GetSerialNumbersByProductId(long productId)
+        {
+            var serialNumbers = await _productSerialNumbersService.GetByProductId(productId,1,100);
+            if (serialNumbers == null)
+            {
+                return NotFound(new { success = false, message = "Serial number not found!" });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                data = serialNumbers
+            });
+        }
         [HttpDelete("DeleteSerialNumber")]
         public async Task<IActionResult> DeleteSerialNumber(long id)
         {

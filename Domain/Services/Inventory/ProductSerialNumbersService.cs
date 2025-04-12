@@ -55,7 +55,12 @@ namespace Domain.Services.Inventory
             var _productSerialNumbers = await (Get(ProdSerialNmbrId, null, null,null,null, null, null, null, null, null, null, 1, 1));
             return _productSerialNumbers.FirstOrDefault();
         }
+        public async Task<List<ProductSerialNumbers>> GetByProductId(long productId,int pageNumber,int pageSize)
 
+        {
+            var product_list = await (Get(null, null, productId, null, null, null, null, null, null, null, null, pageNumber, pageSize));
+            return product_list.ToList();
+        }
         public async Task<ProductSerialNumbers> GetByKey(string ProdSerialNmbrKey)
 
         {
