@@ -71,7 +71,8 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
         LastModifyBy = 1001,
         DeletedDate = null,
         DeletedBy = null,
-        Status = "Active"
+        Status = "Active",
+         ImageUrl="https://localhost:7118/Content/Images/January-2025/es5v2qmo.jpg",
     },
     new InvoiceItems
     {
@@ -97,7 +98,8 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
         LastModifyBy = 1002,
         DeletedDate = null,
         DeletedBy = null,
-        Status = "Active"
+        Status = "Active",
+         ImageUrl="https://localhost:7118/Content/Images/January-2025/es5v2qmo.jpg"
     },
     new InvoiceItems
     {

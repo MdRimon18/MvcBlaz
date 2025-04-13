@@ -7,6 +7,26 @@
     .form-rounded {
         border-radius: 5px; /* Adjust as desired */
     }
+
+   /*  td input.form-control {
+        min-width: 70px;
+    }
+ */
+    td {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .no-spinner::-webkit-outer-spin-button,
+    .no-spinner::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .no-spinner {
+        -moz-appearance: textfield;
+    }
+
 </style>
 @* show toaster *@
 <div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 9999;">
@@ -783,28 +803,28 @@
                     </div>
                     <input type="hidden" name="ItemsList[${index}].ProductId" value="${item.productId}" />
                 </td>
-                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
-                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
-                <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
-                <td>
+                 <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
+                 <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
+                 <td style="min-width:75px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
+                 <td style="min-width:70px;">
                     <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold quantity-input"
                            placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1"  oninput="updateRow(this)"  />
                     <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
                 </td>
-                <td><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
-                <td>
-                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold price-input"
+                   <td style="min-width:60px;"><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
+                 <td style="min-width:75px;">
+                     <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold price-input no-spinner"
                            name="ItemsList[${index}].SellingPrice" value="${item.sellingPrice}" />
                     <span class="text-danger validation-error" data-field="SellingPrice" style="display:none;">Selling Price is required</span>
                 </td>
-                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold vat-input"
+                  <td style="min-width:30px;"><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold vat-input no-spinner"
                     readonly value="${item.vatPercent}"  name="ItemsList[${index}].VatPercent" /></td>
-                <td>
+                 <td style="min-width:40px;">
                     <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold discount-input"
                            name="ItemsList[${index}].DiscountPercentg" value="${item.discountPercentg}" oninput="updateRow(this)"/>
                     <span class="text-danger validation-error" data-field="DiscountPercentg" style="display:none;">Discount is required</span>
                 </td>
-                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
+                 <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold no-spinner"
                     readonly value="${item.totalPrice}" name="ItemsList[${index}].TotalPrice" /></td>
 
                 <!-- Serial Toggle Column -->
