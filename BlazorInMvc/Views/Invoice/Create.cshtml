@@ -478,7 +478,7 @@
                         <label class="form-label fw-bold">Additional Discount</label>
                         <input id="TotalAddiDiscount" name="Invoice.TotalAddiDiscount" type="number"
                                class="form-control form-control-sm form-rounded fw-bold"
-                               placeholder="Additional Discount" />
+                               placeholder="Additional Discount" oninput="updateTotals()" />
                     </div>
                     <div class="form-group">
                         <label class="form-label fw-bolder">Total Payable</label>
@@ -487,7 +487,7 @@
                     <div class="form-group">
                         <label class="form-label fw-bolder">Receive</label>
                         <input id="RecieveAmount" name="Invoice.RecieveAmount" type="number" class="form-control form-control-sm form-rounded fw-bold"
-                               placeholder="Receive" oninput="OnChangeReceiveAmount" />
+                               placeholder="Receive" oninput="updateTotals()" />
                     </div>
                     <div class="form-group">
                         <label class="form-label fw-bolder">Current Due</label>
@@ -621,7 +621,7 @@
                     });
                 }
             //});
-
+              updateTotals();
               const offCanvaProducts = @Html.Raw(Json.Serialize(Model.FilteredItemsOffCanva)); // Or ViewBag.InitialItems
               console.log(offCanvaProducts);
               window.renderOffCanfaProducts(offCanvaProducts);
@@ -1132,9 +1132,9 @@
          updateTotals();
      }
 
-     function updateTotals() {
+     window.updateTotals= function() {
          const qtyInputs = document.querySelectorAll('[name*="Quantity"]');
-          const totalInputs = document.querySelectorAll('[name*="TotalPrice"]');
+         const totalInputs = document.querySelectorAll('[name*="TotalPrice"]');
          const discountInputs = document.querySelectorAll('[name*="DiscountPercentg"]');
          const priceInputs = document.querySelectorAll('[name*="SellingPrice"]');
 
@@ -1158,14 +1158,14 @@
              totalAmt += total;
          }
 
-         const addiDisc = parseFloat(document.getElementById('TotalAddiDiscount')?.value) || 0;
+          const addiDisc = parseFloat(document.getElementById('TotalAddiDiscount')?.value) || 0;
 
          document.getElementById('TotalQnty').value = totalQty.toFixed(2);
          document.getElementById('TotalDiscount').value = totalDiscount.toFixed(2);
          document.getElementById('TotalVat').value = totalVat.toFixed(2);
          document.getElementById('TotalAmount').value = totalAmt.toFixed(2);
-
-         const payable = totalAmt - addiDisc;
+         console.log(totalAmt,totalVat,totalDiscount,addiDisc)
+           const payable = (totalAmt+totalVat)- (totalDiscount+addiDisc);
          document.getElementById('TotalPayable').value = payable.toFixed(2);
 
          const received = parseFloat(document.getElementById('RecieveAmount')?.value) || 0;
