@@ -418,7 +418,7 @@
                             @* Item List Array *@
                             <div class="row">
                                 <div class="table-responsive scrollbar mt-4">
-                                    <table class="table table-sm mb-0 fs-10 table-view-tickets">
+                                <table class="table table-sm mb-0 fs-10 table-view-tickets" id="invoiceItemsTable">
                                         <thead class="thdchild">
                                             <tr>
                                                 <th class="form-label fw-bold">Image</th>
@@ -435,118 +435,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @{
-                                                int indexx = 0;
-                                            }
-                                            @foreach (var itm in Model.ItemsList)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        <div class="col-auto">
-                                                            <div class="avatar avatar-2xl">
-                                                                <img class="rounded-circle" src="~/assets/img/products/1.jpg" alt="@itm.ProductName" />
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Category" readonly value="@itm.CategoryName">
-                                                    </td>
-                                                <td>
-                                                    <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Sub Ctg." readonly value="@itm.SubCtgName">
-                                                </td>
-                                                    <td>
-                                                        <input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Name" readonly value="@itm.ProductName">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Quantity" name="ItemsList[@indexx].Quantity" value="@itm.Quantity" />
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly placeholder="Unit" value="@itm.Unit">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Rate" name="ItemsList[@indexx].SellingPrice" value="@itm.SellingPrice">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" readonly class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="V(%)" value="@itm.VatPercentg">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="D(%)" name="ItemsList[@indexx].DiscountPercentg" value="@itm.DiscountPercentg">
-                                                    </td>
-                                                    <td>
-                                                        <input readonly type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" placeholder="Amount" value="@itm.TotalPrice">
-                                                    </td>
-                                                    <td class="treeview">
-                                                        <div class="treeview-list-item">
-                                                            <a data-bs-toggle="collapse" href="#treeviewExample-1_@indexx" role="button" aria-expanded="false">
-                                                                <p class="treeview-text">Serial</p>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" title="Info" class="btn btn-sm a-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                                            <i class="fa fa-info-circle" style="font-size:18px"></i>
-                                                        </button>
-                                                    </td>
-                                                    <td>
-                                                        <button title="Delete" class="btn btn-sm btn-light" onclick="deleteItem('@itm.ProductId')">
-                                                            <i class="far fa-trash-alt fa-lg text-danger"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="12">
-                                                        <div class="collapse treeview-list" id="treeviewExample-1_@indexx">
-                                                            <div class="table-responsive scrollbar row">
-                                                                <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
-                                                                    <table class="table table-hover">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th class="fw-semi-bold" scope="col">Product Name</th>
-                                                                                <th scope="col">Serial No</th>
-                                                                                <th scope="col">Supplier Org</th>
-                                                                                <th scope="col">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        @foreach (var srl in itm.SelectedSerialNumbers)
-                                                                            {
-                                                                                <tr class="hover-actions-trigger">
-                                                                                    <td class="align-middle text-nowrap">
-                                                                                        <div class="d-flex align-items-center">
-                                                                                            <div class="avatar avatar-xl">
-                                                                                                <img class="rounded-circle" src="../../assets/img/team/4.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="ms-2">@srl.ProductId</div>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td class="align-middle">@srl.SerialNumber</td>
-                                                                                    <td class="align-middle text-nowrap">@srl.SupplierOrgName</td>
-                                                                                    <td>
-                                                                                        <button onclick="deleteSerialNumber('@srl.SerialNumber')" class="btn btn-tertiary ps-2" title="Delete">
-                                                                                            <span class="fas fa-trash-alt text-danger"></span>
-                                                                                        </button>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            }
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                                                                    <label for="chooseSerialNumber" class="form-label fw-semi-bold">Add Serial Number</label>
-                                                                    <div class="position-relative">
-                                                                        <!-- Add any custom search component HTML or code here -->
-                                                                        <button class="btn btn-sm btn-light position-absolute end-0 h-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-2" aria-controls="offcanvasRight-2">
-                                                                            +
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                indexx++;
-                                            }
                                         </tbody>
+                                    
                                     </table>
                                 </div>
 
@@ -567,46 +457,45 @@
 
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-2">
-                        <div class="form-group">
-                            <label class="form-label fw-bolder">Total Quantity</label>
-                            <input asp-for="Invoice.TotalQnty" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Total Quantity" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bolder">Total</label>
-                            <input asp-for="Invoice.TotalAmount" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Total Amount" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bold">Vat</label>
-                            <input asp-for="Invoice.TotalVat" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Vat(%)" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bold">Discount</label>
-                            <input asp-for="Invoice.TotalDiscount" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Discount(%)" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bold">Additional Discount</label>
-                            <input asp-for="Invoice.TotalAddiDiscount" type="number"
-                                   class="form-control form-control-sm form-rounded fw-bold"
-                                   placeholder="Additional Discount" />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label fw-bolder">Total Payable</label>
-                            <input asp-for="Invoice.TotalPayable" type="number" class="form-control form-control-sm form-rounded fw-bold" placeholder="Total Payable" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bolder">Receive</label>
-                            <input asp-for="Invoice.RecieveAmount" type="number" class="form-control form-control-sm form-rounded fw-bold"
-                                   placeholder="Receive" oninput="OnChangeReceiveAmount" />
-
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label fw-bolder">Current Due</label>
-                            <input asp-for="Invoice.DueAmount" type="number"
-                                   class="form-control form-control-sm form-rounded fw-bold" placeholder="Current Due" />
-                        </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                    <div class="form-group">
+                        <label class="form-label fw-bolder">Total Quantity</label>
+                        <input id="TotalQnty" name="Invoice.TotalQnty" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Total Quantity" />
                     </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bolder">Total</label>
+                        <input id="TotalAmount" name="Invoice.TotalAmount" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Total Amount" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bold">Vat</label>
+                        <input id="TotalVat" name="Invoice.TotalVat" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Vat(%)" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bold">Discount</label>
+                        <input id="TotalDiscount" name="Invoice.TotalDiscount" type="number" class="form-control form-control-sm form-rounded fw-bold" readonly placeholder="Discount(%)" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bold">Additional Discount</label>
+                        <input id="TotalAddiDiscount" name="Invoice.TotalAddiDiscount" type="number"
+                               class="form-control form-control-sm form-rounded fw-bold"
+                               placeholder="Additional Discount" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bolder">Total Payable</label>
+                        <input id="TotalPayable" name="Invoice.TotalPayable" type="number" class="form-control form-control-sm form-rounded fw-bold" placeholder="Total Payable" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bolder">Receive</label>
+                        <input id="RecieveAmount" name="Invoice.RecieveAmount" type="number" class="form-control form-control-sm form-rounded fw-bold"
+                               placeholder="Receive" oninput="OnChangeReceiveAmount" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label fw-bolder">Current Due</label>
+                        <input id="DueAmount" name="Invoice.DueAmount" type="number"
+                               class="form-control form-control-sm form-rounded fw-bold" placeholder="Current Due" />
+                    </div>
+                </div>
+
 
 
                 </div>
@@ -898,23 +787,25 @@
                 <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
                 <td><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
                 <td>
-                    <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold"
-                           placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1" />
+                    <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold quantity-input"
+                           placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1"  oninput="updateRow(this)"  />
                     <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
                 </td>
                 <td><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
                 <td>
-                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
+                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold price-input"
                            name="ItemsList[${index}].SellingPrice" value="${item.sellingPrice}" />
                     <span class="text-danger validation-error" data-field="SellingPrice" style="display:none;">Selling Price is required</span>
                 </td>
-                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.vatPercent}" /></td>
+                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold vat-input"
+                    readonly value="${item.vatPercent}"  name="ItemsList[${index}].VatPercent" /></td>
                 <td>
-                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
-                           name="ItemsList[${index}].DiscountPercentg" value="${item.discountPercentg}" />
+                    <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold discount-input"
+                           name="ItemsList[${index}].DiscountPercentg" value="${item.discountPercentg}" oninput="updateRow(this)"/>
                     <span class="text-danger validation-error" data-field="DiscountPercentg" style="display:none;">Discount is required</span>
                 </td>
-                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.totalPrice}" /></td>
+                <td><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold"
+                    readonly value="${item.totalPrice}" name="ItemsList[${index}].TotalPrice" /></td>
 
                 <!-- Serial Toggle Column -->
                 <td class="treeview">
@@ -1211,6 +1102,79 @@
                 console.error('Error fetching serials:', error);
             });
     }
+
+   window.updateRow= function (input) {
+         const row = input.closest('tr');
+         if (!row) return;
+
+         const qtyInput = row.querySelector('[name*="Quantity"]');
+         const priceInput = row.querySelector('[name*="SellingPrice"]');
+         const discountInput = row.querySelector('[name*="DiscountPercentg"]');
+           const vatInput = row.querySelector('[name*="VatPercent"]');
+            const totalInput = row.querySelector('[name*="TotalPrice"]');
+
+         const qty = parseFloat(qtyInput?.value) || 0;
+         const price = parseFloat(priceInput?.value) || 0;
+         const discount = parseFloat(discountInput?.value) || 0;
+         const vat = parseFloat(vatInput?.value) || 0;
+         console.log(qty,price,discount,vat)
+
+         const lineTotal = qty * price;
+         const discountAmt = (lineTotal * discount) / 100;
+         const vatAmt = ((lineTotal - discountAmt) * vat) / 100;
+         const netTotal = lineTotal - discountAmt + vatAmt;
+
+         if (totalInput) {
+             totalInput.value = netTotal.toFixed(2);
+         }
+
+         // Update summary based on visible totals
+         updateTotals();
+     }
+
+     function updateTotals() {
+         const qtyInputs = document.querySelectorAll('[name*="Quantity"]');
+          const totalInputs = document.querySelectorAll('[name*="TotalPrice"]');
+         const discountInputs = document.querySelectorAll('[name*="DiscountPercentg"]');
+         const priceInputs = document.querySelectorAll('[name*="SellingPrice"]');
+
+         let totalQty = 0;
+         let totalAmt = 0;
+         let totalDiscount = 0;
+         let totalVat = 0;
+
+         for (let i = 0; i < qtyInputs.length; i++) {
+             const qty = parseFloat(qtyInputs[i]?.value) || 0;
+             const price = parseFloat(priceInputs[i]?.value) || 0;
+             const discount = parseFloat(discountInputs[i]?.value) || 0;
+             const total = parseFloat(totalInputs[i]?.value) || 0;
+
+             totalQty += qty;
+             const line = qty * price;
+             const disc = (line * discount) / 100;
+             totalDiscount += disc;
+             const vat = total - (line - disc);
+             totalVat += vat;
+             totalAmt += total;
+         }
+
+         const addiDisc = parseFloat(document.getElementById('TotalAddiDiscount')?.value) || 0;
+
+         document.getElementById('TotalQnty').value = totalQty.toFixed(2);
+         document.getElementById('TotalDiscount').value = totalDiscount.toFixed(2);
+         document.getElementById('TotalVat').value = totalVat.toFixed(2);
+         document.getElementById('TotalAmount').value = totalAmt.toFixed(2);
+
+         const payable = totalAmt - addiDisc;
+         document.getElementById('TotalPayable').value = payable.toFixed(2);
+
+         const received = parseFloat(document.getElementById('RecieveAmount')?.value) || 0;
+         const due = payable - received;
+         document.getElementById('DueAmount').value = due.toFixed(2);
+     }
+     
+
+    
 
     })();
 
