@@ -23,6 +23,8 @@ namespace Domain.ViewModel
         public List<ProductSerialNumbers> SerialNumbers { get; set; } = new List<ProductSerialNumbers>();
        
         public string CustomerEmail { get; set; }
+        public string CustomerName { get; set; }
+        public string Mobile { get; set; }
         public string SearchQuery { get; set; }
         public string SrchQuery { get; set; }
 

@@ -252,25 +252,12 @@
 
 
                             <div class="row g-3">
-                               @*  <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
-                                    <div class="form-group">
-                                        <label for="InvoiceType" class="form-label fw-semi-bold">Invoice Type</label><span class="error-star">*</span>
-                                        <select asp-for="Invoice.InvoiceTypeId" id="InvoiceType" class="form-select form-rounded form-select-sm">
-                                            <option value="">Select Invoice Type</option>
-                                            @foreach (var item in Model.InvoiceTypeList)
-                                            {
-                                                <option value="@item.InvoiceTypeId">@item.InvoiceTypeName</option>
-                                            }
-                                        </select>
-                                        <span asp-validation-for="Invoice.InvoiceTypeId" class="text-danger"></span>
-                                    </div>
-                                </div> *@
-
-                           
+                               
                             <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
                                 <div class="form-group">
-                                    <label for="CustomerEmail" class="form-label fw-semi-bold">Customer Name<span class="error-star">*</span></label>
-                                    <input type="text" style="border-radius: 5px;" asp-for="CustomerEmail" id="CustomerEmail" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
+                                    <label for="CustomerName" class="form-label fw-semi-bold">Customer Name <span class="error-star">*</span></label>
+                                    <input type="text" style="border-radius: 5px;" asp-for="CustomerName" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6 col-9 animated-div">
@@ -279,6 +266,7 @@
                                     <div class="position-relative input-group">
                                         <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" />
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">+</button>
+                                        <span asp-validation-for="Mobile" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -286,6 +274,7 @@
                                     <div class="form-group">
                                         <label for="CustomerEmail" class="form-label fw-semi-bold">Customer Email</label>
                                         <input type="text" style="border-radius: 5px;" asp-for="CustomerEmail" id="CustomerEmail" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Email" />
+                                       <span asp-validation-for="CustomerEmail" class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -299,7 +288,7 @@
                                                 <option value="@item.NotificationById">@item.NotificationByName</option>
                                             }
                                         </select>
-                                        <span asp-validation-for="Invoice.NotificationById" class="text-danger"></span>
+                                    <span asp-validation-for="Invoice.NotificationById" class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -356,16 +345,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            
-                                @* <div class="col-lg-4 col-md-4 col-sm-6 col-9 animated-div">
-                                    <div class="form-group">
-                                        <label for="chooseProduct" class="form-label fw-semi-bold">Search by Product Name/Sku/Code</label><span class="error-star">*</span>
-                                        <div class="position-relative input-group">
-                                            <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseProduct" />
-                                            <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-1" aria-controls="offcanvasRight-1">+</button>
-                                        </div>
-                                    </div>
-                                </div> *@
+                             
                             <div class="col-lg-6 col-md-6 col-sm-6 col-12 animated-div">
                                 <div class="form-group position-relative">
                                     <label for="chooseProduct" class="form-label fw-semi-bold">Search by Product Name/Sku/Code</label><span class="error-star text-danger">*</span>
@@ -383,47 +363,7 @@
                                         </div>
                                     </div>
                                 </div>
-                              @*   <div class="form-group position-relative">
-                                    <label for="chooseProduct" class="form-label fw-semi-bold">Search by Product Name/Sku/Code</label><span class="error-star text-danger">*</span>
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control form-control-sm form-rounded border-start-0" placeholder="Search..." id="chooseProduct" aria-label="Search" />
-                                        <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-1" aria-controls="offcanvasRight-1">+</button>
-                                    </div>
-                                    <!-- Optional Dropdown (if you want to add search suggestions like the first snippet) -->
-                                    <div class="dropdown-menu border font-base mt-1 w-100" id="searchDropdown" style="display: none;">
-                                        <div class="list py-2" style="max-height: 15rem; overflow-y: auto;">
-                                            <!-- Dynamic content can be added here via JavaScript -->
-
-                                            <h6 class="dropdown-header fw-medium text-uppercase px-x1 fs-11 pt-0 pb-2">Members</h6><a class="dropdown-item px-x1 py-2" href="../../pages/user/profile.html">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-l status-online me-2">
-                                                        <img class="rounded-circle" src="../../assets/img/team/1.jpg" alt="" />
-                                                    </div>
-                                                    <div class="flex-1">
-                                                        <h6 class="mb-0 title">Anna Karinina</h6>
-                                                        <p class="fs-11 mb-0 d-flex">Technext Limited</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a class="dropdown-item px-x1 py-2" href="../../pages/user/profile.html">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-l me-2">
-                                                        <img class="rounded-circle" src="../../assets/img/team/2.jpg" alt="" />
-                                                    </div>
-                                                    <div class="flex-1">
-                                                        <h6 class="mb-0 title">Antony Hopkins</h6>
-                                                        <p class="fs-11 mb-0 d-flex">Brain Trust</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-
-
-                                        </div>
-                                        <div class="text-center">
-                                            <p class="fw-bold fs-8 d-none">No Results Found.</p>
-                                        </div>
-                                    </div>
-                                </div> *@
+                             
                             </div>
 
                             <div class="col-sm-3 col-md-3 col-lg-3 col-12">
@@ -978,73 +918,139 @@
         };
 
 
-      window.postItemsToApi = function () {
-              const rows = document.querySelectorAll('.table-view-tickets tbody tr');
-            const items = [];
-            let rowIndex = 0;
-            let isValid = true;
+     
+    window.postItemsToApi = function () {
+          $(".form-control").removeClass("is-invalid");
+             $(".invalid-feedback").remove();
 
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
+        const rows = document.querySelectorAll('.table-view-tickets tbody tr');
+        const items = [];
+        let rowIndex = 0;
+        let isValid = true;
 
-                const quantityInput = row.querySelector('[name^="ItemsList["][name$="].Quantity"]');
-                if (!quantityInput) continue; // Skip non-data rows
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
 
-                const productIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductId"]');
-                const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
-                const discountPercentInput = row.querySelector('[name^="ItemsList["][name$="].DiscountPercentg"]');
+            const quantityInput = row.querySelector('[name^="ItemsList["][name$="].Quantity"]');
+            if (!quantityInput) continue; // Skip non-data rows
 
-                // Hide all error spans first
-                row.querySelectorAll('.validation-error').forEach(e => e.style.display = 'none');
+            const productIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductId"]');
+            const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
+            const discountPercentInput = row.querySelector('[name^="ItemsList["][name$="].DiscountPercentg"]');
 
-                // Manual validation
-                if (!quantityInput.value || parseFloat(quantityInput.value) <= 0) {
-                    const errSpan = row.querySelector('[data-field="Quantity"]');
-                    if (errSpan) errSpan.style.display = 'block';
-                    isValid = false;
-                }
+            // Hide all error spans first
+            row.querySelectorAll('.validation-error').forEach(e => e.style.display = 'none');
 
-                if (!sellingPriceInput.value || parseFloat(sellingPriceInput.value) <= 0) {
-                    const errSpan = row.querySelector('[data-field="SellingPrice"]');
-                    if (errSpan) errSpan.style.display = 'block';
-                    isValid = false;
-                }
+            // Manual validation
+            if (!quantityInput.value || parseFloat(quantityInput.value) <= 0) {
+                const errSpan = row.querySelector('[data-field="Quantity"]');
+                if (errSpan) errSpan.style.display = 'block';
+                isValid = false;
+            }
 
-                // Optional: validate discountPercentInput if needed
+            if (!sellingPriceInput.value || parseFloat(sellingPriceInput.value) <= 0) {
+                const errSpan = row.querySelector('[data-field="SellingPrice"]');
+                if (errSpan) errSpan.style.display = 'block';
+                isValid = false;
+            }
 
-                items.push({
-                    rowIndex: rowIndex,
-                    productId: parseInt(productIdInput?.value || 0),
-                    quantity: parseFloat(quantityInput?.value || 0),
-                    sellingPrice: parseFloat(sellingPriceInput?.value || 0),
-                    discountPercentg: parseFloat(discountPercentInput?.value || 0),
+            // Extract index from the hidden input name (e.g., ItemsList[2].ProductId)
+            const nameAttr = productIdInput?.getAttribute('name') || '';
+            const indexMatch = nameAttr.match(/ItemsList\[(\d+)\]/);
+            const index = indexMatch ? parseInt(indexMatch[1]) : rowIndex;
+
+            // 🔄 Get serial numbers from the related serial-body
+            const serialTbody = document.getElementById(`serial-body-${index}`);
+            const serials = [];
+            if (serialTbody) {
+                const serialRows = serialTbody.querySelectorAll('tr');
+                serialRows.forEach(sRow => {
+                    const cells = sRow.querySelectorAll('td');
+                    if (cells.length >= 3) {
+                        serials.push({
+                            serialNumber: cells[0].textContent.trim(),
+                            prodSerialNmbrId: cells[1].textContent.trim(),
+                            supplierOrgName: cells[2].textContent.trim()
+                        });
+                    }
                 });
-
-                rowIndex++;
             }
 
-            if (!isValid) {
-                console.warn("Validation failed!");
-                return;
-            }
-
-            console.log("Items to send:", items);
-
-            fetch('/api/Invoice/save-items', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(items)
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log("Saved!", data);
-            })
-            .catch(err => {
-                console.error("Save failed", err);
+            items.push({
+                rowIndex: rowIndex,
+                productId: parseInt(productIdInput?.value || 0),
+                quantity: parseFloat(quantityInput?.value || 0),
+                sellingPrice: parseFloat(sellingPriceInput?.value || 0),
+                discountPercentg: parseFloat(discountPercentInput?.value || 0),
+                serials: serials // ✅ include serial numbers
             });
+
+            rowIndex++;
         }
+
+        if (!isValid) {
+            console.warn("Validation failed!");
+            return;
+        }
+
+       //  console.log("Items to send:", items);
+          const invoiceSummary = {
+                  customerName: document.getElementById("CustomerEmail")?.value,  // first input field
+                  mobile: document.getElementById("chooseMobile").value,
+                  customerEmail: document.querySelectorAll("#CustomerEmail")[1]?.value, // second CustomerEmail field
+                  notificationById: document.getElementById("NotificationById").value,
+                  invoiceDate: document.getElementById("InvoiceDateTime").value,
+                  seller: document.getElementById("SalesByName").value,
+                  paymentTypeId: document.getElementById("PaymentTypeId").value,
+                  categoryId: document.getElementById("categorySelect").value,
+                  subCategoryId: document.getElementById("subCategorySelect").value,
+                  productSearch: document.getElementById("chooseProduct").value,
+                  notes: document.getElementById("remarks").value,
+
+
+                 totalQuantity: parseFloat(document.getElementById("TotalQnty")?.value || 0),
+                 totalAmount: parseFloat(document.getElementById("TotalAmount")?.value || 0),
+                 totalVat: parseFloat(document.getElementById("TotalVat")?.value || 0),
+                 totalDiscount: parseFloat(document.getElementById("TotalDiscount")?.value || 0),
+                 totalAddiDiscount: parseFloat(document.getElementById("TotalAddiDiscount")?.value || 0),
+                 totalPayable: parseFloat(document.getElementById("TotalPayable")?.value || 0),
+                 recieveAmount: parseFloat(document.getElementById("RecieveAmount")?.value || 0),
+                 dueAmount: parseFloat(document.getElementById("DueAmount")?.value || 0),
+
+                 
+             };
+
+
+              
+
+             // Validate required fields and highlight invalid ones
+               if (!invoiceSummary.customerName) {
+                 isValid = false;
+                  $("#CustomerName").addClass("is-invalid").after('<div class="invalid-feedback">Customer Name is required.</div>');
+             }
+             // ✅ Final payload
+             const payload = {
+                 invoiceSummary: invoiceSummary,
+                 items: items
+             };
+
+             console.log("Payload to send:", payload);
+        // You can now send the items with serials to the server
+        // fetch('/api/Invoice/save-items', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(items)
+        // })
+        // .then(res => res.json())
+        // .then(data => {
+        //     console.log("Saved!", data);
+        // })
+        // .catch(err => {
+        //     console.error("Save failed", err);
+        // });
+    }
 
        window.deleteSerialRow= function (btn) {
           const row = btn.closest('tr');
