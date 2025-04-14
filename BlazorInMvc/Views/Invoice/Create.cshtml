@@ -788,13 +788,22 @@
           const tableBody = document.querySelector('.table-view-tickets tbody');
           const rowHtml = generateItemRowHtml(item, itemRowIndex);
           tableBody.insertAdjacentHTML('beforeend', rowHtml);
-          itemRowIndex++;
-          showToast("success",`${item.prodName} Added Successfully.`);
+             const newRow = tableBody.querySelector(`tr[data-index="${itemRowIndex}"]`);
+             const qtyInput = newRow?.querySelector('[name*="Quantity"]');
+
+             if (qtyInput) {
+                 updateRow(qtyInput);
+             } else {
+                 console.warn(`Quantity input not found for row index ${itemRowIndex}`);
+             }
+
+             itemRowIndex++;
+             showToast("success", `${item.prodName} Added Successfully.`);
         }
 
         function generateItemRowHtml(item, index) {
         return `
-            <tr>
+             <tr  data-index="${index}">
                 <td>
                     <div class="col-auto">
                         <div class="avatar avatar-2xl">
@@ -818,7 +827,7 @@
                     <span class="text-danger validation-error" data-field="SellingPrice" style="display:none;">Selling Price is required</span>
                 </td>
                   <td style="min-width:30px;"><input type="number" class="form-control form-control-sm form-rounded fw-semi-bold vat-input no-spinner"
-                    readonly value="${item.vatPercent}"  name="ItemsList[${index}].VatPercent" /></td>
+                      readonly value="${item.vatPercent}" data-field="VatPercent" name="ItemsList[${index}].VatPercent" /></td>
                  <td style="min-width:40px;">
                     <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold discount-input"
                            name="ItemsList[${index}].DiscountPercentg" value="${item.discountPercentg}" oninput="updateRow(this)"/>
@@ -946,6 +955,7 @@
 
             // Remove the main row
             row.remove();
+           
 
             // Remove the collapsible serial row (next <tr>)
             if (nextRow && nextRow.querySelector(`#treeviewExample-1_${index}`)) {
@@ -963,6 +973,8 @@
             if (tableBody) {
                 tableBody.style.borderCollapse = 'collapse';
             }
+
+             updateTotals();// update total calculation
         };
 
 
@@ -1130,18 +1142,18 @@
          const qtyInput = row.querySelector('[name*="Quantity"]');
          const priceInput = row.querySelector('[name*="SellingPrice"]');
          const discountInput = row.querySelector('[name*="DiscountPercentg"]');
-           const vatInput = row.querySelector('[name*="VatPercent"]');
-            const totalInput = row.querySelector('[name*="TotalPrice"]');
+         const vatInput = row.querySelector('[name*="VatPercent"]');
+         const totalInput = row.querySelector('[name*="TotalPrice"]');
 
          const qty = parseFloat(qtyInput?.value) || 0;
          const price = parseFloat(priceInput?.value) || 0;
          const discount = parseFloat(discountInput?.value) || 0;
-         const vat = parseFloat(vatInput?.value) || 0;
-         console.log(qty,price,discount,vat)
+         const vatPercentag = parseFloat(vatInput?.value) || 0;
+         //console.log(qty,price,discount,vat)
 
          const lineTotal = qty * price;
          const discountAmt = (lineTotal * discount) / 100;
-         const vatAmt = ((lineTotal - discountAmt) * vat) / 100;
+          const vatAmt =  (lineTotal * vatPercentag) / 100;
          const netTotal = lineTotal - discountAmt + vatAmt;
 
          if (totalInput) {
@@ -1156,7 +1168,8 @@
          const qtyInputs = document.querySelectorAll('[name*="Quantity"]');
          const totalInputs = document.querySelectorAll('[name*="TotalPrice"]');
          const discountInputs = document.querySelectorAll('[name*="DiscountPercentg"]');
-         const priceInputs = document.querySelectorAll('[name*="SellingPrice"]');
+         const vatInputs = document.querySelectorAll('[name*="VatPercent"]');
+          const priceInputs = document.querySelectorAll('[name*="SellingPrice"]');
 
          let totalQty = 0;
          let totalAmt = 0;
@@ -1167,14 +1180,15 @@
              const qty = parseFloat(qtyInputs[i]?.value) || 0;
              const price = parseFloat(priceInputs[i]?.value) || 0;
              const discount = parseFloat(discountInputs[i]?.value) || 0;
+             const vatPercentag = parseFloat(vatInputs[i]?.value) || 0;
              const total = parseFloat(totalInputs[i]?.value) || 0;
 
              totalQty += qty;
              const line = qty * price;
              const disc = (line * discount) / 100;
              totalDiscount += disc;
-             const vat = total - (line - disc);
-             totalVat += vat;
+                const vatAmount =(line * vatPercentag) / 100;
+              totalVat += vatAmount;
              totalAmt += total;
          }
 

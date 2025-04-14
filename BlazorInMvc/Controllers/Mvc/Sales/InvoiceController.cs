@@ -144,7 +144,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
                 Quantity = item.Quantity,
                 SellingPrice = item.SellingPrice,
                 TotalPrice = item.TotalPrice,
-                VatPercentg = item.VatPercentg,
+                VatPercent = item.VatPercentg,
                // VatAmount = item.VatAmount,
                 DiscountPercentg = item.DiscountPercentg,
               //   DiscountAmount = item.DiscountAmount,

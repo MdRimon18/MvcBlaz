@@ -15,7 +15,7 @@ namespace Domain.ViewModel
         public decimal SellingPrice { get; set; }
         public decimal DiscountPercentg { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal VatPercentg { get; set; }
+        public decimal VatPercent { get; set; }
          
         public string ProdCtgName { get; set; }
         public string ProdName { get; set; }
