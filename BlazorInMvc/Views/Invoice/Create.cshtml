@@ -261,16 +261,16 @@
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6 col-9 animated-div">
-                                <div class="form-group">
+                                <div class="form-group position-relative">
                                     <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
-                                    <div class="position-relative input-group">
+                                    <div class="input-group">
                                         <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" oninput="handleSearchCustomer(this.value)" />
                                         <!-- Clear (X) button -->
                                         <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtnCustomer">×</button>
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">+</button>
                                         <span asp-validation-for="Mobile" class="text-danger"></span>
 
-                                        <div class="dropdown-menu border font-base mt-1 w-100 spa-link" id="searchDropdownCustomer" style="display: none;">
+                                        <div class="dropdown-menu border font-base mt-1 w-100 spa-link mt-4" id="searchDropdownCustomer" style="display: none;">
                                             <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
                                             <div class="text-center">
                                                 <p class="fw-bold fs-8 d-none">No Results Found.</p>
@@ -283,7 +283,22 @@
                                 <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
                                     <div class="form-group">
                                         <label for="CustomerEmail" class="form-label fw-semi-bold">Customer Email</label>
-                                        <input type="text" style="border-radius: 5px;" asp-for="CustomerEmail" id="CustomerEmail" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Email" />
+                                      
+
+                                    <div class="position-relative form-group">
+                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search Email" id="CustomerEmail" oninput="handleSearchEmail(this.value)" />
+                                        <!-- Clear (X) button -->
+                                        <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtnEmail">×</button>
+                                       
+                                        <span asp-validation-for="Mobile" class="text-danger"></span>
+
+                                        <div class="dropdown-menu border font-base mt-1 w-100 spa-link" id="searchDropdownEmail" style="display: none;">
+                                            <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
+                                            <div class="text-center">
+                                                <p class="fw-bold fs-8 d-none">No Results Found.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                        <span asp-validation-for="CustomerEmail" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -634,7 +649,7 @@
         // Get DOM elements dynamically
         function getElements() {
             return {
-                 searchInput: document.getElementById('chooseMobile'),
+                  searchInput: document.getElementById('chooseProduct'),
                 searchDropdown: document.getElementById('searchDropdown'),
                 dropdownList: document.querySelector('#searchDropdown .list'),
                 noResultsMessage: document.querySelector('#searchDropdown .text-center p'),
@@ -744,9 +759,10 @@
          const dropdownList = document.querySelector('#searchDropdownCustomer .list');
         const noResultsMessage = document.querySelector('#searchDropdown .text-center p');
         const clearBtn = document.getElementById('clearBtnCustomer');
-
+        const emailInput = document.getElementById('CustomerEmail');
+          const customerName= document.getElementById('CustomerName');
         // Validate that all required elements are found
-        if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn) {
+          if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn||!emailInput||!customerName) {
             console.error('[DEBUG] Elements not found in handleSearch');
             return;
         }
@@ -763,8 +779,8 @@
             query = query.toLowerCase().trim();
             console.log('[DEBUG] Filtering with query:', query);
             const filteredCustomers = allCustomers.filter(customer =>
-                customer.mobileNo?.toLowerCase().includes(query) ||
-                customer.email?.toLowerCase().includes(query)
+                customer.mobileNo?.toLowerCase().includes(query) 
+                
             );
             console.log('filteredCustomers', filteredCustomers);
 
@@ -791,6 +807,8 @@
                      // Add click event listener to set input and hide dropdown
                      item.addEventListener('click', () => {
                          searchInput.value = customer.mobileNo; // Or customer.email if preferred
+                         emailInput.value = customer.email;
+                          customerName.value=customer.customerName;
                          searchDropdown.style.display = 'none';
                      });
 
@@ -816,6 +834,93 @@
             clearBtn.classList.add('d-none');
         }
     };
+
+         window.handleSearchEmail = function (query) {
+         // Check if customer data is initialized
+         if (!isCustomerInit) {
+             console.log('[DEBUG] Customer not yet loaded, waiting...');
+             return;
+         }
+
+         // Get DOM elements dynamically (inlined from getElementsCustomer)
+          const searchInput = document.getElementById('CustomerEmail');
+          const searchDropdown = document.getElementById('searchDropdownEmail');
+           const dropdownList = document.querySelector('#searchDropdownEmail .list');
+         const noResultsMessage = document.querySelector('#searchDropdown .text-center p');
+         const clearBtn = document.getElementById('clearBtnEmail');
+         const emailInput = document.getElementById('CustomerEmail');
+             const customerName= document.getElementById('CustomerName');
+           // Validate that all required elements are found
+             if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn||!emailInput||!customerName) {
+               console.error('[DEBUG] Elements not found in handleSearch');
+               return;
+           }
+
+         // Log the search input value for debugging
+         console.log('[DEBUG] searchInput value from DOM:', searchInput.value);
+
+         if (query.length > 0) {
+             // Show the dropdown and clear button when there is a query
+             searchDropdown.style.display = 'block';
+             clearBtn.classList.remove('d-none');
+
+             // Filter customers based on query (inlined from filterCustomers)
+             query = query.toLowerCase().trim();
+             console.log('[DEBUG] Filtering with query:', query);
+             const filteredCustomers = allCustomers.filter(customer =>
+                 customer.email?.toLowerCase().includes(query)
+             );
+             
+             // Populate the dropdown with filtered customers (inlined from populateDropdownCustomer)
+             dropdownList.innerHTML = '';
+             if (filteredCustomers.length > 0) {
+                 noResultsMessage.classList.add('d-none');
+                 filteredCustomers.forEach(customer => {
+
+                     const item = document.createElement('a');
+                     item.className = 'dropdown-item px-x1 py-2';
+                     item.innerHTML = `
+                         <div class="d-flex align-items-center ">
+                             <div class="avatar avatar-l me-2">
+                                 <img class="rounded-circle" src="" alt="" />
+                             </div>
+                             <div class="flex-1">
+                                 <h6 class="mb-0 title">${customer.mobileNo}</h6>
+                                 <p class="fs-11 mb-0 d-flex">${customer.email || 'N/A'}</p>
+                             </div>
+                         </div>
+                     `;
+
+                      // Add click event listener to set input and hide dropdown
+                      item.addEventListener('click', () => {
+                           searchInput.value = customer.mobileNo; // Or customer.email if preferred
+                           emailInput.value = customer.email;
+                           customerName.value=customer.customerName; 
+                          searchDropdown.style.display = 'none';
+                      });
+
+                     dropdownList.appendChild(item);
+                 });
+             } else {
+                 noResultsMessage.classList.remove('d-none');
+             }
+
+             // Set up clear button event listener (inlined from populateDropdownCustomer)
+             clearBtn.addEventListener('click', () => {
+                 searchInput.value = '';
+                 clearBtn.classList.add('d-none');
+                 searchDropdown.style.display = 'none';
+                 dropdownList.innerHTML = '';
+                 noResultsMessage.classList.add('d-none');
+             });
+         } else {
+             // Hide dropdown and reset UI when query is empty
+             searchDropdown.style.display = 'none';
+             dropdownList.innerHTML = '';
+             noResultsMessage.classList.add('d-none');
+             clearBtn.classList.add('d-none');
+         }
+     };
         // Initialize search functionality
         window.initializeInvoiceSearch = async function () {
             console.log('[DEBUG] Initializing Invoice search');
