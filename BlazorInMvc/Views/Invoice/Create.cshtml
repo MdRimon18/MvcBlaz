@@ -264,10 +264,20 @@
                                 <div class="form-group">
                                     <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
                                     <div class="position-relative input-group">
-                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" />
+                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" oninput="handleSearchCustomer(this.value)" />
+                                        <!-- Clear (X) button -->
+                                        <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtnCustomer">×</button>
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">+</button>
                                         <span asp-validation-for="Mobile" class="text-danger"></span>
+
+                                        <div class="dropdown-menu border font-base mt-1 w-100 spa-link" id="searchDropdownCustomer" style="display: none;">
+                                            <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
+                                            <div class="text-center">
+                                                <p class="fw-bold fs-8 d-none">No Results Found.</p>
+                                            </div>
+                                        </div>
                                     </div>
+                                   
                                 </div>
                             </div>
                                 <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
@@ -556,8 +566,10 @@
 
 <script>
     (function () {
-        let allProducts = [];
-        let isInitialized = false;
+         let allProducts = [];
+         let allCustomers=[];
+         let isInitialized = false;
+         let isCustomerInit=false;
          let itemRowIndex = 0;
         
 
@@ -603,18 +615,33 @@
                 isInitialized = true;
             }
         }
+         // Fetch products
+         async function fetchAllCustomer() {
+             try {
+                  const response = await fetch(`/api/Customer/GetAll?page=1&pageSize=500`);
+                 const data = await response.json();
+                 allCustomers = data.items;
+                 console.log('all customer',allCustomers)
+                 isCustomerInit = true;
+             } catch (error) {
+                 console.error('Error fetching products:', error);
+                  allCustomers =[];
+                  isCustomerInit = true;
+             }
+         }
+
 
         // Get DOM elements dynamically
         function getElements() {
             return {
-                searchInput: document.getElementById('chooseProduct'),
+                 searchInput: document.getElementById('chooseMobile'),
                 searchDropdown: document.getElementById('searchDropdown'),
                 dropdownList: document.querySelector('#searchDropdown .list'),
                 noResultsMessage: document.querySelector('#searchDropdown .text-center p'),
                 clearBtn : document.getElementById('clearBtn')
             };
         }
-
+          
         // Filter products
         function filterProducts(query) {
 
@@ -627,6 +654,7 @@
                 product.productCode?.toLowerCase().includes(query)
             );
         }
+ 
 
         // Populate dropdown
         function populateDropdown(products, elements) {
@@ -676,6 +704,7 @@
                // handleSearch(''); // Optional: re-trigger filtering if needed
                });
         }
+      
 
         // Global handleSearch for oninput
         window.handleSearch = function (query) {
@@ -701,22 +730,112 @@
             }
         };
 
+         
+        window.handleSearchCustomer = function (query) {
+        // Check if customer data is initialized
+        if (!isCustomerInit) {
+            console.log('[DEBUG] Customer not yet loaded, waiting...');
+            return;
+        }
+
+        // Get DOM elements dynamically (inlined from getElementsCustomer)
+        const searchInput = document.getElementById('chooseMobile');
+        const searchDropdown = document.getElementById('searchDropdownCustomer');
+         const dropdownList = document.querySelector('#searchDropdownCustomer .list');
+        const noResultsMessage = document.querySelector('#searchDropdown .text-center p');
+        const clearBtn = document.getElementById('clearBtnCustomer');
+
+        // Validate that all required elements are found
+        if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn) {
+            console.error('[DEBUG] Elements not found in handleSearch');
+            return;
+        }
+
+        // Log the search input value for debugging
+        console.log('[DEBUG] searchInput value from DOM:', searchInput.value);
+
+        if (query.length > 0) {
+            // Show the dropdown and clear button when there is a query
+            searchDropdown.style.display = 'block';
+            clearBtn.classList.remove('d-none');
+
+            // Filter customers based on query (inlined from filterCustomers)
+            query = query.toLowerCase().trim();
+            console.log('[DEBUG] Filtering with query:', query);
+            const filteredCustomers = allCustomers.filter(customer =>
+                customer.mobileNo?.toLowerCase().includes(query) ||
+                customer.email?.toLowerCase().includes(query)
+            );
+            console.log('filteredCustomers', filteredCustomers);
+
+            // Populate the dropdown with filtered customers (inlined from populateDropdownCustomer)
+            dropdownList.innerHTML = '';
+            if (filteredCustomers.length > 0) {
+                noResultsMessage.classList.add('d-none');
+                filteredCustomers.forEach(customer => {
+                  
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item px-x1 py-2';
+                    item.innerHTML = `
+                        <div class="d-flex align-items-center ">
+                            <div class="avatar avatar-l me-2">
+                                <img class="rounded-circle" src="" alt="" />
+                            </div>
+                            <div class="flex-1">
+                                <h6 class="mb-0 title">${customer.mobileNo}</h6>
+                                <p class="fs-11 mb-0 d-flex">${customer.email || 'N/A'}</p>
+                            </div>
+                        </div>
+                    `;
+
+                     // Add click event listener to set input and hide dropdown
+                     item.addEventListener('click', () => {
+                         searchInput.value = customer.mobileNo; // Or customer.email if preferred
+                         searchDropdown.style.display = 'none';
+                     });
+
+                    dropdownList.appendChild(item);
+                });
+            } else {
+                noResultsMessage.classList.remove('d-none');
+            }
+
+            // Set up clear button event listener (inlined from populateDropdownCustomer)
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearBtn.classList.add('d-none');
+                searchDropdown.style.display = 'none';
+                dropdownList.innerHTML = '';
+                noResultsMessage.classList.add('d-none');
+            });
+        } else {
+            // Hide dropdown and reset UI when query is empty
+            searchDropdown.style.display = 'none';
+            dropdownList.innerHTML = '';
+            noResultsMessage.classList.add('d-none');
+            clearBtn.classList.add('d-none');
+        }
+    };
         // Initialize search functionality
         window.initializeInvoiceSearch = async function () {
             console.log('[DEBUG] Initializing Invoice search');
             const elements = getElements();
+             
             if (!elements.searchInput || !elements.searchDropdown) {
                 console.error('[DEBUG] Required elements not found after render:', elements);
                 return;
             }
+             
             await fetchAllProducts(); // Fetch products and set isInitialized
-
+            await fetchAllCustomer();
             // Attach click-outside listener (no input listener needed due to oninput)
             document.addEventListener('click', (e) => {
                 if (!elements.searchInput.contains(e.target) && !elements.searchDropdown.contains(e.target)) {
                     elements.searchDropdown.style.display = 'none';
                 }
             });
+
+             
         };
 
         // Expose fetchAllProducts for debugging (optional)
@@ -1204,8 +1323,8 @@
          document.getElementById('TotalDiscount').value = totalDiscount.toFixed(2);
          document.getElementById('TotalVat').value = totalVat.toFixed(2);
          document.getElementById('TotalAmount').value = totalAmt.toFixed(2);
-         console.log(totalAmt,totalVat,totalDiscount,addiDisc)
-           const payable = (totalAmt+totalVat)- (totalDiscount+addiDisc);
+       //  console.log(totalAmt,totalVat,totalDiscount,addiDisc)
+           const payable = (totalAmt - addiDisc);
          document.getElementById('TotalPayable').value = payable.toFixed(2);
 
          const received = parseFloat(document.getElementById('RecieveAmount')?.value) || 0;
