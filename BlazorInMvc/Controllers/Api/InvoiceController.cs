@@ -1,10 +1,12 @@
 ﻿using Azure.Core;
 using Domain.CommonServices;
+using Domain.DbContex;
 using Domain.Entity.Settings;
 using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorInMvc.Controllers.Api
 {
@@ -14,78 +16,130 @@ namespace BlazorInMvc.Controllers.Api
     {
         private readonly InvoiceService _invoiceService;
         private readonly InvoiceItemService _invoiceItemService;
+        private readonly ProductSerialNumbersService _productSerialNumberService;
+        private readonly ApplicationDbContext _context;
+
         public InvoiceController(InvoiceService invoiceService,
-            InvoiceItemService invoiceItemService)
+            InvoiceItemService invoiceItemService,
+            ProductSerialNumbersService productSerialNumberService,
+            ApplicationDbContext dbContext
+            )
         {
             _invoiceService = invoiceService;
             _invoiceItemService = invoiceItemService;
+            _productSerialNumberService = productSerialNumberService;
+            _context = dbContext;
         }
 
         [HttpPost("save-items")]
-        public IActionResult SaveItems([FromBody] SaveInvoiceRequest request)
+        public async Task<IActionResult> SaveItems([FromBody] SaveInvoiceRequest request)
         {
-            if (request == null || request.Items == null || request.InvoiceSummary == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid data provided.");
+                return BadRequest(ModelState);
             }
 
-            // 1. Map Invoice
-            Invoice invoice = new Invoice
+            try
             {
-                InvoiceKey = Guid.NewGuid(),
-                BranchId = CompanyInfo.BranchId, // <-- You should set this dynamically
-                InvoiceNumber = "INV-123", // <-- your own logic to generate
-                CustomerID = long.TryParse(request.InvoiceSummary.CustomerId, out var customerId) ? customerId : 0,
-                InvoiceDateTime = DateTime.TryParse(request.InvoiceSummary.InvoiceDate, out var invoiceDate) ? invoiceDate : DateTime.Now,
-                InvoiceTypeId = null, // You can set it if needed
-                NotificationById = long.TryParse(request.InvoiceSummary.NotificationById, out var notificationById) ? notificationById : null,
-                SalesByName = request.InvoiceSummary.Seller,
-                Notes = request.InvoiceSummary.Notes,
-                PaymentTypeId = long.TryParse(request.InvoiceSummary.PaymentTypeId, out var paymentTypeId) ? paymentTypeId : null,
-                TotalQnty = (int)request.InvoiceSummary.TotalQuantity,
-                TotalAmount = (decimal)request.InvoiceSummary.TotalAmount,
-                TotalVat = (decimal)request.InvoiceSummary.TotalVat,
-                TotalDiscount = (decimal)request.InvoiceSummary.TotalDiscount,
-                TotalAddiDiscount = (decimal)request.InvoiceSummary.TotalAddiDiscount,
-                TotalPayable = (decimal)request.InvoiceSummary.TotalPayable,
-                RecieveAmount = (decimal)request.InvoiceSummary.RecieveAmount,
-                DueAmount = (decimal)request.InvoiceSummary.DueAmount,
-                Status = "Active",
-                EntryDateTime = DateTime.Now,
-                EntryBy = 1, // your userId if tracking who entered
-                total_row = request.Items.Count
-            };
+                // Begin transaction
+                using var transaction = await _context.Database.BeginTransactionAsync();
 
-            // 2. Map InvoiceItems
-            List<InvoiceItems> invoiceItems = request.Items.Select(item => new InvoiceItems
-            {
-                InvoiceId = invoice.InvoiceId, // You need to save Invoice first to get real ID if DB generated
-                ProductId = item.ProductId,
-                Quantity = (int)item.Quantity,
-                SellingPrice = (decimal)item.SellingPrice,
-                DiscountPercentg = (decimal)item.DiscountPercentg,
-                RowIndex = item.RowIndex,
-                Status = "Active",
-                SelectedSerialNumbers = item.Serials.Select(serial => new ProductSerialNumbers
+                // 1. Map and save Invoice
+                if (!long.TryParse(request.InvoiceSummary.CustomerId, out var customerId))
+                    return BadRequest("Invalid CustomerId format.");
+                if (!DateTime.TryParse(request.InvoiceSummary.InvoiceDate, out var invoiceDate))
+                    return BadRequest("Invalid InvoiceDate format.");
+                long? notificationById = long.TryParse(request.InvoiceSummary.NotificationById, out var parsedNotificationById) ? parsedNotificationById : null;
+                long? paymentTypeId = long.TryParse(request.InvoiceSummary.PaymentTypeId, out var parsedPaymentTypeId) ? parsedPaymentTypeId : null;
+
+                var invoice = new Invoice
                 {
-                    SerialNumber = serial.SerialNumber,
-                    ProdSerialNmbrId = long.TryParse(serial.ProdSerialNmbrId, out var prodSerialId) ? prodSerialId : 0,
-                    SupplierOrgName = serial.SupplierOrgName,
-                    SerialStatus = "Sale"
-                }).ToList()
-            }).ToList();
+                    
+                    BranchId = CompanyInfo.BranchId,
+                    InvoiceNumber ="",
+                    CustomerID = customerId,
+                    InvoiceDateTime = invoiceDate,
+                    InvoiceTypeId = 1, // Sales Point Set based on business logic if needed
+                    NotificationById = notificationById,
+                    SalesByName = request.InvoiceSummary.Seller,
+                    Notes = request.InvoiceSummary.Notes,
+                    PaymentTypeId = paymentTypeId,
+                    TotalQnty = (int)request.InvoiceSummary.TotalQuantity,
+                    TotalAmount = (decimal)request.InvoiceSummary.TotalAmount,
+                    TotalVat = (decimal)request.InvoiceSummary.TotalVat,
+                    TotalDiscount = (decimal)request.InvoiceSummary.TotalDiscount,
+                    TotalAddiDiscount = (decimal)request.InvoiceSummary.TotalAddiDiscount,
+                    TotalPayable = (decimal)request.InvoiceSummary.TotalPayable,
+                    RecieveAmount = (decimal)request.InvoiceSummary.RecieveAmount,
+                    DueAmount = (decimal)request.InvoiceSummary.DueAmount,
+                    Status = "Active",
+                    EntryDateTime = DateTime.UtcNow,
+                    EntryBy = UserInfo.UserId,
+                    total_row = request.Items.Count
+                };
 
-            // 3. Optionally extract ProductSerialNumbers separately if needed
-            List<ProductSerialNumbers> allSerialNumbers = invoiceItems
-                .SelectMany(x => x.SelectedSerialNumbers)
-                .ToList();
+                var invoiceId = await _invoiceService.SaveOrUpdate(invoice);
+                if (invoiceId == 0)
+                {
+                    return BadRequest("Failed to save invoice.");
+                }
 
-            // --- Now, save your data to DB here ---
-            // Save Invoice -> Get InvoiceId
-            // Then assign InvoiceId to all InvoiceItems
-            // Save InvoiceItems
-            // Save ProductSerialNumbers if needed
-            return Ok(new { message = "Items saved successfully!" });
+                // 2. Map and save InvoiceItems using a loop
+                var invoiceItems = request.Items
+                    .Select(item => new InvoiceItems
+                {
+                    InvoiceId = invoiceId,
+                    ProductId = item.ProductId,
+                    Quantity = (int)item.Quantity,
+                    SellingPrice = (decimal)item.SellingPrice,
+                    DiscountPercentg = (decimal)item.DiscountPercentg,
+                    RowIndex = item.RowIndex,
+                    Status = "Active",
+                    SelectedSerialNumbers = item.Serials?.Select(serial => new ProductSerialNumbers
+                    {
+                        SerialNumber = serial.SerialNumber,
+                        ProdSerialNmbrId = long.TryParse(serial.ProdSerialNmbrId, out var prodSerialId) ? prodSerialId : 0,
+                        SupplierOrgName = serial.SupplierOrgName,
+                        SerialStatus = "Sale"
+                    }).ToList() ?? new List<ProductSerialNumbers>()
+                }).ToList();
+
+                foreach (var invoiceItem in invoiceItems)
+                {
+                    var itemId = await _invoiceItemService.SaveOrUpdate(invoiceItem);
+                    if (itemId == 0)
+                    {
+                        return BadRequest($"Failed to save invoice item for ProductId {invoiceItem.ProductId}.");
+                    }
+                }
+
+                // 3. Save ProductSerialNumbers using a loop
+                var allSerialNumbers = invoiceItems
+                    .SelectMany(x => x.SelectedSerialNumbers)
+                    .ToList();
+                //foreach (var serialNumber in allSerialNumbers)
+                //{
+                //    var serialId = await _productSerialNumberService.SaveOrUpdateAsync(serialNumber);
+                //    if (serialId == 0)
+                //    {
+                //        throw new InvalidOperationException($"Failed to save serial number {serialNumber.SerialNumber}.");
+                //    }
+                //}
+
+                // Commit transaction
+                await transaction.CommitAsync();
+
+                return Ok(new
+                {
+                    InvoiceId = invoiceId,
+                    Message = "Items saved successfully!"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Rollback transaction on error
+                return StatusCode(500, new { Error = "An error occurred while saving the invoice.", Details = ex.Message });
+            }
         }
     }
 }

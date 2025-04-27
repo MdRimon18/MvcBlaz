@@ -5,26 +5,27 @@ using Domain.Entity.Settings;
 using System.Data;
 using System.Drawing;
 using Domain.DbContex;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services.Inventory
 {
-	
-	
-		public class InvoiceItemService
+
+
+	public class InvoiceItemService
+	{
+		private readonly IDbConnection _db;
+		private readonly ApplicationDbContext _context;
+
+		public InvoiceItemService(DbConnectionDapper db, ApplicationDbContext context)
 		{
-			private readonly IDbConnection _db;
-
-
-			public InvoiceItemService(DbConnectionDapper db)
+			_db = db.GetDbConnection();
+			_context = context;
+		}
+		public async Task<IEnumerable<InvoiceItems>> Get(long? InvoiceItemId, long? InvoiceId, long? ProductId, decimal? SellingPrice, decimal? BuyingPrice, string? CategoryName, string? SubCtgName, int? PageNumber, int? PageSize)
+		{
+			try
 			{
-				_db = db.GetDbConnection();
-
-			}
-			public async Task<IEnumerable<InvoiceItems>> Get(long? InvoiceItemId,long? InvoiceId, long?ProductId, decimal? SellingPrice, decimal? BuyingPrice, string? CategoryName, string? SubCtgName, int? PageNumber, int? PageSize)
-			{
-				try
-				{
-					var parameters = new DynamicParameters();
+				var parameters = new DynamicParameters();
 
 				parameters.Add("@InvoiceItemId", InvoiceItemId);
 				parameters.Add("@InvoiceId", InvoiceId);
@@ -36,31 +37,31 @@ namespace Domain.Services.Inventory
 				parameters.Add("@PageNumber", PageNumber);
 				parameters.Add("@PageSize", PageSize);
 
-					return await _db.QueryAsync<InvoiceItems>("Color_Get_SP", parameters, commandType: CommandType.StoredProcedure);
+				return await _db.QueryAsync<InvoiceItems>("Color_Get_SP", parameters, commandType: CommandType.StoredProcedure);
 
-				}
-				catch (Exception ex)
-				{
-
-					return Enumerable.Empty<InvoiceItems>();
-				}
 			}
-
-			public async Task<InvoiceItems> GetById(long InvoiceItemId)
-
+			catch (Exception ex)
 			{
-				var _invoiceItems = await (Get(InvoiceItemId, null,null,null,null,null,null,1, 1));
-				return _invoiceItems.FirstOrDefault();
+
+				return Enumerable.Empty<InvoiceItems>();
 			}
+		}
 
-			
+		public async Task<InvoiceItems> GetById(long InvoiceItemId)
+
+		{
+			var _invoiceItems = await (Get(InvoiceItemId, null, null, null, null, null, null, 1, 1));
+			return _invoiceItems.FirstOrDefault();
+		}
 
 
-			public async Task<long> SaveOrUpdate(InvoiceItems _invoiceItems)
+
+
+		public async Task<long> SaveOrUpdate(InvoiceItems _invoiceItems)
+		{
+			try
 			{
-				try
-				{
-					var parameters = new DynamicParameters();
+				var parameters = new DynamicParameters();
 
 				parameters.Add("@InvoiceItemId", _invoiceItems.InvoiceItemId);
 				parameters.Add("@InvoiceId", _invoiceItems.InvoiceId);
@@ -79,38 +80,44 @@ namespace Domain.Services.Inventory
 				parameters.Add("@CategoryName", _invoiceItems.CategoryName);
 				parameters.Add("@SubCtgName", _invoiceItems.SubCtgName);
 				parameters.Add("@Unit", _invoiceItems.Unit);
-				parameters.Add("@LastModifyDate", _invoiceItems.LastModifyDate);
-					parameters.Add("@LastModifyBy", _invoiceItems.LastModifyBy);
-					parameters.Add("@DeletedDate", _invoiceItems.DeletedDate);
-					parameters.Add("@DeletedBy", _invoiceItems.DeletedBy);
-					parameters.Add("@Status", _invoiceItems.Status);
-					parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-					await _db.ExecuteAsync("InvoiceItemsInsertOrUpdateInvoice", parameters, commandType: CommandType.StoredProcedure);
 
-					return (long)parameters.Get<int>("@SuccessOrFailId");
-				}
-				catch (Exception ex)
-				{
-					// Handle the exception (e.g., log the error)
-					Console.WriteLine($"An error occurred while adding order: {ex.Message}");
-					return 0;
-				}
+				parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+				await _db.ExecuteAsync("InvoiceItemsInsertOrUpdateInvoice", parameters, commandType: CommandType.StoredProcedure);
+
+				return (long)parameters.Get<int>("@SuccessOrFailId");
 			}
-
-			public async Task<bool> Delete(long InvoiceItemId)
+			catch (Exception ex)
 			{
-				var _invoiceItems = await (Get(InvoiceItemId, null, null, null, null, null, null, 1, 1));
-				var deleteObj = _invoiceItems.FirstOrDefault();
-				long DeletedSatatus = 0;
-				if (deleteObj != null)
-				{
-					deleteObj.DeletedDate = DateTime.UtcNow;
-					deleteObj.Status = "Deleted";
-					DeletedSatatus = await SaveOrUpdate(deleteObj);
-				}
-
-				return DeletedSatatus > 0;
+				// Handle the exception (e.g., log the error)
+				Console.WriteLine($"An error occurred while adding order: {ex.Message}");
+				return 0;
 			}
 		}
-	
+
+		public async Task<bool> Delete(long InvoiceItemId)
+		{
+			try
+			{
+				// Begin transaction
+				using var transaction = await _context.Database.BeginTransactionAsync();
+
+				// Execute raw DELETE query
+				var rowsAffected = await _context.Database.ExecuteSqlRawAsync(
+					"DELETE FROM InvoiceItems WHERE Id = {0}",
+					InvoiceItemId
+				);
+
+				// Commit transaction
+				await transaction.CommitAsync();
+
+				// Return true if at least one row was deleted
+				return rowsAffected > 0;
+			}
+			catch (Exception ex)
+			{
+
+				return false;
+			}
+		}
+	}
 }

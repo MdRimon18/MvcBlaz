@@ -68,7 +68,6 @@ namespace Domain.Services.Inventory
 				var parameters = new DynamicParameters();
 
 				parameters.Add("@InvoiceId", invoice.InvoiceId);
-				parameters.Add("@InvoiceKey", invoice.InvoiceKey);
 				parameters.Add("@BranchId", invoice.BranchId);
 				parameters.Add("@InvoiceNumber", invoice.InvoiceNumber);
 				parameters.Add("@CustomerID", invoice.CustomerID);
