@@ -257,6 +257,7 @@
                                 <div class="form-group">
                                     <label for="CustomerName" class="form-label fw-semi-bold">Customer Name <span class="error-star">*</span></label>
                                     <input type="text" style="border-radius: 5px;" asp-for="CustomerName" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
+                                    <input type="hidden"  asp-for="CustomerId"    />
                                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                                 </div>
                             </div>
@@ -761,8 +762,10 @@
         const clearBtn = document.getElementById('clearBtnCustomer');
         const emailInput = document.getElementById('CustomerEmail');
           const customerName= document.getElementById('CustomerName');
+           const customerId= document.getElementById('CustomerId');
         // Validate that all required elements are found
-          if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn||!emailInput||!customerName) {
+          if (!searchInput || !searchDropdown || !dropdownList 
+              || !noResultsMessage || !clearBtn||!emailInput||!customerName||!customerId) {
             console.error('[DEBUG] Elements not found in handleSearch');
             return;
         }
@@ -807,8 +810,9 @@
                      // Add click event listener to set input and hide dropdown
                      item.addEventListener('click', () => {
                          searchInput.value = customer.mobileNo; // Or customer.email if preferred
-                         emailInput.value = customer.email;
+                          emailInput.value = customer.email;
                           customerName.value=customer.customerName;
+                          customerId.value=customer.customerId;
                          searchDropdown.style.display = 'none';
                      });
 
@@ -850,8 +854,10 @@
          const clearBtn = document.getElementById('clearBtnEmail');
          const emailInput = document.getElementById('CustomerEmail');
              const customerName= document.getElementById('CustomerName');
+               const customerId= document.getElementById('CustomerId');
            // Validate that all required elements are found
-             if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage || !clearBtn||!emailInput||!customerName) {
+             if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage 
+                 || !clearBtn||!emailInput||!customerName||!customerId) {
                console.error('[DEBUG] Elements not found in handleSearch');
                return;
            }
@@ -896,6 +902,7 @@
                            searchInput.value = customer.mobileNo; // Or customer.email if preferred
                            emailInput.value = customer.email;
                            customerName.value=customer.customerName; 
+                           customerId.value=customer.customerId;
                           searchDropdown.style.display = 'none';
                       });
 
@@ -1219,9 +1226,11 @@
 
        //  console.log("Items to send:", items);
           const invoiceSummary = {
-                  customerName: document.getElementById("CustomerEmail")?.value,  // first input field
-                  mobile: document.getElementById("chooseMobile").value,
-                  customerEmail: document.querySelectorAll("#CustomerEmail")[1]?.value, // second CustomerEmail field
+                    customerId:document.getElementById("CustomerId")?.value,
+                   customerName: document.getElementById("CustomerName")?.value,  // first input field
+                   mobile: document.getElementById("chooseMobile").value,
+
+                   customerEmail: document.getElementById("CustomerEmail").value, // second CustomerEmail field
                   notificationById: document.getElementById("NotificationById").value,
                   invoiceDate: document.getElementById("InvoiceDateTime").value,
                   seller: document.getElementById("SalesByName").value,
@@ -1260,20 +1269,20 @@
 
              console.log("Payload to send:", payload);
         // You can now send the items with serials to the server
-        // fetch('/api/Invoice/save-items', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(items)
-        // })
-        // .then(res => res.json())
-        // .then(data => {
-        //     console.log("Saved!", data);
-        // })
-        // .catch(err => {
-        //     console.error("Save failed", err);
-        // });
+        fetch('/api/Invoice/save-items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+             body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Saved!", data);
+        })
+        .catch(err => {
+            console.error("Save failed", err);
+        });
     }
 
        window.deleteSerialRow= function (btn) {

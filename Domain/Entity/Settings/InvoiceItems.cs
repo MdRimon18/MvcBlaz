@@ -19,8 +19,8 @@ namespace Domain.Entity.Settings
 		public long? PromoOrCuppnAppliedId { get; set; }
 		public string ProductImage { get; set; }
 		public string CategoryName { get; set; }
-        public string ProductName { get; set; }
-        public string SubCtgName { get; set; }
+		public string ProductName { get; set; }
+		public string SubCtgName { get; set; }
 		public string Unit { get; set; }
 		public DateTime? LastModifyDate { get; set; }
 		public long? LastModifyBy { get; set; }
@@ -28,9 +28,9 @@ namespace Domain.Entity.Settings
 		public long? DeletedBy { get; set; }
 		public string Status { get; set; }
 		[NotMapped]
-        public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
+		public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
 		[NotMapped]
 		public string ImageUrl { get; set; }
-	
+		public int RowIndex { get; set; } //add to database 
 	}
 }
