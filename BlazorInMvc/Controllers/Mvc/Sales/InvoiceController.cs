@@ -42,6 +42,16 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             _customerService = customerService;
             _productSerialNumbersService = productSerialNumbersService;
         }
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        { 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("Index"); // Return partial view for AJAX requests
+            }
+
+            return View("Index");
+        }
 
         public async Task<IActionResult> Create()
         {
@@ -189,16 +199,16 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             return View("Create", model);   
 
         }
-        public IActionResult Index(bool isPartial = false)
-        {
-            InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
-            if (isPartial)
-            {
-                return PartialView("Index", invoiceViewModel);
-            }
-            return View("Index", invoiceViewModel);
+        //public IActionResult Index(bool isPartial = false)
+        //{
+        //    InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+        //    if (isPartial)
+        //    {
+        //        return PartialView("Index", invoiceViewModel);
+        //    }
+        //    return View("Index", invoiceViewModel);
 
-        }
+        //}
         public IActionResult ShippingWithPayment()
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")

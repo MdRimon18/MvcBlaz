@@ -18,17 +18,46 @@ namespace BlazorInMvc.Controllers.Api
         private readonly InvoiceItemService _invoiceItemService;
         private readonly ProductSerialNumbersService _productSerialNumberService;
         private readonly ApplicationDbContext _context;
-
+        private readonly CustomerService _customerService;
         public InvoiceController(InvoiceService invoiceService,
             InvoiceItemService invoiceItemService,
             ProductSerialNumbersService productSerialNumberService,
-            ApplicationDbContext dbContext
+            ApplicationDbContext dbContext,
+            CustomerService customerService
             )
         {
             _invoiceService = invoiceService;
             _invoiceItemService = invoiceItemService;
             _productSerialNumberService = productSerialNumberService;
             _context = dbContext;
+            _customerService = customerService;
+        }
+
+        [HttpGet("GetAll")]
+        
+        public async Task<IActionResult> GetAllCustomer(string? search, int page, int pageSize)
+        {
+            var customers = (await _customerService.Get(null, null, null, null, null, null, null, page, pageSize)).ToList();
+            if (customers.Count == 0)
+            {
+                return Ok(new
+                {
+                    items = customers,
+                    currentPage = page,
+                    totalPages = 0,
+                    totalRecord = 0
+                });
+            }
+            var totalRecord = customers[0].total_row;
+            var totalPages = (int)Math.Ceiling((double)totalRecord / pageSize);
+
+            return Ok(new
+            {
+                items = customers,
+                currentPage = page,
+                totalPages,
+                totalRecord
+            });
         }
 
         [HttpPost("save-items")]

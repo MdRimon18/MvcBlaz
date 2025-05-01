@@ -11,6 +11,10 @@ const pageInitializers = {
         () => { if (window.loadCustomers) window.loadCustomers(); },
         () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
     ],
+    "/Invoice/Index": [
+        () => { window.loadInvoices();},
+        () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
+    ],
     "/InvoicType/index": (isAjax) => {
         if (isAjax && window.loadTable) window.loadTable();
     } 
