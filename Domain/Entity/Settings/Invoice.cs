@@ -54,13 +54,18 @@ namespace Domain.Entity.Settings
         public long? DeletedBy { get; set; }
         public string Status { get; set; }
         public int total_row { get; set; }
+        public string? CustomerName { get; set; }
+        public string? Email { get; set; }
+        public string? MobileNo { get; set; }
+        public string? InvoiceTypeName { get; set; }
+        
 
         //private void RecalculateTotalPayable()
         //{
         //    TotalPayable = TotalAmount + TotalVat - TotalDiscount - TotalAddiDiscount;
         //}
 
-        
-       
+
+
     }
 }

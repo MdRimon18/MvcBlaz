@@ -37,23 +37,28 @@ namespace BlazorInMvc.Controllers.Api
         
         public async Task<IActionResult> GetAllCustomer(string? search, int page, int pageSize)
         {
-            var customers = (await _customerService.Get(null, null, null, null, null, null, null, page, pageSize)).ToList();
-            if (customers.Count == 0)
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 10;
+            var invoices=(await _invoiceService.Get(null, null, null, null, null, null, null, null, search, page, pageSize)).ToList();
+           
+            
+
+            if (invoices.Count == 0)
             {
                 return Ok(new
                 {
-                    items = customers,
+                    items = invoices,
                     currentPage = page,
                     totalPages = 0,
                     totalRecord = 0
                 });
             }
-            var totalRecord = customers[0].total_row;
+            var totalRecord = invoices[0].total_row;
             var totalPages = (int)Math.Ceiling((double)totalRecord / pageSize);
 
             return Ok(new
             {
-                items = customers,
+                items = invoices,
                 currentPage = page,
                 totalPages,
                 totalRecord
