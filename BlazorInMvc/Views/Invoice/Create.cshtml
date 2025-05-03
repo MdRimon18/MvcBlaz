@@ -265,7 +265,7 @@
                                 <div class="form-group position-relative">
                                     <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
                                     <div class="input-group">
-                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" oninput="handleSearchCustomer(this.value)" />
+                                        <input type="text" asp-for="Invoice.MobileNo" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" oninput="handleSearchCustomer(this.value)" />
                                         <!-- Clear (X) button -->
                                         <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtnCustomer">×</button>
                                         <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">+</button>
@@ -287,7 +287,7 @@
                                       
 
                                     <div class="position-relative form-group">
-                                        <input type="text" class="form-control form-control-sm form-rounded" placeholder="Search Email" id="CustomerEmail" oninput="handleSearchEmail(this.value)" />
+                                        <input type="text" asp-for="Invoice.Email" class="form-control form-control-sm form-rounded" placeholder="Search Email" id="CustomerEmail" oninput="handleSearchEmail(this.value)" />
                                         <!-- Clear (X) button -->
                                         <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtnEmail">×</button>
                                        
@@ -349,7 +349,7 @@
                                 <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
                                     <div class="form-group">
                                         <label for="categorySelect" class="form-label fw-semi-bold">Category</label>
-                                        <select id="categorySelect" class="form-select form-rounded form-select-sm">
+                                        <select  id="categorySelect" class="form-select form-rounded form-select-sm">
                                             <option value="">Select Category</option>
                                             @foreach (var item in Model.ProductCategoryList)
                                             {
@@ -956,6 +956,7 @@
        
            window.AddItemToProductList=  function (item) {
             console.log('product', item);
+         
           const tableBody = document.querySelector('.table-view-tickets tbody');
           const rowHtml = generateItemRowHtml(item, itemRowIndex);
           tableBody.insertAdjacentHTML('beforeend', rowHtml);
@@ -969,9 +970,14 @@
              }
 
              itemRowIndex++;
-             showToast("success", `${item.prodName} Added Successfully.`);
+             //showToast("success", `${item.prodName} Added Successfully.`);
+               addNotificationItem();
         }
+       
+       
 
+        
+ 
         function generateItemRowHtml(item, index) {
         return `
              <tr  data-index="${index}">
@@ -1144,7 +1150,7 @@
             if (tableBody) {
                 tableBody.style.borderCollapse = 'collapse';
             }
-
+             
              updateTotals();// update total calculation
         };
 
@@ -1444,6 +1450,8 @@
          const received = parseFloat(document.getElementById('RecieveAmount')?.value) || 0;
          const due = payable - received;
          document.getElementById('DueAmount').value = due.toFixed(2);
+
+           $("#itemCount_notification").text(totalQty);
      }
      
 

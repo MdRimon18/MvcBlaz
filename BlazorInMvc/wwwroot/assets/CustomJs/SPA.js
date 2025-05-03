@@ -23,7 +23,12 @@ const pageInitializers = {
 
 // Function to initialize page-specific logic based on URL
 function initializePage(url, isAjax = false) {
-    const initializers = pageInitializers[url];
+    const parsedUrl = new URL(url, window.location.origin);
+    const path = parsedUrl.pathname; // Get the pathname (e.g., /Invoice/Create)
+    console.log('Initializing page for URL:', url);
+    console.log('Initializing page for path:', path);
+    const initializers = pageInitializers[path];
+    //const initializers = pageInitializers[url];
     if (initializers) {
         if (Array.isArray(initializers)) {
             // If it's an array, call each function with isAjax
@@ -36,6 +41,7 @@ function initializePage(url, isAjax = false) {
 
     } else {
         console.warn(`No initializer found for URL: ${url}`);
+        console.warn(`No initializer found for URL: ${path}`);
     }
 }
 
@@ -57,10 +63,12 @@ function loadPage(url) {
 
 // Handle browser back/forward navigation
 window.onpopstate = function () {
-    loadPage(location.pathname);
+  //  loadPage(location.pathname);
+    loadPage(window.location.href);
 };
 
 // Initialize the page on initial load or full reload
 document.addEventListener("DOMContentLoaded", function () {
-    initializePage(location.pathname); // Initialize with isAjax=false
+    //initializePage(location.pathname); // Initialize with isAjax=false
+    initializePage(window.location.href); // Pass full URL
 });

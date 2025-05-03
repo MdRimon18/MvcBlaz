@@ -53,8 +53,13 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             return View("Index");
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(Guid? key)
         {
+            Invoice invoice = new Invoice();
+            if (key != null && key != Guid.Empty)
+            {
+                  invoice = await _invoiceService.GetByKey(key.ToString());
+            }
             var invoiceItems = new List<InvoiceItems>
 {
     new InvoiceItems
@@ -177,6 +182,9 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
 
             var model = new InvoiceViewModel
             {
+                CustomerId=invoice.CustomerID,
+                CustomerName=invoice.CustomerName,
+                Invoice=invoice,
                 InvoiceTypeList = (await _invoiceTypeService.Get(null, null, null, null, 1, 1000)).ToList(),
                 NotificationByList = (await _notificationByService.Get(null)).ToList(),
                 ProductCategoryList = (await _productCategoryService.Get(null, null, null, null, 1, 1000)).ToList(),
