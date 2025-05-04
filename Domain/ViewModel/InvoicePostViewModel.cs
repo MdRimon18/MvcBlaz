@@ -15,6 +15,9 @@ namespace Domain.ViewModel
 
         public class InvoiceSummaryDto
         {
+    
+            public long InvoiceId { get; set; }
+            public string? InvoiceNumber { get; set; }
             public string CustomerId { get; set; }
             public string? CustomerName { get; set; }
             public string? Mobile { get; set; }
@@ -36,10 +39,13 @@ namespace Domain.ViewModel
             public float TotalPayable { get; set; }
             public float RecieveAmount { get; set; }
             public float DueAmount { get; set; }
-        }
+            public DateTime EntryDateTime { get; set; }=DateTime.UtcNow;
+            public long? EntryBy { get; set; }
+    }
 
         public class ItemDto
         {
+            public long ItemId { get; set; }
             public int RowIndex { get; set; }
             public int ProductId { get; set; }
             public float Quantity { get; set; }

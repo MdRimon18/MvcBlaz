@@ -249,7 +249,11 @@
                 <div class="row g-3">
                     <div class="col-lg-10 col-md-10 col-sm-10 col-10">
                         <form>
-
+                        <input type="hidden" asp-for="CustomerId" />
+                        <input type="hidden" asp-for="Invoice.InvoiceId" />
+                        <input type="hidden" asp-for="Invoice.InvoiceNumber" />
+                        <input type="hidden" asp-for="Invoice.EntryBy" />
+                        <input type="hidden" asp-for="Invoice.EntryDateTime" />
 
                             <div class="row g-3">
                                
@@ -257,7 +261,7 @@
                                 <div class="form-group">
                                     <label for="CustomerName" class="form-label fw-semi-bold">Customer Name <span class="error-star">*</span></label>
                                     <input type="text" style="border-radius: 5px;" asp-for="CustomerName" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
-                                    <input type="hidden"  asp-for="CustomerId"    />
+                                   
                                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                                 </div>
                             </div>
@@ -1229,10 +1233,15 @@
             console.warn("Validation failed!");
             return;
         }
-
+         const rawDate = document.getElementById("Invoice_EntryDateTime")?.value;
        //  console.log("Items to send:", items);
           const invoiceSummary = {
-                    customerId:document.getElementById("CustomerId")?.value,
+                 invoiceId: document.getElementById("Invoice_InvoiceId")?.value,
+                 invoiceNumber: document.getElementById("Invoice_InvoiceNumber")?.value,
+                 entryBy: document.getElementById("Invoice_EntryBy")?.value,
+                    entryDateTime: rawDate ? new Date(rawDate).toISOString() : null,
+
+                   customerId:document.getElementById("CustomerId")?.value,
                    customerName: document.getElementById("CustomerName")?.value,  // first input field
                    mobile: document.getElementById("chooseMobile").value,
 

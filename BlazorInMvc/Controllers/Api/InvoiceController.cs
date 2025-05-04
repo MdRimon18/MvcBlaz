@@ -88,9 +88,9 @@ namespace BlazorInMvc.Controllers.Api
 
                 var invoice = new Invoice
                 {
-                    
+                    InvoiceId=request.InvoiceSummary.InvoiceId,
                     BranchId = CompanyInfo.BranchId,
-                    InvoiceNumber ="",
+                    InvoiceNumber =request.InvoiceSummary.InvoiceNumber,
                     CustomerID = customerId,
                     InvoiceDateTime = invoiceDate,
                     InvoiceTypeId = 1, // Sales Point Set based on business logic if needed
@@ -112,8 +112,8 @@ namespace BlazorInMvc.Controllers.Api
                     total_row = request.Items.Count
                 };
 
-                var invoiceId = await _invoiceService.SaveOrUpdate(invoice);
-                if (invoiceId == 0)
+                long newInsertedInvoiceId = await _invoiceService.SaveOrUpdate(invoice);
+                if (newInsertedInvoiceId == 0)
                 {
                     return BadRequest("Failed to save invoice.");
                 }
@@ -122,7 +122,7 @@ namespace BlazorInMvc.Controllers.Api
                 var invoiceItems = request.Items
                     .Select(item => new InvoiceItems
                 {
-                    InvoiceId = invoiceId,
+                    InvoiceId = newInsertedInvoiceId,
                     ProductId = item.ProductId,
                     Quantity = (int)item.Quantity,
                     SellingPrice = (decimal)item.SellingPrice,
@@ -165,7 +165,7 @@ namespace BlazorInMvc.Controllers.Api
 
                 return Ok(new
                 {
-                    InvoiceId = invoiceId,
+                    InvoiceId = newInsertedInvoiceId,
                     Message = "Items saved successfully!"
                 });
             }
