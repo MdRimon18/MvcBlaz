@@ -89,9 +89,11 @@ namespace Domain.Entity.Settings
         public string? ProdSubCtgName { get; set; }
         public string? UnitName {  get; set; }
         public string? CurrencySymbol { get; set; }
+
         [NotMapped] 
         public int total_row { get; set; } = 0;
-
+        [NotMapped]
+        public long? ProductVariantId { get; set; }
         [NotMapped]
         public List<Unit> UnitList { get; set; } = new List<Unit>();
         [NotMapped]

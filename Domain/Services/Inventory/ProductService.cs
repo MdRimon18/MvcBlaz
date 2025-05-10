@@ -55,6 +55,42 @@ namespace Domain.Services.Inventory
 			}
 		}
 
+		public async Task<IEnumerable<Products>> GetProductWithVariants(long? ProductId, string? ProductKey, long? BranchId, long? ProdCtgId,
+			string? TagWord, string? ProdName, string? ManufacturarName, string? SerialNmbrOrUPC,
+			string? Sku, string? BarCode, int? SupplirLinkId, int? ColorId, int? SizeId, int? ShippingById, int? Rating, int? ProdStatusId, int? PageNumber, int? PageSize)
+		{
+			try
+			{
+				var parameters = new DynamicParameters();
+				parameters.Add("@ProductId", ProductId);
+				parameters.Add("@ProductKey", ProductKey);
+				parameters.Add("@BranchId", BranchId);
+				parameters.Add("@ProdCtgId", ProdCtgId);
+				parameters.Add("@TagWord", TagWord);
+				parameters.Add("@ProdName", ProdName);
+				parameters.Add("@ManufacturarName", ManufacturarName);
+				parameters.Add("@SerialNmbrOrUPC", SerialNmbrOrUPC);
+				parameters.Add("@Sku", Sku);
+				parameters.Add("@BarCode", BarCode);
+				parameters.Add("@SupplirLinkId", SupplirLinkId);
+				parameters.Add("@ColorId", ColorId);
+				parameters.Add("@SizeId", SizeId);
+				parameters.Add("@ShippingById", ShippingById);
+				parameters.Add("@Rating", Rating);
+				parameters.Add("@ProdStatusId", ProdStatusId);
+				parameters.Add("@PageNumber", PageNumber);
+				parameters.Add("@PageSize", PageSize);
+
+				return await _db.QueryAsync<Products>("ProductsWithVariants_GetSp", parameters, commandType: CommandType.StoredProcedure);
+
+			}
+			catch (Exception ex)
+			{
+
+				return Enumerable.Empty<Products>();
+			}
+		}
+
 		public async Task<Products> GetById(long ProductId)
 
 		{
@@ -75,15 +111,15 @@ namespace Domain.Services.Inventory
 		{
 			try
 			{
-                if (_products.ProductId > 0)
-                {
-                    EntityHelper.SetUpdateAuditFields(_products);
-                }
-                else
-                {
-                    EntityHelper.SetCreateAuditFields(_products);
-                }
-                var parameters = new DynamicParameters();
+				if (_products.ProductId > 0)
+				{
+					EntityHelper.SetUpdateAuditFields(_products);
+				}
+				else
+				{
+					EntityHelper.SetCreateAuditFields(_products);
+				}
+				var parameters = new DynamicParameters();
 
 				parameters.Add("@ProductId", _products.ProductId);
 				parameters.Add("@ProductKey", _products.ProductKey);
@@ -161,8 +197,8 @@ namespace Domain.Services.Inventory
 			long DeletedSatatus = 0;
 			if (deleteObj != null)
 			{
-                EntityHelper.SetDeleteAuditFields(deleteObj);
-                DeletedSatatus = await SaveOrUpdate(deleteObj);
+				EntityHelper.SetDeleteAuditFields(deleteObj);
+				DeletedSatatus = await SaveOrUpdate(deleteObj);
 			}
 
 			return DeletedSatatus > 0;

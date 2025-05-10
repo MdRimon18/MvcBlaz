@@ -33,7 +33,7 @@ namespace BlazorInMvc.Controllers.Api
         }
         [HttpGet]
         [Route("api/GetProducts")]
-        public async Task<IActionResult> GetProductImageById()
+        public async Task<IActionResult> GetProducts()
         {
             try
             {
@@ -71,11 +71,51 @@ namespace BlazorInMvc.Controllers.Api
                 });
             }
         }
-          
-          
 
-            
-        
+
+        [HttpGet]
+        [Route("api/GetProductsWithVariants")]
+        public async Task<IActionResult> GetProductsWithVariants()
+        {
+            try
+            {
+                var product_list = (await _productService.GetProductWithVariants(null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, GlobalPageConfig.PageNumber,
+                            GlobalPageConfig.PageSize)).ToList();
+                //var productImage = await _productMediaService.GetById(productMediaId);
+                //if (productImage == null)
+                //{
+                //    return NotFound(new { isSuccess = false, message = "Product image not found" });
+                //}
+                return Ok(new
+                {
+                    product_list,
+                    code = HttpStatusCode.OK,
+                    message = "Success",
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving Products with");
+                var errorDetails = new
+                {
+                    Message = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                };
+                return StatusCode(500, new
+                {
+                    code = HttpStatusCode.InternalServerError,
+                    message = "An error occurred while processing your request.",
+                    details = errorDetails, // Optional: You can include this for debugging purposes.
+                    isSuccess = false
+                });
+            }
+        }
+
+
+
         [HttpPost]
         [Route("api/Product/SaveProductImage")]
         public async Task<IActionResult> SaveProductImage([FromForm] ProductImage model)

@@ -260,7 +260,7 @@
                             <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
                                 <div class="form-group">
                                     <label for="CustomerName" class="form-label fw-semi-bold">Customer Name <span class="error-star">*</span></label>
-                                    <input type="text" style="border-radius: 5px;" asp-for="CustomerName" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
+                                    <input type="text" readonly style="border-radius: 5px;" asp-for="CustomerName" class="form-control form-control-sm form-rounded fw-semi-bold" placeholder="Customer Name" />
                                    
                                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                                 </div>
@@ -614,22 +614,23 @@
                 }
             //});
               updateTotals();
-              const offCanvaProducts = @Html.Raw(Json.Serialize(Model.FilteredItemsOffCanva)); // Or ViewBag.InitialItems
-              console.log(offCanvaProducts);
-              window.renderOffCanfaProducts(offCanvaProducts);
+              // const offCanvaProducts = @Html.Raw(Json.Serialize(Model.FilteredItemsOffCanva)); // Or ViewBag.InitialItems
+              // console.log(offCanvaProducts);
+              // window.renderOffCanfaProducts(offCanvaProducts);
         };
 
           
 
-        // Fetch products
+        // Fetch products   
         async function fetchAllProducts() {
             try {
-                const response = await fetch('/api/GetProducts');
-                const data = await response.json();
-                allProducts = data.isSuccess ? data.product_list : [];
-                console.log('[DEBUG] All products fetched:', allProducts);
-                isInitialized = true;
-            } catch (error) {
+                 const response = await fetch('/api/GetProductsWithVariants');
+                 const data = await response.json();
+                 allProducts = data.isSuccess ? data.product_list : [];
+                 console.log('[DEBUG] All products fetched:', allProducts);
+                 isInitialized = true;
+                 window.renderOffCanfaProducts(allProducts);
+             } catch (error) {
                 console.error('Error fetching products:', error);
                 allProducts = [];
                 isInitialized = true;
@@ -693,8 +694,11 @@
                                 <img class="rounded-circle" src="${product.imageUrl || '../../assets/img/default-product.jpg'}" alt="${product.prodName}" />
                             </div>
                             <div class="flex-1">
-                                <h6 class="mb-0 title">${product.prodName}</h6>
-                                <p class="fs-11 mb-0 d-flex">${product.sku || product.productCode || 'N/A'}</p>
+                                  <h6 class="mb-0 title">${product.prodName}
+                                      <span class="text-muted">(${product.productCode})</span>
+                                  </h6>
+
+                                    <p class="fs-11 mb-0 d-flex">${product.sku|| 'N/A'}</p>
                             </div>
                         </div>
                     `;
@@ -857,11 +861,12 @@
          const noResultsMessage = document.querySelector('#searchDropdown .text-center p');
          const clearBtn = document.getElementById('clearBtnEmail');
          const emailInput = document.getElementById('CustomerEmail');
-             const customerName= document.getElementById('CustomerName');
+            const customerName= document.getElementById('CustomerName');
                const customerId= document.getElementById('CustomerId');
+             const mobileNo=   document.getElementById('chooseMobile');
            // Validate that all required elements are found
-             if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage 
-                 || !clearBtn||!emailInput||!customerName||!customerId) {
+             if (!searchInput || !searchDropdown || !dropdownList || !noResultsMessage
+                  || !clearBtn||!emailInput||!customerName||!customerId||!mobileNo) {
                console.error('[DEBUG] Elements not found in handleSearch');
                return;
            }
@@ -903,7 +908,8 @@
 
                       // Add click event listener to set input and hide dropdown
                       item.addEventListener('click', () => {
-                           searchInput.value = customer.mobileNo; // Or customer.email if preferred
+                          console.log('[DEBUG] Item clicked:', customer);
+                            mobileNo.value = customer.mobileNo; // Or customer.email if preferred
                            emailInput.value = customer.email;
                            customerName.value=customer.customerName; 
                            customerId.value=customer.customerId;
@@ -975,7 +981,7 @@
 
              itemRowIndex++;
              //showToast("success", `${item.prodName} Added Successfully.`);
-               addNotificationItem();
+              
         }
        
        
@@ -1239,7 +1245,7 @@
                  invoiceId: document.getElementById("Invoice_InvoiceId")?.value,
                  invoiceNumber: document.getElementById("Invoice_InvoiceNumber")?.value,
                  entryBy: document.getElementById("Invoice_EntryBy")?.value,
-                    entryDateTime: rawDate ? new Date(rawDate).toISOString() : null,
+                  entryDateTime: rawDate ? new Date(rawDate).toISOString() : null,
 
                    customerId:document.getElementById("CustomerId")?.value,
                    customerName: document.getElementById("CustomerName")?.value,  // first input field
@@ -1276,6 +1282,18 @@
                  isValid = false;
                   $("#CustomerName").addClass("is-invalid").after('<div class="invalid-feedback">Customer Name is required.</div>');
              }
+               if (!invoiceSummary.mobile) {
+                  isValid = false;
+                    $("#chooseMobile").addClass("is-invalid").after('<div class="invalid-feedback">Customer Mobile is required.</div>');
+              }
+                if (!invoiceSummary.notificationById) {
+                   isValid = false;
+                      $("#NotificationById").addClass("is-invalid").after('<div class="invalid-feedback">Notification Send By is required.</div>');
+               }
+                 if (!invoiceSummary.paymentTypeId) {
+                    isValid = false;
+                        $("#PaymentTypeId").addClass("is-invalid").after('<div class="invalid-feedback">Payment Type is required.</div>');
+                }
              // ✅ Final payload
              const payload = {
                  invoiceSummary: invoiceSummary,
@@ -1324,7 +1342,7 @@
                                 <div class="product-info">
                                     <p class="mb-1"><strong>Category:</strong> ${item.prodCtgName}</p>
                                     <p class="mb-1"><strong>Brand:</strong> BrandName</p>
-                                    <p class="mb-1"><strong>Name:</strong> ${item.prodName}</p>
+                                      <p class="mb-1"><strong>Name:</strong> ${item.prodName}  <span class="text-muted">(${item.productCode})</span></p>
                                     <p class="mb-1"><strong>Price:</strong> ${item.sellingPrice}</p>
                                     <p class="mb-1"><strong>SKU:</strong> ${item.sku}</p>
                                 </div>
