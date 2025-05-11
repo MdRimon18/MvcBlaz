@@ -132,7 +132,11 @@
                         <h5 class="mb-2 mb-sm-0">Your Shipping Address</h5>
                     </div>
                     
-                    <div class="col-sm-auto"><a class="btn btn-falcon-default btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><span class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>Add New Address </a></div>
+                    <div class="col-sm-auto"><a class="btn btn-falcon-default btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                           aria-controls="offcanvasRight" onclick="resetUserAddressForm()">
+                        <span class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>
+                        Add New Address </a>
+                    </div>
                 </div>  
             </div>
             <div class="card-body">
@@ -545,7 +549,7 @@
               type: 'GET',
               success: function (response) {
                 console.log("Current User ID:", response.currentUserId);
-                response.currentUserId=1;
+                response.currentUserId=0;
 
                 if(response.currentUserId>0){
 
@@ -614,3 +618,19 @@
 
 
    </script>
+<script>
+    function resetUserAddressForm() {
+        // Reset the entire form
+        document.getElementById("userAddressForm").reset();
+
+        // Manually reset hidden input
+        document.getElementById("addressId").value = "";
+
+        // Optionally reset select fields if `.reset()` doesn't do it fully
+        document.getElementById("addressType").value = "";
+        document.getElementById("country").value = "";
+
+        // If you want to uncheck the checkbox manually
+        document.getElementById("isDefault").checked = false;
+    }
+</script>

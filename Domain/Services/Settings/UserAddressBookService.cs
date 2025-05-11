@@ -21,7 +21,15 @@ namespace Domain.Services.Settings
         // Get all addresses
         public async Task<List<UserAddressBook>> GetAllAddressesAsync()
         {
-            return await _context.UserAddressBooks.ToListAsync();
+            try
+            {
+                return await _context.UserAddressBooks.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+           
         }
 
         // Get address by ID
