@@ -27,6 +27,11 @@
         -moz-appearance: textfield;
     }
 
+    body.dark-mode .text-dark,
+    body.dark-mode .text-muted {
+        color: #f8f9fa !important; /* Light color for dark backgrounds */
+    }
+
 </style>
 @* show toaster *@
 <div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 9999;">
@@ -534,57 +539,61 @@
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0 fw-bold" id="staticBackdropLabel">Product Details</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body bg-light dark__bg-1100 text-body">
                         <div class="row">
                             <!-- Left Column -->
                             <div class="col-lg-4">
                                 <h4 class="text-primary mb-3">Item Information</h4>
-                                <p class="fs-7 text-muted">Vat Amount: <span class="fw-bold text-dark">10%</span></p>
-                                <p class="fs-7 text-muted">Discount Amount: <span class="fw-bold text-dark">$5.00</span></p>
-                                <p class="fs-7 text-muted">Date: <span class="fw-bold text-dark">24/10/2024</span></p>
-                                <p class="fs-7 text-muted">Warranty: <span class="fw-bold text-dark">2 years</span></p>
-                                <p class="fs-7 text-muted">Link to Supplier: <a href="#" class="fw-bold text-primary">View Supplier</a></p>
-                                <p class="fs-7 text-muted">Remarks: <span class="fw-bold text-dark">Some remarks</span></p>
-                                <p class="fs-7 text-muted">Descriptions: <span class="fw-bold text-dark">Product details here</span></p>
-                                <p class="fs-7 text-muted">Imported From: <span class="fw-bold text-dark">Country</span></p>
-                                <p class="fs-7 text-muted">Category: <span class="fw-bold text-dark">Electronics</span></p>
-
+                                <p class="fs-7 text-body">Vat Amount: <span id="vatAmount" class="fw-bold">10%</span></p>
+                                <p class="fs-7 text-body">Discount Amount: <span id="discountAmount" class="fw-bold">$5.00</span></p>
+                                <p class="fs-7 text-body">Date: <span id="date" class="fw-bold">24/10/2024</span></p>
+                                <p class="fs-7 text-body">Warranty: <span id="warranty" class="fw-bold">2 years</span></p>
+                                <p class="fs-7 text-body">Link to Supplier: <a id="supplierLink" href="#" class="fw-bold text-decoration-underline">View Supplier</a></p>
+                                <p class="fs-7 text-body">Remarks: <span id="remarks" class="fw-bold">Some remarks</span></p>
+                               
+                                <p class="fs-7 text-body">Imported From: <span id="importedFrom" class="fw-bold">Country</span></p>
+                                <p class="fs-7 text-body">Category: <span id="category" class="fw-bold">Electronics</span></p>
                             </div>
+                            <!-- Middle Column -->
                             <div class="col-lg-4">
                                 <h4 class="text-primary mb-3 mt-4">Pricing & Quantity</h4>
-                                <p class="fs-7 text-muted">Sub Category: <span class="fw-bold text-dark">Smartphone</span></p>
-                                <p class="fs-7 text-muted">Name/Model: <span class="fw-bold text-dark">Model X</span></p>
-                                <p class="fs-7 text-muted">Buying Price: <span class="fw-bold text-dark">$500.00</span></p>
-                                <p class="fs-7 text-muted">Selling Price: <span class="fw-bold text-dark">$700.00</span></p>
-                                <p class="fs-7 text-muted">Unit Type: <span class="fw-bold text-dark">Piece</span></p>
-                                <p class="fs-7 text-muted">Opening Quantity: <span class="fw-bold text-dark">50</span></p>
-                                <p class="fs-7 text-muted">Alert Quantity: <span class="fw-bold text-dark">5</span></p>
-                                <p class="fs-7 text-muted">Vat (in %): <span class="fw-bold text-dark">15%</span></p>
-                                <p class="fs-7 text-muted">Discount (%): <span class="fw-bold text-dark">10%</span></p>
+                                <p class="fs-7 text-body">Sub Category: <span id="subCategory" class="fw-bold">Smartphone</span></p>
+                                <p class="fs-7 text-body">Name/Model: <span id="nameModel" class="fw-bold">Model X</span></p>
+                                <p class="fs-7 text-body">Buying Price: <span id="buyingPrice" class="fw-bold">$500.00</span></p>
+                                <p class="fs-7 text-body">Selling Price: <span id="sellingPrice" class="fw-bold">$700.00</span></p>
+                                <p class="fs-7 text-body">Unit Type: <span id="unitType" class="fw-bold">Piece</span></p>
+                                <p class="fs-7 text-body">Opening Quantity: <span id="openingQuantity" class="fw-bold">50</span></p>
+                                <p class="fs-7 text-body">Alert Quantity: <span id="alertQuantity" class="fw-bold">5</span></p>
+                                <p class="fs-7 text-body">Vat (in %): <span id="vatPercentage" class="fw-bold">15%</span></p>
+                                <p class="fs-7 text-body">Discount (%): <span id="discountPercentage" class="fw-bold">10%</span></p>
                             </div>
-                            <!-- Right Column with Image and Additional Info -->
+                            <!-- Right Column with Image and Info -->
                             <div class="col-lg-4 d-flex flex-column align-items-center">
                                 <div class="mb-3 text-center">
-                                    <img class="rounded shadow mb-2" src="../../assets/img/gallery/2000.jpg" width="200" height="200" alt="Product Image" />
+                                    <img id="productImage" class="rounded shadow mb-2" src="../../assets/img/gallery/2000.jpg" width="200" height="200" alt="Product Image" />
                                 </div>
-                                <div class="bg-light p-3 rounded w-100">
-                                    <h5 class="fw-bold text-dark">Additional Information</h5>
-                                    <p class="fs-7 text-muted">Stock Availability: <span class="fw-bold text-dark">In Stock</span></p>
-                                    <p class="fs-7 text-muted">SKU: <span class="fw-bold text-dark">#12345</span></p>
-                                    <p class="fs-7 text-muted">Supplier Rating: <span class="fw-bold text-dark">4.5/5</span></p>
-                                    <p class="fs-7 text-muted">Shipping Time: <span class="fw-bold text-dark">3-5 Days</span></p>
+                                <div class="bg-light dark__bg-1100 p-3 rounded w-100 text-body">
+                                    <h5 class="fw-bold">Additional Information</h5>
+                                    <p class="fs-7">Stock Availability: <span id="stockAvailability" class="fw-bold">In Stock</span></p>
+                                    <p class="fs-7">SKU: <span id="sku" class="fw-bold">#12345</span></p>
+                                    <p class="fs-7">Supplier Rating: <span id="supplierRating" class="fw-bold">4.5/5</span></p>
+                                    <p class="fs-7">Shipping Time: <span id="shippingTime" class="fw-bold">3-5 Days</span></p>
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <label class="form-label fw-semi-bold" for="product-description">Product description:</label>
+                            <div class="create-product-description-textarea">
+                                <textarea id="tinymce-editor" class="tinymce d-none" data-tinymce="data-tinymce" ></textarea>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
+ <script>
     (function () {
          let allProducts = [];
          let allCustomers=[];
@@ -998,6 +1007,7 @@
                         </div>
                     </div>
                     <input type="hidden" name="ItemsList[${index}].ProductId" value="${item.productId}" />
+                        <input type="hidden" name="ItemsList[${index}].ProductVariantId" value="${item.productVariantId}" />
                 </td>
                  <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
                  <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
@@ -1032,9 +1042,9 @@
                     </div>
                 </td>
                  <td>
-                    <button type="button" title="Info" class="btn btn-sm a-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                      <i class="fa fa-info-circle" style="font-size:18px"></i>
-                    </button>
+                         <button type="button" title="Info" class="btn btn-sm a-light product-details-btn" onclick='showProductDetails(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+        <i class="fa fa-info-circle" style="font-size:18px"></i>
+    </button>
                   </td>
 
                 <!-- Delete Button -->
@@ -1182,6 +1192,7 @@
             if (!quantityInput) continue; // Skip non-data rows
 
             const productIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductId"]');
+            const productVariantIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductVariantId"]');
             const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
             const discountPercentInput = row.querySelector('[name^="ItemsList["][name$="].DiscountPercentg"]');
 
@@ -1226,6 +1237,7 @@
             items.push({
                 rowIndex: rowIndex,
                 productId: parseInt(productIdInput?.value || 0),
+                productVariantId: parseInt(productVariantIdInput?.value || 0),
                 quantity: parseFloat(quantityInput?.value || 0),
                 sellingPrice: parseFloat(sellingPriceInput?.value || 0),
                 discountPercentg: parseFloat(discountPercentInput?.value || 0),
@@ -1244,8 +1256,8 @@
           const invoiceSummary = {
                  invoiceId: document.getElementById("Invoice_InvoiceId")?.value,
                  invoiceNumber: document.getElementById("Invoice_InvoiceNumber")?.value,
-                 entryBy: document.getElementById("Invoice_EntryBy")?.value,
-                  entryDateTime: rawDate ? new Date(rawDate).toISOString() : null,
+                  entryBy: document.getElementById("Invoice_EntryBy")?.value|| 0,
+                    entryDateTime: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
 
                    customerId:document.getElementById("CustomerId")?.value,
                    customerName: document.getElementById("CustomerName")?.value,  // first input field
@@ -1294,6 +1306,11 @@
                     isValid = false;
                         $("#PaymentTypeId").addClass("is-invalid").after('<div class="invalid-feedback">Payment Type is required.</div>');
                 }
+
+           if (!isValid) {
+             console.warn("Validation failed!");
+             return;
+         }
              // ✅ Final payload
              const payload = {
                  invoiceSummary: invoiceSummary,
@@ -1311,10 +1328,12 @@
         })
         .then(res => res.json())
         .then(data => {
-            console.log("Saved!", data);
+          //  console.log("Saved!", data);
+               showToast("success",data.message);
         })
         .catch(err => {
-            console.error("Save failed", err);
+          //  console.error("Save failed", err);
+              showToast("danger","Save Failed!.");
         });
     }
 
@@ -1352,6 +1371,9 @@
                             <button class="btn btn-sm btn-falcon-primary" type="button" onclick="AddItemToProductList(${JSON.stringify(item).replace(/"/g, '&quot;')})">
                                 Add
                             </button>
+                               <button type="button" title="Info" class="btn btn-sm a-light product-details-btn ml-1" onclick='showProductDetails(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+         <i class="fa fa-info-circle" style="font-size:18px"></i>
+     </button>
                         </div>
                     </div>
                 </div>
@@ -1480,14 +1502,59 @@
 
            $("#itemCount_notification").text(totalQty);
      }
-     
 
-    
+
 
     })();
 
 
 </script>
+ 
+<script>
 
+      function showProductDetails(item) {
+        // Left Column: Item Information
+        document.getElementById('vatAmount').textContent = item.vatAmount ? `${item.vatAmount}` : 'N/A';
+        document.getElementById('discountAmount').textContent = item.discountAmount ? `${item.currencySymbol}${item.discountAmount}` : 'N/A';
+        document.getElementById('date').textContent = item.givenEntryDate ? new Date(item.givenEntryDate).toLocaleDateString() : 'N/A';
+        document.getElementById('warranty').textContent = item.warrentYear ? `${item.warrentYear} year${item.warrentYear > 1 ? 's' : ''}` : 'N/A';
+        const supplierLink = document.getElementById('supplierLink');
+        supplierLink.href = item.supplirLinkId ? `/supplier/${item.supplirLinkId}` : '#'; // Adjust URL as needed
+        supplierLink.textContent = item.supplirLinkId ? 'View Supplier' : 'N/A';
+        document.getElementById('remarks').textContent = item.remarks || 'N/A';
+        //document.getElementById('descriptions').innerHTML = item.prodDescription || 'N/A'; // Use innerHTML for HTML content
+        document.getElementById('importedFrom').textContent = item.importedForm || 'N/A';
+        document.getElementById('category').textContent = item.prodCtgName || 'N/A';
+
+        // Middle Column: Pricing & Quantity
+        document.getElementById('subCategory').textContent = item.prodSubCtgName || 'N/A';
+        document.getElementById('nameModel').textContent = item.prodName || 'N/A';
+        document.getElementById('buyingPrice').textContent = item.buyingPrice ? `${item.currencySymbol}${item.buyingPrice}` : 'N/A';
+        document.getElementById('sellingPrice').textContent = item.sellingPrice ? `${item.currencySymbol}${item.sellingPrice}` : 'N/A';
+        document.getElementById('unitType').textContent = item.unitName || 'N/A';
+        document.getElementById('openingQuantity').textContent = item.openingQnty ?? 'N/A';
+        document.getElementById('alertQuantity').textContent = item.alertQnty ?? 'N/A';
+        document.getElementById('vatPercentage').textContent = item.vatPercent ? `${item.vatPercent}%` : 'N/A';
+        document.getElementById('discountPercentage').textContent = item.discountPercentg ? `${item.discountPercentg}%` : 'N/A';
+
+        // Right Column: Image and Additional Information
+        document.getElementById('productImage').src = item.imageUrl || '../../assets/img/gallery/default.jpg';
+        document.getElementById('stockAvailability').textContent = item.stockQuantity > 0 ? 'In Stock' : 'Out of Stock';
+        document.getElementById('sku').textContent = item.sku || 'N/A';
+        document.getElementById('supplierRating').textContent = item.rating ?? 'N/A';
+        document.getElementById('shippingTime').textContent = item.shippingDays || 'N/A';
+     
+        const editor = tinymce.get('tinymce-editor');
+    if (editor) {
+        editor.setContent(item.prodDescription || 'N/A');
+    } else {
+        console.error('TinyMCE editor not initialized');
+        document.getElementById('tinymce-editor').value = item.prodDescription || 'N/A';
+    }
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        modal.show();
+    }
+</script>
 
   

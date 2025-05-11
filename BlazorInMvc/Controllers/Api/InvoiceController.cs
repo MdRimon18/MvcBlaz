@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Domain.CommonServices;
 using Domain.DbContex;
+using Domain.Entity.Inventory;
 using Domain.Entity.Settings;
 using Domain.Services.Inventory;
 using Domain.ViewModel;
@@ -135,8 +136,9 @@ namespace BlazorInMvc.Controllers.Api
                         ProdSerialNmbrId = long.TryParse(serial.ProdSerialNmbrId, out var prodSerialId) ? prodSerialId : 0,
                         SupplierOrgName = serial.SupplierOrgName,
                         SerialStatus = "Sale"
-                    }).ToList() ?? new List<ProductSerialNumbers>()
-                }).ToList();
+                    }).ToList() ?? new List<ProductSerialNumbers>(),
+                    ProductVariantId=item.ProductVariantId
+                    }).ToList();
 
                 foreach (var invoiceItem in invoiceItems)
                 {
@@ -166,7 +168,7 @@ namespace BlazorInMvc.Controllers.Api
                 return Ok(new
                 {
                     InvoiceId = newInsertedInvoiceId,
-                    Message = "Items saved successfully!"
+                    Message = "Invoice Created successfully!"
                 });
             }
             catch (Exception ex)

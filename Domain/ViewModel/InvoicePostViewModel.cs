@@ -52,7 +52,8 @@ namespace Domain.ViewModel
             public float SellingPrice { get; set; }
             public float DiscountPercentg { get; set; }
             public List<SerialDto> Serials { get; set; }
-        }
+            public long? ProductVariantId { get; set; }
+    }
 
         public class SerialDto
         {

@@ -80,8 +80,9 @@ namespace Domain.Services.Inventory
 				parameters.Add("@CategoryName", _invoiceItems.CategoryName);
 				parameters.Add("@SubCtgName", _invoiceItems.SubCtgName);
 				parameters.Add("@Unit", _invoiceItems.Unit);
+                parameters.Add("@ProductVariantId", _invoiceItems.ProductVariantId);
 
-				parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 				await _db.ExecuteAsync("InvoiceItemsInsertOrUpdateInvoice", parameters, commandType: CommandType.StoredProcedure);
 
 				return (long)parameters.Get<int>("@SuccessOrFailId");

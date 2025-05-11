@@ -27,7 +27,8 @@ namespace Domain.Entity.Settings
 		public DateTime? DeletedDate { get; set; }
 		public long? DeletedBy { get; set; }
 		public string Status { get; set; }
-		[NotMapped]
+        public long? ProductVariantId { get; set; }
+        [NotMapped]
 		public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
 		[NotMapped]
 		public string ImageUrl { get; set; }
