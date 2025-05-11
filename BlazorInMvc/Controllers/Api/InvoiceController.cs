@@ -164,9 +164,10 @@ namespace BlazorInMvc.Controllers.Api
 
                 // Commit transaction
                 await transaction.CommitAsync();
-
+                var invoiceObj = await _invoiceService.GetById(newInsertedInvoiceId);
                 return Ok(new
                 {
+                    InvoiceKey= invoiceObj?.InvoiceKey,
                     InvoiceId = newInsertedInvoiceId,
                     Message = "Invoice Created successfully!"
                 });
