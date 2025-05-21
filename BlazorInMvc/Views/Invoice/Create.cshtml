@@ -84,7 +84,7 @@
                                            placeholder="Search by Name/SKU/Code"
                                            aria-label="search"
                                            asp-for="SrchQuery"
-                                    oninput="OnProductSearchInOffCanva" />
+                                           oninput="OnProductSearchInOffCanva(event)" />
 
                                     <button type="button" class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
                                         <span class="fa fa-search fs-10"></span>
@@ -1344,7 +1344,18 @@
           const row = btn.closest('tr');
          if (row) row.remove();
        }
+         window.OnProductSearchInOffCanva=  function (event) {
+            const query = event.target.value.trim();
+          
+             let filteredOffCanvaProduct=allProducts.filter(product =>
+                 product.prodName?.toLowerCase().includes(query) ||
+                 product.sku?.toLowerCase().includes(query) ||
+                 product.productCode?.toLowerCase().includes(query)
+               );
 
+                
+                  window.renderOffCanfaProducts(filteredOffCanvaProduct);
+             }
       window.renderOffCanfaProducts = function(filteredItems) {
         const container = document.getElementById("product-container"); // Ensure this div exists in your HTML
         container.innerHTML = ""; // Clear existing content
