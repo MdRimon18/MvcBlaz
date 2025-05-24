@@ -1445,11 +1445,18 @@
                                              <img class="rounded-soft" src="../../assets/img/default-product.jpg" alt="" />
                                          </div>
                                          <div class="product-info">
-                                             <p class="mb-1"><strong>Category:</strong> ${item.serialNumber}</p>
-                                             <p class="mb-1"><strong>Brand:</strong> BrandName</p>
-                                             <p class="mb-1"><strong>Name:</strong> ${item.supplierName}</p>
-                                             <p class="mb-1"><strong>Price:</strong> ${item.serialNumber}</p>
-                                             <p class="mb-1"><strong>SKU:</strong> ${item.serialNumber}</p>
+                                             <p class="mb-1"><strong>Serial Number:</strong> ${item.serialNumber}</p>
+                                               <p class="mb-1"><strong>Rate:</strong>  ${item.rate}</p>
+                                             <p class="mb-1"><strong>Supplier Name:</strong> ${item.supplierName}</p>
+                                                <p class="mb-1"><strong>Status:</strong> ${item.serialStatus}</p>
+                                               <p class="mb-1"><strong>Purchase Date:</strong>
+                                                      ${new Date(item.date).toLocaleDateString('en-GB', {
+                                                          day: 'numeric',
+                                                          month: 'long',
+                                                          year: 'numeric'
+                                                        })}
+                                               </p>
+                                              <p class="mb-1"><strong>Remarks:</strong> ${item.remarks}</p>
                                          </div>
                                      </div>
                                  </div>
