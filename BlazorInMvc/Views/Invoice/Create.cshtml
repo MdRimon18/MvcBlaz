@@ -272,6 +272,48 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6 col-9 animated-div">
                                 <div class="form-group position-relative">
+                                    <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label>
+                                    <span class="error-star">*</span>
+
+                                    <div class="input-group">
+                                        <input type="text"
+                                               asp-for="Invoice.MobileNo"
+                                               class="form-control form-control-sm form-rounded"
+                                               placeholder="Search..."
+                                               id="chooseMobile"
+                                               oninput="handleSearchCustomer(this.value)" />
+
+                                        <!-- Clear (X) button -->
+                                        <button type="button"
+                                                class="btn btn-sm position-absolute top-0 end-0 me-5 d-none"
+                                                id="clearBtnCustomer">
+                                            ×
+                                        </button>
+
+                                        <!-- Plus button -->
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm px-3 py-1 ms-2"
+                                                id="plusButton"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#offcanvasRight"
+                                                aria-controls="offcanvasRight">
+                                            +
+                                        </button>
+                                    </div>
+
+                                    <span asp-validation-for="Mobile" class="text-danger"></span>
+
+                                    <div class="dropdown-menu border font-base mt-1 w-100 spa-link mt-4" id="searchDropdownCustomer" style="display: none;">
+                                        <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
+                                        <div class="text-center">
+                                            <p class="fw-bold fs-8 d-none">No Results Found.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+               @*              <div class="col-lg-3 col-md-3 col-sm-6 col-9 animated-div">
+                                <div class="form-group position-relative">
                                     <label for="chooseMobile" class="form-label fw-semi-bold">Mobile</label><span class="error-star">*</span>
                                     <div class="input-group">
                                         <input type="text" asp-for="Invoice.MobileNo" class="form-control form-control-sm form-rounded" placeholder="Search..." id="chooseMobile" oninput="handleSearchCustomer(this.value)" />
@@ -289,7 +331,7 @@
                                     </div>
                                    
                                 </div>
-                            </div>
+                            </div> *@
                                 <div class="col-lg-3 col-md-3 col-sm-9 col-9 animated-div">
                                     <div class="form-group">
                                         <label for="CustomerEmail" class="form-label fw-semi-bold">Customer Email</label>
@@ -1078,20 +1120,20 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                                <label class="form-label fw-semi-bold">Add Serial Number</label>
-                                <div class="position-relative">
-                                    <button class="btn btn-sm btn-light position-absolute end-0 h-100" type="button"
-                                            data-bs-toggle="offcanvas" 
-                                            data-bs-target="#offcanvasRight-2"
-                                            aria-controls="offcanvasRight-2"
-                                            onclick="loadSerials(${item.productId},${index})" >
-
-                                     
-                                        +
-                                    </button>
-                                </div>
+                        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                            <label class="form-label fw-semi-bold">Add Serial Number</label>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-outline-primary btn-sm ms-auto px-3 py-1"
+                                        type="button"
+                                        data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasRight-2"
+                                        aria-controls="offcanvasRight-2"
+                                        onclick="loadSerials(${item.productId}, ${index})">
+                                    +
+                                </button>
                             </div>
+                        </div>
+
                         </div>
                     </div>
                 </td>
@@ -1118,7 +1160,7 @@
         });
     }
 
-     window.appendSingleSerialRow= function (serial, index) {
+          window.appendSingleSerialRow= function (serial, index) {
         const tbody = document.getElementById(`serial-body-${index}`);
         if (!tbody || !serial) return;
 
