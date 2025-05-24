@@ -188,10 +188,9 @@
                                 <div class="input-group" style="max-width: 350px; width: 100%;">
                                     <input class="form-control form-control-sm shadow-none"
                                            type="search"
-                                           placeholder="Search by Name/SKU/Code"
+                                           placeholder="Search by Serial Number"
                                            aria-label="search"
-                                           asp-for="SrchQuery"
-                                           />
+                                           oninput="OnProductSerialSearchInOffCanva(event)" />
 
                                     <button type="button" class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
                                         <span class="fa fa-search fs-10"></span>
@@ -601,6 +600,8 @@
          let isInitialized = false;
          let isCustomerInit=false;
          let itemRowIndex = 0;
+         let serialsByProductId=[];
+         let serialCurrentIndex=0;
         
 
          window.LoadInvoiceItems = function () {
@@ -1356,6 +1357,23 @@
                 
                   window.renderOffCanfaProducts(filteredOffCanvaProduct);
              }
+
+
+         window.OnProductSerialSearchInOffCanva=  function (event) {
+             const query = event.target.value.trim();
+             console.log(query);
+             console.log(serialsByProductId);
+               let filteredSerialNumbers=serialsByProductId.filter(srl =>
+                   srl.serialNumber?.toLowerCase().includes(query) 
+               //   product.sku?.toLowerCase().includes(query) ||
+                //  product.productCode?.toLowerCase().includes(query)
+                );
+                console.log(serialCurrentIndex);
+                console.log(filteredSerialNumbers);
+                window.rendarOffCanfvaSerial(filteredSerialNumbers,serialCurrentIndex);
+
+                 
+       }
       window.renderOffCanfaProducts = function(filteredItems) {
         const container = document.getElementById("product-container"); // Ensure this div exists in your HTML
         container.innerHTML = ""; // Clear existing content
@@ -1401,48 +1419,52 @@
         fetch(`/api/ProductSerial/GetSerialNumbersByProductId/${productId}`)
             .then(response => response.json())
             .then(serials => {
-                console.log(serials)
-                const container = document.getElementById("product-serial-container"); // Ensure this div exists in your HTML
-                container.innerHTML = ""; // Clear existing content
-
-                serials.data.forEach(item => {
-                    const col = document.createElement("div");
-                    col.className = "col-md-4 ps-md-2";
-
-                    col.innerHTML = `
-                        <div class="card mb-3 zoom-card">
-                            <div class="card-body bg-body-tertiary">
-                                <div class="tab-content">
-                                    <div class="tab-pane preview-tab-pane active" role="tabpanel">
-                                        <div class="avatar avatar-4xl mb-3">
-                                            <img class="rounded-soft" src="../../assets/img/default-product.jpg" alt="" />
-                                        </div>
-                                        <div class="product-info">
-                                            <p class="mb-1"><strong>Category:</strong> ${item.serialNumber}</p>
-                                            <p class="mb-1"><strong>Brand:</strong> BrandName</p>
-                                            <p class="mb-1"><strong>Name:</strong> ${item.supplierName}</p>
-                                            <p class="mb-1"><strong>Price:</strong> ${item.serialNumber}</p>
-                                            <p class="mb-1"><strong>SKU:</strong> ${item.serialNumber}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button class="btn btn-sm btn-falcon-primary" type="button" onclick="appendSingleSerialRow(${JSON.stringify(item).replace(/"/g, '&quot;')},${index})">
-                                        Add
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    container.appendChild(col);
-                });
+             
+                 serialsByProductId=serials.data;
+                 serialCurrentIndex=index;
+                  window.rendarOffCanfvaSerial(serialsByProductId,index);
             })
             .catch(error => {
                 console.error('Error fetching serials:', error);
             });
     }
+     window.rendarOffCanfvaSerial=function(filterdSerials,index){
+          const container = document.getElementById("product-serial-container"); // Ensure this div exists in your HTML
+                 container.innerHTML = ""; // Clear existing content
+                 console.log('hl',filterdSerials)
+                  filterdSerials.forEach(item => {
+                     const col = document.createElement("div");
+                     col.className = "col-md-4 ps-md-2";
 
+                     col.innerHTML = `
+                         <div class="card mb-3 zoom-card">
+                             <div class="card-body bg-body-tertiary">
+                                 <div class="tab-content">
+                                     <div class="tab-pane preview-tab-pane active" role="tabpanel">
+                                         <div class="avatar avatar-4xl mb-3">
+                                             <img class="rounded-soft" src="../../assets/img/default-product.jpg" alt="" />
+                                         </div>
+                                         <div class="product-info">
+                                             <p class="mb-1"><strong>Category:</strong> ${item.serialNumber}</p>
+                                             <p class="mb-1"><strong>Brand:</strong> BrandName</p>
+                                             <p class="mb-1"><strong>Name:</strong> ${item.supplierName}</p>
+                                             <p class="mb-1"><strong>Price:</strong> ${item.serialNumber}</p>
+                                             <p class="mb-1"><strong>SKU:</strong> ${item.serialNumber}</p>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="d-flex justify-content-end mt-3">
+                                     <button class="btn btn-sm btn-falcon-primary" type="button" onclick="appendSingleSerialRow(${JSON.stringify(item).replace(/"/g, '&quot;')},${index})">
+                                         Add
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+                     `;
+
+                     container.appendChild(col);
+          });
+    }
    window.updateRow= function (input) {
          const row = input.closest('tr');
          if (!row) return;
