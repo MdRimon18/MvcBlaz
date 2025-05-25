@@ -1066,7 +1066,7 @@
                            placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1"  oninput="updateRow(this)"  />
                     <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
                 </td>
-                     <td style="min-width:60px;"><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly ="ItemsList[${index}].unitName" value="${item.unitName}" /></td>
+                      <td style="min-width:60px;"><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly name="ItemsList[${index}].unitName" value="${item.unitName}" /></td>
                  <td style="min-width:75px;">
                      <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold price-input no-spinner"
                            name="ItemsList[${index}].SellingPrice" value="${item.sellingPrice}" />
