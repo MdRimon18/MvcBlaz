@@ -123,10 +123,17 @@ namespace BlazorInMvc.Controllers.Api
                 var invoiceItems = request.Items
                     .Select(item => new InvoiceItems
                 {
+                    ProductImage=item.ProductImage,
+                    ProductName=item.ProductName,
+                    CategoryName=item.CategoryName,
+                    SubCtgName=item.SubCtgName,
+                    Unit=item.Unit,
+
                     InvoiceId = newInsertedInvoiceId,
                     ProductId = item.ProductId,
                     Quantity = (int)item.Quantity,
                     SellingPrice = (decimal)item.SellingPrice,
+                    BuyingPrice=item.BuyingPrice,
                     DiscountPercentg = (decimal)item.DiscountPercentg,
                     RowIndex = item.RowIndex,
                     Status = "Active",

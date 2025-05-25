@@ -22,7 +22,7 @@ namespace BlazorInMvc.Controllers.Api.Settings
         [Route("api/InvoiceType/GetAll")]
         public async Task<IActionResult> GetInvoiceTypes(string? search, int page, int pageSize)
         {
-            var invoiceTypes = await _invoiceTypeService.Get(null, null, null, search, page, pageSize);
+            var invoiceTypes = await _invoiceTypeService.Get(null, null, null, search, 1, 10);
             var totalRecord = invoiceTypes.Count();
             var totalPages = (int)Math.Ceiling((double)totalRecord / pageSize);
 

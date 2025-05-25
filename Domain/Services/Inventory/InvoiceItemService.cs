@@ -21,7 +21,7 @@ namespace Domain.Services.Inventory
 			_db = db.GetDbConnection();
 			_context = context;
 		}
-		public async Task<IEnumerable<InvoiceItems>> Get(long? InvoiceItemId, long? InvoiceId, long? ProductId, decimal? SellingPrice, decimal? BuyingPrice, string? CategoryName, string? SubCtgName, int? PageNumber, int? PageSize)
+		public async Task<IEnumerable<InvoiceItems>> Get(long? InvoiceItemId, long? InvoiceId,int? PageNumber, int? PageSize)
 		{
 			try
 			{
@@ -29,15 +29,10 @@ namespace Domain.Services.Inventory
 
 				parameters.Add("@InvoiceItemId", InvoiceItemId);
 				parameters.Add("@InvoiceId", InvoiceId);
-				parameters.Add("@ProductId", ProductId);
-				parameters.Add("@BuyingPrice", BuyingPrice);
-				parameters.Add("@SellingPrice", SellingPrice);
-				parameters.Add("@CategoryName", CategoryName);
-				parameters.Add("@SubCtgName", SubCtgName);
 				parameters.Add("@PageNumber", PageNumber);
 				parameters.Add("@PageSize", PageSize);
 
-				return await _db.QueryAsync<InvoiceItems>("Color_Get_SP", parameters, commandType: CommandType.StoredProcedure);
+				return await _db.QueryAsync<InvoiceItems>("Invoice_items_Get_SP", parameters, commandType: CommandType.StoredProcedure);
 
 			}
 			catch (Exception ex)
@@ -50,7 +45,7 @@ namespace Domain.Services.Inventory
 		public async Task<InvoiceItems> GetById(long InvoiceItemId)
 
 		{
-			var _invoiceItems = await (Get(InvoiceItemId, null, null, null, null, null, null, 1, 1));
+			var _invoiceItems = await (Get(InvoiceItemId, null, 1, 1));
 			return _invoiceItems.FirstOrDefault();
 		}
 

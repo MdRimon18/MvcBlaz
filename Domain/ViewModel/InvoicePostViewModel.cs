@@ -50,8 +50,15 @@ namespace Domain.ViewModel
             public int ProductId { get; set; }
             public float Quantity { get; set; }
             public float SellingPrice { get; set; }
-            public float DiscountPercentg { get; set; }
-            public List<SerialDto> Serials { get; set; }
+        public decimal BuyingPrice { get; set; } = 0;
+        public float DiscountPercentg { get; set; }
+          public string? ProductImage { get; set; }
+          public string CategoryName { get; set; }
+          public string ProductName { get; set; }
+          public string? SubCtgName { get; set; }
+          public string? Unit { get; set; }
+
+        public List<SerialDto> Serials { get; set; }
             public long? ProductVariantId { get; set; }
     }
 

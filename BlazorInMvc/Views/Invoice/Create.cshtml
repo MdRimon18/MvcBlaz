@@ -1043,6 +1043,7 @@
         
  
         function generateItemRowHtml(item, index) {
+             console.log('Generating row for item:', item, 'at index:', index);
         return `
              <tr  data-index="${index}">
                 <td>
@@ -1053,16 +1054,19 @@
                     </div>
                     <input type="hidden" name="ItemsList[${index}].ProductId" value="${item.productId}" />
                         <input type="hidden" name="ItemsList[${index}].ProductVariantId" value="${item.productVariantId}" />
+                        <input type="hidden" name="ItemsList[${index}].imageUrl" value="${item.imageUrl}" />
+                            <input type="hidden" name="ItemsList[${index}].buyingPrice" value="${item.buyingPrice}" />
+
                 </td>
-                 <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodCtgName}" /></td>
-                 <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodSubCtgName}" /></td>
-                 <td style="min-width:75px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly value="${item.prodName}" /></td>
+                   <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly name="ItemsList[${index}].prodCtgName" value="${item.prodCtgName}" /></td>
+                   <td style="min-width:70px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly name="ItemsList[${index}].prodSubCtgName" value="${item.prodSubCtgName}" /></td>
+                   <td style="min-width:75px;"><input type="text" class="form-control form-control-sm form-rounded bold-input fw-semi-bold" readonly name="ItemsList[${index}].prodName" value="${item.prodName}" /></td>
                  <td style="min-width:70px;">
                     <input type="number" class="form-control form-control-sm form-rounded bold-input fw-semi-bold quantity-input"
                            placeholder="Quantity" name="ItemsList[${index}].Quantity" value="1"  oninput="updateRow(this)"  />
                     <span class="text-danger validation-error" data-field="Quantity" style="display:none;">Quantity is required</span>
                 </td>
-                   <td style="min-width:60px;"><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly value="${item.unitName}" /></td>
+                     <td style="min-width:60px;"><input type="text" class="form-control form-control-sm form-rounded fw-semi-bold" readonly ="ItemsList[${index}].unitName" value="${item.unitName}" /></td>
                  <td style="min-width:75px;">
                      <input type="number" class="form-control form-control-sm form-rounded fw-semi-bold price-input no-spinner"
                            name="ItemsList[${index}].SellingPrice" value="${item.sellingPrice}" />
@@ -1237,10 +1241,19 @@
             if (!quantityInput) continue; // Skip non-data rows
 
             const productIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductId"]');
+              
             const productVariantIdInput = row.querySelector('[name^="ItemsList["][name$="].ProductVariantId"]');
-            const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
+             const sellingPriceInput = row.querySelector('[name^="ItemsList["][name$="].SellingPrice"]');
+                 const buyingPriceInput = row.querySelector('[name^="ItemsList["][name$="].buyingPrice"]');
+             
             const discountPercentInput = row.querySelector('[name^="ItemsList["][name$="].DiscountPercentg"]');
 
+              const prodCtgNameInput = row.querySelector('[name^="ItemsList["][name$="].prodCtgName"]');
+              const prodSubCtgNameInput = row.querySelector('[name^="ItemsList["][name$="].prodSubCtgName"]');
+               const unitNameInput = row.querySelector('[name^="ItemsList["][name$="].unitName"]');
+
+              const prodNameInput = row.querySelector('[name^="ItemsList["][name$="].prodName"]');
+                const productImageInput = row.querySelector('[name^="ItemsList["][name$="].imageUrl"]');
             // Hide all error spans first
             row.querySelectorAll('.validation-error').forEach(e => e.style.display = 'none');
 
@@ -1278,7 +1291,8 @@
                     }
                 });
             }
-
+              console.log('unit naem ', unitNameInput?.value)
+                  console.log('buyingPrice ',buyingPriceInput?.value)
             items.push({
                 rowIndex: rowIndex,
                 productId: parseInt(productIdInput?.value || 0),
@@ -1286,6 +1300,14 @@
                 quantity: parseFloat(quantityInput?.value || 0),
                 sellingPrice: parseFloat(sellingPriceInput?.value || 0),
                 discountPercentg: parseFloat(discountPercentInput?.value || 0),
+                 categoryName: prodCtgNameInput?.value || '',
+                 subCtgName: prodSubCtgNameInput?.value || '',
+                 unit: unitNameInput?.value || '',
+                 productName: prodNameInput?.value || '',
+                 ProductImage: productImageInput?.value || null,
+                 buyingPrice: parseFloat(buyingPriceInput?.value) || 0.0,
+
+                  
                 serials: serials // ✅ include serial numbers
             });
 
