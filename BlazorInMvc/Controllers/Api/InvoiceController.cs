@@ -20,11 +20,13 @@ namespace BlazorInMvc.Controllers.Api
         private readonly ProductSerialNumbersService _productSerialNumberService;
         private readonly ApplicationDbContext _context;
         private readonly CustomerService _customerService;
+        private readonly InvoiceItemSerialsService _invoiceItemSerialsService;
         public InvoiceController(InvoiceService invoiceService,
             InvoiceItemService invoiceItemService,
             ProductSerialNumbersService productSerialNumberService,
             ApplicationDbContext dbContext,
-            CustomerService customerService
+            CustomerService customerService,
+            InvoiceItemSerialsService invoiceItemSerialsService
             )
         {
             _invoiceService = invoiceService;
@@ -32,6 +34,7 @@ namespace BlazorInMvc.Controllers.Api
             _productSerialNumberService = productSerialNumberService;
             _context = dbContext;
             _customerService = customerService;
+            _invoiceItemSerialsService = invoiceItemSerialsService;
         }
 
         [HttpGet("GetAll")]
@@ -137,13 +140,15 @@ namespace BlazorInMvc.Controllers.Api
                     DiscountPercentg = (decimal)item.DiscountPercentg,
                     RowIndex = item.RowIndex,
                     Status = "Active",
-                    SelectedSerialNumbers = item.Serials?.Select(serial => new ProductSerialNumbers
+                    SelectedSerialNumbers = item.Serials?.Select(serial => new InvoiceItemSerials
                     {
                         SerialNumber = serial.SerialNumber,
                         ProdSerialNmbrId = long.TryParse(serial.ProdSerialNmbrId, out var prodSerialId) ? prodSerialId : 0,
-                        SupplierOrgName = serial.SupplierOrgName,
-                        SerialStatus = "Sale"
-                    }).ToList() ?? new List<ProductSerialNumbers>(),
+                        InvoiceId= newInsertedInvoiceId,
+                        Rate=serial.Rate
+                        //SupplierOrgName = serial.SupplierOrgName,
+                        //SerialStatus = "Sale"
+                    }).ToList() ?? new List<InvoiceItemSerials>(),
                     ProductVariantId=item.ProductVariantId
                     }).ToList();
 
@@ -154,12 +159,24 @@ namespace BlazorInMvc.Controllers.Api
                     {
                         return BadRequest($"Failed to save invoice item for ProductId {invoiceItem.ProductId}.");
                     }
+                    invoiceItem.InvoiceItemId = itemId;
+
+                    if(invoiceItem.SelectedSerialNumbers != null && invoiceItem.SelectedSerialNumbers.Any())
+                    {
+                        foreach (var serial in invoiceItem.SelectedSerialNumbers)
+                        {
+                           serial.InvoiceItemId = itemId;
+                          await  _invoiceItemSerialsService.AddAsync(serial);
+                            //  var serialId = await _productSerialNumberService.SaveOrUpdateAsync(serial);
+
+                        }
+                    }
                 }
 
                 // 3. Save ProductSerialNumbers using a loop
-                var allSerialNumbers = invoiceItems
-                    .SelectMany(x => x.SelectedSerialNumbers)
-                    .ToList();
+                //var allSerialNumbers = invoiceItems
+                //    .SelectMany(x => x.SelectedSerialNumbers)
+                //    .ToList();
                 //foreach (var serialNumber in allSerialNumbers)
                 //{
                 //    var serialId = await _productSerialNumberService.SaveOrUpdateAsync(serialNumber);

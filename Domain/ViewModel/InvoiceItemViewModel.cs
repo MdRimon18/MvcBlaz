@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entity.Inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,14 +23,15 @@ namespace Domain.ViewModel
         public string ProdSubCtgName { get; set; }
         public string UnitName { get; set; }
         public string ImageUrl { get; set; }
-        public List<SerialNumberViewModel> SelectedSerialNumbers { get; set; } = new();
+        public List<InvoiceItemSerials> SelectedSerialNumbers { get; set; } = new();
     }
 
-    public class SerialNumberViewModel
-    {
-        public string SerialNumber { get; set; }
-        public long ProdSerialNmbrId { get; set; }
-        public string SupplierOrgName { get; set; } // Optional
-    }
+    //public class SerialNumberViewModel
+    //{
+    //    public string SerialNumber { get; set; }
+    //    public long ProdSerialNmbrId { get; set; }
+    //    public string SupplierOrgName { get; set; } // Optional
+    //    public double Rate { get; set; }
+    //}
 
 }

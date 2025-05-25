@@ -1,4 +1,5 @@
 ﻿using Domain.Entity;
+using Domain.Entity.Inventory;
 using Domain.Entity.Settings;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,6 +21,7 @@ namespace Domain.DbContex
         // Define your DbSet properties for each entity you want to include in the database.
         public DbSet<UserAddressBook> UserAddressBooks { get; set; }
         public DbSet<UserPhoneNumbers> UserPhoneNumbers { get; set; }
+        public DbSet<InvoiceItemSerials> InvoiceItemSerials { get; set; }
         //  public DbSet<BillingPlans> BillingPlans { get; set; }
         // Optional: Override OnModelCreating to configure entity mappings.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,6 +1,7 @@
-﻿using Domain.Entity.Settings;
-using Domain.Services.Inventory;
+﻿using Domain.Entity.Inventory;
+using Domain.Entity.Settings;
 using Domain.Services;
+using Domain.Services.Inventory;
 using Domain.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
         private readonly PaymentTypesService _paymentTypesService;
         private readonly CustomerService _customerService;
         private readonly ProductSerialNumbersService _productSerialNumbersService;
-
+        private readonly InvoiceItemSerialsService _invoiceItemSerialsService;
         public InvoiceController(
             InvoiceService invoiceService,
             InvoiceItemService invoiceItemService,
@@ -29,7 +30,8 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             ProductSubCategoryService productSubCategoryService,
             PaymentTypesService paymentTypesService,
             CustomerService customerService,
-            ProductSerialNumbersService productSerialNumbersService)
+            ProductSerialNumbersService productSerialNumbersService,
+            InvoiceItemSerialsService invoiceItemSerialsService)
         {
             _invoiceService = invoiceService;
             _invoiceItemService = invoiceItemService;
@@ -41,6 +43,7 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             _paymentTypesService = paymentTypesService;
             _customerService = customerService;
             _productSerialNumbersService = productSerialNumbersService;
+            _invoiceItemSerialsService = invoiceItemSerialsService;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -151,35 +154,41 @@ namespace BlazorInMvc.Controllers.Mvc.Sales
             //    }
             //};
 
-            var itemsList = await _invoiceItemService.Get(null, invoice.InvoiceId, 1, 100);
-          var invoiceItemViewModels = itemsList.Select(item => new InvoiceItemViewModel
-          {
-              InvoiceItemId = item.InvoiceItemId,
-              InvoiceId = item.InvoiceId,
-              ProductId = item.ProductId,
-              Quantity = item.Quantity,
-              SellingPrice = item.SellingPrice,
-              TotalPrice = item.TotalPrice,
-              VatPercent = item.VatPercentg,
-              // VatAmount = item.VatAmount,
-              DiscountPercentg = item.DiscountPercentg,
-              //   DiscountAmount = item.DiscountAmount,
-              //   ExpirationDate = item.ExpirationDate,
-              //  PromoOrCuppnAppliedId = item.PromoOrCuppnAppliedId,
-              ImageUrl = item.ProductImage,
-              ProdName = item.ProductName,
-              ProdCtgName = item.CategoryName,
-              ProdSubCtgName = item.SubCtgName,
-              UnitName = item.Unit,
+            IEnumerable<InvoiceItems> itemsList = new List<InvoiceItems>();
+            if (invoice.InvoiceId > 0)
+            {
+                itemsList = await _invoiceItemService.Get(null, invoice.InvoiceId, 1, 100);
+            }
 
-              SelectedSerialNumbers = item.SelectedSerialNumbers != null
-                           ? item.SelectedSerialNumbers.Select(s => new SerialNumberViewModel
-                           {
-                               SerialNumber = s.SerialNumber,
-                               ProdSerialNmbrId = s.ProdSerialNmbrId
-                           }).ToList()
-                        : new List<SerialNumberViewModel>()
-          }).ToList();
+
+            var invoiceItemViewModels = new List<InvoiceItemViewModel>();
+
+            foreach (var item in itemsList)
+            {
+                var serialNumbers = await _invoiceItemSerialsService.GetByInvoiceItemId(item.InvoiceItemId);
+
+                var viewModel = new InvoiceItemViewModel
+                {
+                    InvoiceItemId = item.InvoiceItemId,
+                    InvoiceId = item.InvoiceId,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    SellingPrice = item.SellingPrice,
+                    TotalPrice = item.TotalPrice,
+                    VatPercent = item.VatPercentg,
+                    DiscountPercentg = item.DiscountPercentg,
+                    ImageUrl = item.ProductImage,
+                    ProdName = item.ProductName,
+                    ProdCtgName = item.CategoryName,
+                    ProdSubCtgName = item.SubCtgName,
+                    UnitName = item.Unit,
+                    SelectedSerialNumbers = serialNumbers?.ToList() ?? new List<InvoiceItemSerials>()
+                };
+
+                invoiceItemViewModels.Add(viewModel);
+            }
+
+           
 
             var model = new InvoiceViewModel
             {

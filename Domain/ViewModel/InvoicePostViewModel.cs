@@ -67,6 +67,7 @@ namespace Domain.ViewModel
             public string SerialNumber { get; set; }
             public string ProdSerialNmbrId { get; set; }
             public string? SupplierOrgName { get; set; }
-        }
+            public  double Rate { get; set; }
+    }
     
 }

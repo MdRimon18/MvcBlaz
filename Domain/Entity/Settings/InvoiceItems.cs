@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Entity.Inventory;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Settings
 {
@@ -29,7 +30,7 @@ namespace Domain.Entity.Settings
 		public string Status { get; set; }
         public long? ProductVariantId { get; set; }
         [NotMapped]
-		public List<ProductSerialNumbers> SelectedSerialNumbers { get; set; } = new List<ProductSerialNumbers>();
+		public List<InvoiceItemSerials> SelectedSerialNumbers { get; set; } = new List<InvoiceItemSerials>();
 		[NotMapped]
 		public string ImageUrl { get; set; }
 		public int RowIndex { get; set; } //add to database 
