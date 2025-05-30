@@ -430,8 +430,17 @@
                                         <input type="text" class="form-control form-control-sm form-rounded border-start-0" placeholder="Search..." id="chooseProduct" aria-label="Search" oninput="handleSearch(this.value)" />
                                         <!-- Clear (X) button -->
                                         <button type="button" class="btn btn-sm  position-absolute top-0 end-0 me-5 d-none" id="clearBtn">×</button>
-
-                                        <button class="btn btn-sm btn-light" type="button" id="plusButton" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-1" aria-controls="offcanvasRight-1">+</button>
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm px-3 py-1 ms-2"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#offcanvasRight-1"
+                                                aria-controls="offcanvasRight-1">
+                                            +
+                                        </button>
+                                      @*   <button class="btn btn-sm btn-light" type="button"  
+                                        data-bs-toggle="offcanvas" 
+                                        data-bs-target="#offcanvasRight-1"
+                                        aria-controls="offcanvasRight-1">+</button> *@
                                     </div>
                                     <div class="dropdown-menu border font-base mt-1 w-100 spa-link" id="searchDropdown" style="display: none;">
                                         <div class="list py-2" style="max-height: 15rem; overflow-y: auto;"></div>
