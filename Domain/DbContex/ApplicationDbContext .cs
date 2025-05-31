@@ -22,6 +22,8 @@ namespace Domain.DbContex
         public DbSet<UserAddressBook> UserAddressBooks { get; set; }
         public DbSet<UserPhoneNumbers> UserPhoneNumbers { get; set; }
         public DbSet<InvoiceItemSerials> InvoiceItemSerials { get; set; }
+        public DbSet<Suppliers> Suppliers { get; set; }
+        public DbSet<Customers> Customers { get; set; }
         //  public DbSet<BillingPlans> BillingPlans { get; set; }
         // Optional: Override OnModelCreating to configure entity mappings.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

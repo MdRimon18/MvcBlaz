@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Settings
 {
-    public class Customers
+    public class Customers:BaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long CustomerId { get; set; }
-        public Guid? CustomerKey { get; set; }
         public long? BranchId { get; set; }
         [Required(ErrorMessage = "Customer Name is Required")]
         [StringLength(100, ErrorMessage = "Customer Name cannot exceed 100 characters")]
@@ -18,28 +19,32 @@ namespace Domain.Entity.Settings
         [StringLength(100, ErrorMessage = "Mobile Number cannot exceed 100 characters")]
         public string MobileNo { get; set; }
 
-       // [Required(ErrorMessage = "Email is required")]
-       //[EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        // [Required(ErrorMessage = "Email is required")]
+        //[EmailAddress(ErrorMessage = "Invalid email address")]
+        [StringLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
+         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Country is Required")]
         public long? CountryId { get; set; }
+        [StringLength(100)]
+        public string? CountryCode { get; set; }
+        [StringLength(100)]
         public string StateName { get; set; }
+        [StringLength(250)]
         public string CustAddrssOne { get; set; }
+        [StringLength(250)]
         public string CustAddrssTwo { get; set; }
+        [StringLength(100)]
         public string Occupation { get; set; }
+        [StringLength(100)]
         public string OfficeName { get; set; }
+        [StringLength(180)]
         public string CustImgLink { get; set; }
-        public DateTime? EntryDateTime { get; set; }
-        public long? EntryBy { get; set; }
-        public DateTime? LastModifyDate { get; set; }
-        public long? LastModifyBy { get; set; }
-        public DateTime? DeletedDate { get; set; }
-        public long? DeletedBy { get; set; }
-        public string Status { get; set; }
+     
 
         [NotMapped]
         public int total_row { get; set; } = 0;
+        [NotMapped]
         public string? CountryName { get; set; }
         
     }

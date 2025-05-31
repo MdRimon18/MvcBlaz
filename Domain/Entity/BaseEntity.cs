@@ -17,8 +17,7 @@ namespace Domain.Entity
         public long? DeletedBy { get; set; }
         public string? Status { get; set; }
 
-
-
+       
     }
 
 }

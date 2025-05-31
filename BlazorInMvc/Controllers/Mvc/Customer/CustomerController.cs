@@ -145,7 +145,7 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(Customers customer, IFormFile CustImgLink)
+        public async Task<IActionResult> Create(Customers customer, IFormFile CustImgLink)
         {
             if (ModelState.IsValid)
             {
@@ -179,7 +179,7 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
 
             ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
             ViewBag.SubmitButtonText = customer.CustomerId == 0 ? "Create" : "Update";
-            return View("Edit", customer);
+            return View("Create", customer);
         }
 
         //[HttpGet]

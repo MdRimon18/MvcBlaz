@@ -64,7 +64,7 @@ namespace Domain.Services.Inventory
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@SupplierId", suppliers.SupplierId);
-                parameters.Add("@SupplierKey", suppliers.SupplierKey);
+                parameters.Add("@SupplierKey", suppliers.key);
                 parameters.Add("@BranchId", suppliers.BranchId);
                 parameters.Add("@SupplrName", suppliers.SupplrName);
                 parameters.Add("@MobileNo", suppliers.MobileNo);
