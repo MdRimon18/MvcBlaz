@@ -15,6 +15,12 @@ const pageInitializers = {
         () => { window.loadInvoices();},
         () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
     ],
+    "/Customer/Create": [
+        () => {
+            if (window.initCustomerForm) window.initCustomerForm();
+            
+        }
+    ],
     "/InvoicType/index": (isAjax) => {
         if (isAjax && window.loadTable) window.loadTable();
     } 

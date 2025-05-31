@@ -29,17 +29,17 @@ namespace Domain.Entity.Settings
         [StringLength(100)]
         public string? CountryCode { get; set; }
         [StringLength(100)]
-        public string StateName { get; set; }
+        public string? StateName { get; set; }
         [StringLength(250)]
-        public string CustAddrssOne { get; set; }
+        public string? CustAddrssOne { get; set; }
         [StringLength(250)]
-        public string CustAddrssTwo { get; set; }
+        public string? CustAddrssTwo { get; set; }
         [StringLength(100)]
-        public string Occupation { get; set; }
+        public string? Occupation { get; set; }
         [StringLength(100)]
-        public string OfficeName { get; set; }
+        public string? OfficeName { get; set; }
         [StringLength(180)]
-        public string CustImgLink { get; set; }
+        public string? CustImgLink { get; set; }
      
 
         [NotMapped]

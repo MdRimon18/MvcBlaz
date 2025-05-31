@@ -129,19 +129,15 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
         public async Task<IActionResult> Create(Guid? key)
         {
             var model = new Customers();
-            ViewBag.SubmitButtonText = key.HasValue ? "Update" : "Create";
-            ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
+            //ViewBag.SubmitButtonText = key.HasValue ? "Update" : "Create";
+            //ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
 
-            if (key.HasValue)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                model = await _customerService.GetByKey(key.ToString());
-                if (model == null)
-                {
-                    return RedirectToAction("Index");
-                }
+                return PartialView("Create", model); // Return partial view for AJAX requests
             }
 
-            return View(model);
+            return View("Create", model);
         }
 
         [HttpPost]

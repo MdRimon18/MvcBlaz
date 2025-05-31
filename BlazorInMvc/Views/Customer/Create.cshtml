@@ -15,11 +15,11 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="CustomerName" class="form-label fw-semibold">Enter Name<span class="error-star">*</span></label>
-                            <input id="CustomerName" name="CustomerName" class="form-control form-control-sm form-rounded" placeholder="Enter Name" required>
+                            <input id="CustomerName" name="CustomerName" class="form-control form-control-sm form-rounded" placeholder="Enter Name" >
                         </div>
                         <div class="mb-3">
                             <label for="MobileNo" class="form-label fw-semibold">Mobile Number<span class="error-star">*</span></label>
-                            <input id="MobileNo" name="MobileNo"   class="form-control form-control-sm form-rounded" placeholder="Enter Mobile Number" required >
+                            <input id="MobileNo" name="MobileNo"   class="form-control form-control-sm form-rounded" placeholder="Enter Mobile Number"  >
   
                         </div>
                         <div class="mb-3">
@@ -28,7 +28,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="CountryId" class="form-label fw-semibold">Select Country<span class="error-star">*</span></label>
-                            <select id="CountryId" name="CountryId" class="form-select form-control-sm form-rounded" required>
+                            <select id="CountryId" name="CountryId" class="form-select form-control-sm form-rounded" >
                                 <option value="">Select Country</option>
                             </select>
                         </div>
@@ -69,89 +69,132 @@
                 </div>
                 <input id="CustomerId" name="CustomerId" type="hidden" value="0">
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
+                <button type="button" class="btn btn-primary btn-sm me-2" id="saveBtn">Save</button>
                     <button type="reset" class="btn btn-secondary btn-sm" id="resetBtn">Refresh</button>
                 </div>
             </form>
         </div>
     </div>
-
+  
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        window.initCustomerForm = async function () {
+            
+            const saveBtn = document.getElementById('saveBtn');
             const form = document.getElementById('customerForm');
             const fileInput = document.getElementById('fileInput');
             const imagePreview = document.getElementById('imagePreview');
             const customerIdInput = document.getElementById('CustomerId');
 
-            // === Image Preview ===
-            fileInput.addEventListener('change', function () {
-                const file = fileInput.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // === Form Submit ===
-            form.addEventListener('submit', async function (e) {
-                e.preventDefault();
-
-                // === Client-side Validation ===
-                if (!form.checkValidity()) {
-                    form.classList.add('was-validated');
-                    return;
-                }
-
-                const formData = new FormData(form);
-                const customerId = parseInt(customerIdInput.value);
-
-                try {
-                    const response = await fetch('/api/Customer', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        if (customerId === 0) {
-                            const result = await response.json();
-                            alert('Customer created successfully with ID: ' + result.customerId);
-                            customerIdInput.value = result.customerId;
-                        } else {
-                            alert('Customer updated successfully');
-                        }
-                    } else {
-                        const error = await response.text();
-                        alert('Error: ' + error);
+            if (fileInput && imagePreview) {
+                fileInput.addEventListener('change', function () {
+                    const file = fileInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            imagePreview.src = e.target.result;
+                            imagePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
                     }
-                } catch (error) {
-                    alert('Request failed: ' + error.message);
-                }
-            });
+                });
+            }
 
-            // === Reset Button ===
-            document.getElementById('resetBtn').addEventListener('click', function () {
-                imagePreview.style.display = 'none';
-                imagePreview.src = '';
-                customerIdInput.value = 0;
-            });
+            if (saveBtn) {
+                saveBtn.addEventListener('click', async function () {
+                    $(".form-control").removeClass("is-invalid");
+                    $(".invalid-feedback").remove();
 
-            // === Optional: Populate dropdown (e.g. Country list) ===
-            loadCountries();
+                    const customerId = parseInt($("#CustomerId").val()) || 0;
+                    const customer = {
+                        CustomerId: customerId,
+                        CustomerName: $("#CustomerName").val().trim(),
+                        MobileNo: $("#MobileNo").val().trim(),
+                        Email: $("#Email").val().trim(),
+                        CountryId: $("#CountryId").val(),
+                        StateName: $("#StateName").val().trim(),
+                        Occupation: $("#Occupation").val().trim(),
+                        OfficeName: $("#OfficeName").val().trim(),
+                        CustAddrssOne: $("#CustAddrssOne").val().trim(),
+                        CustAddrssTwo: $("#CustAddrssTwo").val().trim(),
+                        CustImgLink: $("#ExistingCustImgLink").val()
+                    };
+
+                    let isValid = true;
+
+                    if (!customer.CustomerName) {
+                        isValid = false;
+                        $("#CustomerName").addClass("is-invalid").after('<div class="invalid-feedback">Name is required.</div>');
+                    }
+                    if (!customer.MobileNo) {
+                        isValid = false;
+                        $("#MobileNo").addClass("is-invalid").after('<div class="invalid-feedback">Mobile number is required.</div>');
+                    }
+                    if (!customer.CountryId) {
+                        isValid = false;
+                        $("#CountryId").addClass("is-invalid").after('<div class="invalid-feedback">Please select a country.</div>');
+                    }
+                    if (customer.Email && !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(customer.Email)) {
+                        isValid = false;
+                        $("#Email").addClass("is-invalid").after('<div class="invalid-feedback">Invalid email format.</div>');
+                    }
+                    if (!isValid) return;
+
+                    const formData = new FormData();
+                    for (const key in customer) {
+                        formData.append(key, customer[key]);
+                    }
+                    if (fileInput && fileInput.files.length > 0) {
+                        formData.append("imageFile", fileInput.files[0]);
+                    }
+
+                    try {
+                        const response = await fetch('/api/Customer/SaveCustomer', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            if (response.status === 201) {
+                                const result = await response.json();
+                                alert('Customer created successfully with ID: ' + result.customerId);
+                                customerIdInput.value = result.customerId;
+                            } else if (response.status === 204) {
+                                alert('Customer updated successfully');
+                            }
+                        } else {
+                            const error = await response.text();
+                            alert('Server error: ' + error);
+                        }
+                    } catch (error) {
+                        alert('Request failed: ' + error.message);
+                    }
+                });
+            }
+
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function () {
+                    if (imagePreview) {
+                        imagePreview.style.display = 'none';
+                        imagePreview.src = '';
+                    }
+                    if (customerIdInput) {
+                        customerIdInput.value = 0;
+                    }
+                });
+            }
 
             async function loadCountries() {
                 const countrySelect = document.getElementById('CountryId');
+                if (!countrySelect) return;
                 try {
-                    const res = await fetch('/api/Country/GetAll');
+                    const res = await fetch('/api/Country/GetAll?page=1&pageSize=100');
                     if (res.ok) {
-                        const countries = await res.json();
-                        countries.forEach(country => {
+                        const response = await res.json();
+                        response.countries.forEach(country => {
                             const option = document.createElement('option');
-                            option.value = country.id;
-                            option.textContent = country.name;
+                            option.value = country.countryId;
+                            option.textContent = country.countryName;
                             countrySelect.appendChild(option);
                         });
                     }
@@ -159,7 +202,11 @@
                     console.error('Failed to load countries:', err);
                 }
             }
-        });
+
+            loadCountries();
+        };
     </script>
+ 
+
 
  
