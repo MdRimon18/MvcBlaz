@@ -5,16 +5,30 @@ namespace Domain.Entity.Settings
 {
     public class User:BaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }
-        public Guid? UserKey { get; set; }
+
         [Required(ErrorMessage = "User Name is Required")]
-        public string UserName { get; set; }
+        public string Name { get; set; }
         [Required(ErrorMessage = "User Phone No is Required")]
-        public string UserPhoneNo { get; set; }
+        public string PhoneNo { get; set; }
         [Required(ErrorMessage = "User Password is Required")]
-        public string UserPassword { get; set; }
-        public string? UserDesignation { get; set; }
-        public string? UserImgLink { get; set; }
+        [StringLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+        [Required(ErrorMessage = "Role Name is Required")]
+        public long RoleId { get; set; }
+        public long? CompanyId { get; set; }
+        public long? BranchId { get; set; }
+        public long? CountryId { get; set; }
+        [StringLength(100)]
+        public string? CountryCode { get; set; }
+        [StringLength(100)]
+        public int? MembershipId { get; set; }
+        public bool IsAbleToLogin { get; set; } = true;
+        public string? ImgLink { get; set; }
+     
 
         [NotMapped]
         public int total_row { get; set; }

@@ -5,7 +5,7 @@ const pageInitializers = {
     "/Invoice/Create": () => {
         if (window.initializeInvoiceSearch) window.initializeInvoiceSearch();
         if (window.LoadInvoiceItems) window.LoadInvoiceItems();
-        if (window.initCustomerForm) window.initCustomerForm();
+        if (window.initUserForm) window.initUserForm();
     },
     "/Customer/Index": [
         () => { if (window.loadCustomers) window.loadCustomers(); },
@@ -17,7 +17,7 @@ const pageInitializers = {
     ],
     "/Customer/Create": [
         () => {
-            if (window.initCustomerForm) window.initCustomerForm();
+            if (window.initUserForm) window.initUserForm();
             
         }
     ],

@@ -19,11 +19,14 @@ namespace Domain.DbContex
         }
 
         // Define your DbSet properties for each entity you want to include in the database.
-        public DbSet<UserAddressBook> UserAddressBooks { get; set; }
+       
         public DbSet<UserPhoneNumbers> UserPhoneNumbers { get; set; }
         public DbSet<InvoiceItemSerials> InvoiceItemSerials { get; set; }
         public DbSet<Suppliers> Suppliers { get; set; }
         public DbSet<Customers> Customers { get; set; }
+        public DbSet<User> Users { get; set; }// User can be Customer or Supplier or Admin or Employee or driver or any other user type
+        public DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<UserAddressBook> UserAddressBooks { get; set; }
         //  public DbSet<BillingPlans> BillingPlans { get; set; }
         // Optional: Override OnModelCreating to configure entity mappings.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

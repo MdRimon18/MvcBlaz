@@ -15,9 +15,9 @@ namespace Domain.Entity
         public long? LastModifyBy { get; set; }
         public DateTime? DeletedDate { get; set; }
         public long? DeletedBy { get; set; }
-        public string? Status { get; set; }
+        public string? Status { get; set; } // e.g., "Active", "Inactive", "Deleted"
 
-       
+
     }
 
 }

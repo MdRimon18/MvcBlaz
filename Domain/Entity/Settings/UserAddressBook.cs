@@ -39,8 +39,6 @@ namespace Domain.Entity.Settings
         [Required(ErrorMessage = "Country is required.")]
         [StringLength(100, ErrorMessage = "Country cannot exceed 100 characters.")]
         public string Country { get; set; } // Country
-
-        [StringLength(100, ErrorMessage = "Phone Number cannot exceed 100 characters.")]
         public string? PhoneNumber { get; set; }
         public bool IsDefault { get; set; } = false; // Indicates if this is the default address
 

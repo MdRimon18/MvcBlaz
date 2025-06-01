@@ -11,113 +11,101 @@ namespace Domain.Services.Inventory
     {
         private readonly IDbConnection _db;
 
-
         public UserService(DbConnectionDapper db)
         {
             _db = db.GetDbConnection();
-
         }
-        public async Task<IEnumerable<User>> Get(long? UserId, string? UserKey, string? UserName, 
-            string? UserPhoneNo, string? UserPassword, string UserDesignation,string UserImgLink,
-            int? PageNumber, int? PageSize)
+
+        public async Task<IEnumerable<User>> Get(long? userId = null, string? email = null, string? name = null,
+            string? phoneNo = null, string? password = null, long? roleId = null, string? imgLink = null,
+            int? pageNumber = null, int? pageSize = null)
         {
             try
             {
                 var parameters = new DynamicParameters();
 
-                parameters.Add("@UserId", UserId);
-                parameters.Add("@UserKey", UserKey);
-                parameters.Add("@UserName", UserName);
-                parameters.Add("@UserPhoneNo", UserPhoneNo);
-                parameters.Add("@UserPassword", UserPassword);
-                parameters.Add("@UserDesignation", UserDesignation);
-                parameters.Add("@UserImgLink", UserImgLink);
-                parameters.Add("@PageNumber", PageNumber);
-                parameters.Add("@PageSize", PageSize);
+                parameters.Add("@UserId", userId);
+                parameters.Add("@Email", email);
+                parameters.Add("@Name", name);
+                parameters.Add("@PhoneNo", phoneNo);
+                parameters.Add("@Password", password);
+                parameters.Add("@RoleId", roleId);
+                parameters.Add("@ImgLink", imgLink);
+                parameters.Add("@PageNumber", pageNumber);
+                parameters.Add("@PageSize", pageSize);
 
                 return await _db.QueryAsync<User>("Users_Get_SP", parameters, commandType: CommandType.StoredProcedure);
-
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error in Get: {ex.Message}");
                 return Enumerable.Empty<User>();
             }
         }
 
-        public async Task<User> GetById(long UserId)
-
+        public async Task<User?> GetById(long userId)
         {
-            var user = await (Get(UserId, null,null,null, null, null, null, 1, 1));
-            return user.FirstOrDefault();
+            var users = await Get(userId: userId, pageNumber: 1, pageSize: 1);
+            return users.FirstOrDefault();
         }
 
-        public async Task<User> GetByKey(string UserKey)
-
+        public async Task<User?> GetByEmail(string email)
         {
-            var user = await (Get(null, UserKey, null,null,null,null, null, 1, 1));
-            return user.FirstOrDefault();
+            var users = await Get(email: email, pageNumber: 1, pageSize: 1);
+            return users.FirstOrDefault();
         }
-
 
         public async Task<long> SaveOrUpdate(User user)
         {
             try
             {
-
                 if (user.UserId > 0)
-                {
                     EntityHelper.SetUpdateAuditFields(user);
-                }
                 else
-                {
                     EntityHelper.SetCreateAuditFields(user);
-                }
+
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@UserId", user.UserId);
-                parameters.Add("@UserKey", user.UserKey);
-                parameters.Add("@UserName", user.UserName);
-                parameters.Add("@UserPhoneNo", user.UserPhoneNo);
-                parameters.Add("@UserPassword", user.UserPassword);
-                parameters.Add("@UserDesignation", user.UserDesignation);
-                parameters.Add("@UserImgLink", user.UserImgLink);
-                //parameters.Add("@EntryDateTime", user.EntryDateTime);
-                //parameters.Add("@EntryBy", user.EntryBy);
-                //parameters.Add("@LastModifyDate", user.LastModifyDate);
-                //parameters.Add("@LastModifyBy", user.LastModifyBy);
-                //parameters.Add("@DeletedDate", user.DeletedDate);
-                //parameters.Add("@DeletedBy", user.DeletedBy);
-                //parameters.Add("@Status", user.Status);
+                parameters.Add("@Name", user.Name);
+                parameters.Add("@PhoneNo", user.PhoneNo);
+                parameters.Add("@Email", user.Email);
+                parameters.Add("@Password", user.Password);
+                parameters.Add("@RoleId", user.RoleId);
+                parameters.Add("@CompanyId", user.CompanyId);
+                parameters.Add("@BranchId", user.BranchId);
+                parameters.Add("@CountryId", user.CountryId);
+                parameters.Add("@CountryCode", user.CountryCode);
+                parameters.Add("@MembershipId", user.MembershipId);
+                parameters.Add("@IsAbleToLogin", user.IsAbleToLogin);
+                parameters.Add("@ImgLink", user.ImgLink);
 
                 ParameterHelper.AddAuditParameters(user, parameters);
 
                 parameters.Add("@SuccessOrFailId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
                 await _db.ExecuteAsync("User_InsertOrUpdate_SP", parameters, commandType: CommandType.StoredProcedure);
 
-                return (long)parameters.Get<int>("@SuccessOrFailId");
+                return parameters.Get<int>("@SuccessOrFailId");
             }
             catch (Exception ex)
             {
-                // Handle the exception (e.g., log the error)
-                Console.WriteLine($"An error occurred while adding order: {ex.Message}");
+                Console.WriteLine($"An error occurred while saving user: {ex.Message}");
                 return 0;
             }
         }
 
-        public async Task<bool> Delete(long UserId)
+        public async Task<bool> Delete(long userId)
         {
-            var user = await (Get(UserId, null, null,null,null, null, null, 1, 1));
-            var deleteObj = user.FirstOrDefault();
-            long DeletedSatatus = 0;
-            if (deleteObj != null)
+            var user = await GetById(userId);
+            if (user != null)
             {
-                deleteObj.DeletedDate = DateTime.UtcNow;
-                deleteObj.Status = "Deleted";
-                DeletedSatatus = await SaveOrUpdate(deleteObj);
+                user.DeletedDate = DateTime.UtcNow;
+                user.Status = "Deleted";
+                var result = await SaveOrUpdate(user);
+                return result > 0;
             }
-
-            return DeletedSatatus > 0;
+            return false;
         }
     }
 }

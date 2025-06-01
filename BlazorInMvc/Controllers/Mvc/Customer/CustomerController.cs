@@ -128,10 +128,10 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
         [HttpGet]
         public async Task<IActionResult> Create(Guid? key)
         {
-            var model = new Customers();
+            var model = new User();
             //ViewBag.SubmitButtonText = key.HasValue ? "Update" : "Create";
             //ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
-
+            model.RoleId = 10003; // Assuming 10003 is the role ID for customers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return PartialView("Create", model); // Return partial view for AJAX requests
@@ -140,43 +140,43 @@ namespace BlazorInMvc.Controllers.Mvc.Customer
             return View("Create", model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(Customers customer, IFormFile CustImgLink)
-        {
-            if (ModelState.IsValid)
-            {
-                if (CustImgLink != null)
-                {
-                    // Handle file upload
-                    var filePath = Path.Combine("wwwroot/assets/CustomerImage", CustImgLink.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await CustImgLink.CopyToAsync(stream);
-                    }
-                    customer.CustImgLink = $"/assets/CustomerImage/{CustImgLink.FileName}";
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(Customers customer, IFormFile CustImgLink)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (CustImgLink != null)
+        //        {
+        //            // Handle file upload
+        //            var filePath = Path.Combine("wwwroot/assets/CustomerImage", CustImgLink.FileName);
+        //            using (var stream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await CustImgLink.CopyToAsync(stream);
+        //            }
+        //            customer.CustImgLink = $"/assets/CustomerImage/{CustImgLink.FileName}";
+        //        }
 
-                if (customer.CustomerId == 0)
-                {
-                    customer.EntryDateTime = DateTime.Now;
-                    customer.EntryBy = 1; // Replace with actual user ID
-                    customer.BranchId = 1; // Replace with actual branch ID
-                    await _customerService.SaveOrUpdate(customer);
-                }
-                else
-                {
-                    customer.LastModifyDate = DateTime.Now;
-                    customer.LastModifyBy = 1; // Replace with actual user ID
-                    await _customerService.SaveOrUpdate(customer);
-                }
+        //        if (customer.CustomerId == 0)
+        //        {
+        //            customer.EntryDateTime = DateTime.Now;
+        //            customer.EntryBy = 1; // Replace with actual user ID
+        //            customer.BranchId = 1; // Replace with actual branch ID
+        //            await _customerService.SaveOrUpdate(customer);
+        //        }
+        //        else
+        //        {
+        //            customer.LastModifyDate = DateTime.Now;
+        //            customer.LastModifyBy = 1; // Replace with actual user ID
+        //            await _customerService.SaveOrUpdate(customer);
+        //        }
 
-                return RedirectToAction("Index");
-            }
+        //        return RedirectToAction("Index");
+        //    }
 
-            ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
-            ViewBag.SubmitButtonText = customer.CustomerId == 0 ? "Create" : "Update";
-            return View("Create", customer);
-        }
+        //    ViewBag.CountryList = (await _countryServiceV2.Get(null, null, null, null, null, null, null, null, null, null, 1, 1000)).ToList();
+        //    ViewBag.SubmitButtonText = customer.CustomerId == 0 ? "Create" : "Update";
+        //    return View("Create", customer);
+        //}
 
         //[HttpGet]
         //public async Task<IActionResult> Index()
