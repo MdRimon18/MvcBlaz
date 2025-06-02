@@ -704,7 +704,7 @@
          // Fetch products
          async function fetchAllCustomer() {
              try {
-                  const response = await fetch(`/api/Customer/GetAll?page=1&pageSize=500`);
+                     const response = await fetch(`/api/User/GetAll?roleId=10003&page=1&pageSize=1000`);
                  const data = await response.json();
                  allCustomers = data.items;
                  console.log('all customer',allCustomers)
@@ -855,9 +855,9 @@
             query = query.toLowerCase().trim();
             console.log('[DEBUG] Filtering with query:', query);
             const filteredCustomers = allCustomers.filter(customer =>
-                customer.mobileNo?.toLowerCase().includes(query) 
-                
-            );
+                 customer.phoneNo?.toLowerCase().includes(query)
+
+             );
             console.log('filteredCustomers', filteredCustomers);
 
             // Populate the dropdown with filtered customers (inlined from populateDropdownCustomer)
@@ -871,11 +871,11 @@
                     item.innerHTML = `
                         <div class="d-flex align-items-center ">
                             <div class="avatar avatar-l me-2">
-                                <img class="rounded-circle" src="" alt="" />
+                                  <img class="rounded-circle" src="${window.location.origin + customer.imgLink}" alt="" />
                             </div>
                             <div class="flex-1">
-                                <h6 class="mb-0 title">${customer.mobileNo}</h6>
-                                <p class="fs-11 mb-0 d-flex">${customer.email || 'N/A'}</p>
+                                 <h6 class="mb-0 title">${customer.phoneNo}</h6>
+                                 <p class="fs-11 mb-0 d-flex">${customer.email || 'N/A'}</p>
                             </div>
                         </div>
                     `;
@@ -948,7 +948,7 @@
              query = query.toLowerCase().trim();
              console.log('[DEBUG] Filtering with query:', query);
              const filteredCustomers = allCustomers.filter(customer =>
-                 customer.email?.toLowerCase().includes(query)
+                  customer.email?.toLowerCase().includes(query)
              );
              
              // Populate the dropdown with filtered customers (inlined from populateDropdownCustomer)
@@ -962,10 +962,10 @@
                      item.innerHTML = `
                          <div class="d-flex align-items-center ">
                              <div class="avatar avatar-l me-2">
-                                 <img class="rounded-circle" src="" alt="" />
+                                  <img class="rounded-circle" src="${window.location.origin + customer.imgLink}" alt="" />
                              </div>
                              <div class="flex-1">
-                                 <h6 class="mb-0 title">${customer.mobileNo}</h6>
+                                  <h6 class="mb-0 title">${customer.phoneNo}</h6>
                                  <p class="fs-11 mb-0 d-flex">${customer.email || 'N/A'}</p>
                              </div>
                          </div>

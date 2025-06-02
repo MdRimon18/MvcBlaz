@@ -17,7 +17,7 @@ namespace Domain.Services.Inventory
         }
 
         public async Task<IEnumerable<User>> Get(long? userId = null, string? email = null, string? name = null,
-            string? phoneNo = null, string? password = null, long? roleId = null, string? imgLink = null,
+            string? phoneNo = null, string? password = null, long? roleId = null, 
             int? pageNumber = null, int? pageSize = null)
         {
             try
@@ -30,7 +30,7 @@ namespace Domain.Services.Inventory
                 parameters.Add("@PhoneNo", phoneNo);
                 parameters.Add("@Password", password);
                 parameters.Add("@RoleId", roleId);
-                parameters.Add("@ImgLink", imgLink);
+               
                 parameters.Add("@PageNumber", pageNumber);
                 parameters.Add("@PageSize", pageSize);
 

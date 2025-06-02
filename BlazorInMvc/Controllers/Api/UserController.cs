@@ -24,7 +24,7 @@ namespace BlazorInMvc.Controllers.Api
         }
         [HttpGet]
         [Route("GetAll")]
-        public async Task<IActionResult> GetAllUsers(string? search, int page, int pageSize)
+        public async Task<IActionResult> GetAllUsers(string? search,long roleId, int page, int pageSize)
         {
             // Sending null for all filters
             var users = (await _userService.Get(
@@ -33,8 +33,7 @@ namespace BlazorInMvc.Controllers.Api
                 name: search,
                 phoneNo: null,
                 password: null,
-                roleId: null,
-                imgLink: null,
+                roleId: roleId,
                 pageNumber: page,
                 pageSize: pageSize
             )).ToList();
@@ -84,7 +83,7 @@ namespace BlazorInMvc.Controllers.Api
                 {
                     await imageFile.CopyToAsync(stream);
                 }
-                user.ImgLink = "/images/" + fileName;
+                user.ImgLink = "/Users/images/" + fileName;
             }
 
             if (user.UserId > 0)
