@@ -219,7 +219,7 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link"  onclick="loadPage('/Customer/Index)" >
+                                        <a class="nav-link"  onclick="loadPage('/User/Index)" >
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Daily Sale</span>
                                             </div>
@@ -514,7 +514,7 @@
                                 </a>
                                 <ul class="nav collapse" id="i-Customer">
                                     <li class="nav-item">
-                                        <a class="nav-link spa-link" onclick="loadPage('/Customer/Index')">
+                                        <a class="nav-link spa-link" onclick="loadPage('/User/Index?roleId=@SelectedUserRole.CustomerRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Customer Info</span>
                                             </div>
@@ -530,7 +530,7 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link spa-link" onclick="loadPage('/Customer/Create')">
+                                        <a class="nav-link spa-link" onclick="loadPage('/User/Create?roleId=@SelectedUserRole.CustomerRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1"> New Customer</span>
                                             </div>
@@ -565,7 +565,7 @@
                                 </a>
                                 <ul class="nav collapse" id="i-supplier">
                                     <li class="nav-item">
-                                        <a class="nav-link spa-link"   onclick="loadPage('Supplier/Index')" >
+                                        <a class="nav-link spa-link" onclick="loadPage('/User/Index?roleId=@SelectedUserRole.SupplierRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Supplier Info</span>
                                             </div>
@@ -573,7 +573,7 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/Supplier/Create">
+                                        <a class="nav-link spa-link" onclick="loadPage('/User/Create?roleId=@SelectedUserRole.SupplierRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">New Supplier</span>
                                             </div>
@@ -598,7 +598,7 @@
                                 </a>
                                 <ul class="nav collapse" id="i-User-management">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="UserInfo">
+                                        <a class="nav-link spa-link" onclick="loadPage('/User/Index?roleId=@SelectedUserRole.EmployeeRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">User Info</span>
                                             </div>
@@ -606,7 +606,7 @@
                                         <!-- more inner pages-->
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="add_user">
+                                        <a class="nav-link spa-link"  onclick="loadPage('/User/Create?roleId=@SelectedUserRole.EmployeeRoleId')">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">New User</span>
                                             </div>

@@ -7,7 +7,7 @@ const pageInitializers = {
         if (window.LoadInvoiceItems) window.LoadInvoiceItems();
         if (window.initUserForm) window.initUserForm();
     },
-    "/Customer/Index": [
+    "/User/Index": [
         () => { if (window.loadCustomers) window.loadCustomers(); },
         () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
     ],
@@ -15,10 +15,16 @@ const pageInitializers = {
         () => { window.loadInvoices();},
         () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
     ],
-    "/Customer/Create": [
+    //"/Customer/Create": [
+    //    () => {
+    //        if (window.initUserForm) window.initUserForm();
+            
+    //    }
+    //],
+    "/User/Create": [
         () => {
             if (window.initUserForm) window.initUserForm();
-            
+
         }
     ],
     "/InvoicType/index": (isAjax) => {

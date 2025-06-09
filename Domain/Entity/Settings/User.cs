@@ -34,5 +34,9 @@ namespace Domain.Entity.Settings
         public int total_row { get; set; }
         [NotMapped]
         public bool RememberMe { get; set; } = false;
+        [NotMapped]
+        public string? RoleName { get; set; }
+        [NotMapped]
+        public string? PageName { get; set; }
     }
 }
