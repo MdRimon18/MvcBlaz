@@ -18,7 +18,7 @@ const pageInitializers = {
     //"/Customer/Create": [
     //    () => {
     //        if (window.initUserForm) window.initUserForm();
-            
+    
     //    }
     //],
     "/User/Create": [
@@ -27,6 +27,7 @@ const pageInitializers = {
 
         }
     ],
+    
     "/InvoicType/index": (isAjax) => {
         if (isAjax && window.loadTable) window.loadTable();
     } 

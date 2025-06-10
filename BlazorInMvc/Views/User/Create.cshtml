@@ -1,6 +1,17 @@
 ﻿
 @using Domain.Entity.Settings
 @model User
+<div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 9999;">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Single Reusable Toast -->
+        <div id="globalToast" class="toast align-items-center text-white d-none" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container mt-4">
     <div class="card mb-3">
@@ -139,36 +150,20 @@
                             <div class="col-8 col-sm-auto text-end ps-2">
                                  
                                 <div id="table-customers-replace-element">
-                                    <button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">New</span></button>
+                                    <a class="btn btn-falcon-default btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                                       aria-controls="offcanvasRight" onclick="resetUserAddressForm()">
+                                        <span class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>
+                                         New Address
+                                    </a>
                                     
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive scrollbar">
-                            <table class="table table-sm table-striped fs-10 mb-0 overflow-hidden">
-                                <thead class="bg-200">
-                                    <tr>
-                                        
-                                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="name" onclick="sortTable('customerName')">Name <i class="fas fa-sort"></i></th>
-                                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="email" onclick="sortTable('email')">Email <i class="fas fa-sort"></i></th>
-                                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="phone" onclick="sortTable('mobileNo')">Phone <i class="fas fa-sort"></i></th>
-                                        <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5 sortable-header" data-sort="address" style="min-width: 200px;" onclick="sortTable('custAddrssOne')">Billing Address <i class="fas fa-sort"></i></th>
-                                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="joined" onclick="sortTable('entryDateTime')">Joined <i class="fas fa-sort"></i></th>
-                                        <th class="align-middle no-sort"></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="list" id="table-customers-body">
-                                    <!-- Rows will be populated by JavaScript -->
-                                </tbody>
-                            </table>
-                            <div class="text-center d-none" id="customers-table-fallback">
-                                <p class="fw-bold fs-8 mt-3">No customers found</p>
-                            </div>
-                        </div>
+                       <div class="card-body p-0">
+                         <div class="row" id="address-container">
+                         </div>
                     </div>
-                 
                 </div>
                  
             </div>
@@ -332,6 +327,53 @@
         }
 
         loadCountries();
+
+          function LoadAddresses() {
+            $.ajax({
+                url: '/api/UserAddressBook/GetAllAddresses', // Adjust the API endpoint as needed
+                type: 'GET',
+                success: function (response) {
+                    // Ensure response is successful
+                    if (response.isSuccess) {
+                        // Clear any existing addresses in the target element by ID
+                        $('#address-container').empty();
+
+                        // Iterate through each address and create dynamic HTML
+                        response.response.forEach(function (address, index) {
+                            // Create the HTML for each address
+                            var addressHtml = `
+                                <div class="col-md-12 mb-3 mb-md-0">
+                                    <div class="form-check mb-0 custom-radio radio-select">
+                                        <input class="form-check-input" id="address-${index + 1}" type="radio" name="clientName" ${index === 0 ? 'checked="checked"' : ''} />
+                                        <label class="form-check-label mb-0 fw-bold d-block" for="address-${index + 1}">
+                                            ${address.addressType} Address
+                                            <span class="radio-select-content">
+                                                <span>
+                                                    ${address.address},<br />
+                                                    ${address.city},<br />
+                                                    ${address.state} ${address.postalCode},<br />
+                                                    ${address.country} <br />
+                                                    <span class="d-block mb-0 pt-2">${address.phoneNumber}</span>
+                                                </span>
+                                            </span>
+                                        </label>
+                                        <a class="fs-10 edit-address-link" href="javascript:void(0);" data-id="${address.addressID}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Edit</a>
+                                    </div>
+                                </div>
+                            `;
+                            // Append the new address HTML to the element with ID 'address-container'
+                            $('#address-container').append(addressHtml);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching addresses: ", error);
+                }
+            });
+
+           }
+
+           LoadAddresses();
     };
 
     //   function goToTab(tabId) {
