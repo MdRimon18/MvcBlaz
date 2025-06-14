@@ -25,7 +25,7 @@ namespace BlazorInMvc.Controllers.Mvc
             var model = new User();
             model.RoleId = roleId;
             model.RoleName=RoleHelper.GetRoleName(roleId);
-             
+            model.CountryId = CompanyInfo.CountryId;
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return PartialView("Create", model); // Return partial view for AJAX requests

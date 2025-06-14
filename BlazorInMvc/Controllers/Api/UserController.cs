@@ -74,44 +74,60 @@ namespace BlazorInMvc.Controllers.Api
         [Route("SaveUser")]
         public async Task<ActionResult<User>> SaveUser([FromForm] User user, [FromForm] IFormFile? imageFile)
         {
-            if (imageFile != null)
+            try
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                var filePath = Path.Combine("wwwroot/Users/Images", fileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (imageFile != null)
                 {
-                    await imageFile.CopyToAsync(stream);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var filePath = Path.Combine("wwwroot/Users/Images", fileName);
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+                    user.ImgLink = "/Users/images/" + fileName;
                 }
-                user.ImgLink = "/Users/images/" + fileName;
-            }
-
-            if (user.UserId > 0)
-            {
-                user.LastModifyDate = DateTime.UtcNow;
-                user.LastModifyBy = UserInfo.UserId; // Replace this with your logic
-            }
-            else
-            {
-                user.EntryDateTime = DateTime.UtcNow;
-                user.EntryBy = UserInfo.UserId; // Replace this with your logic
-            }
-
-            var successId = await _userService.SaveOrUpdate(user);
-            if (successId > 0)
-            {
-                if (user.UserId == 0)
+                
+                if (user.UserId > 0)
                 {
-                    user.UserId = successId;
-                    return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
+                    user.LastModifyDate = DateTime.UtcNow;
+                    user.LastModifyBy = UserInfo.UserId; // Replace this with your logic
+                    user.CompanyId = CompanyInfo.CompanyId;
+                }
+                else
+                {
+                    user.CompanyId = CompanyInfo.CompanyId;
+                    user.EntryDateTime = DateTime.UtcNow;
+                    user.EntryBy = UserInfo.UserId; // Replace this with your logic
+
+                   
+                }
+              long successId = await _userService.SaveOrUpdate(user);
+                if (successId == -1) { return BadRequest("Phone No Exist."); }
+                if (successId == -2) { return BadRequest("Email Already Exist."); }
+                if (successId == -3) { return BadRequest("Phone or Email is Required."); }
+                //successId -1 phone exist
+                //successId -2 email exist,
+                //successId -3 Pone or Email Required
+                if (successId > 0)
+                {
+                  user.UserId = successId;
+                  return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
+                     
                 }
                 else
                 {
                     return NoContent();
                 }
-            }
 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to save user");
+            }
             return BadRequest("Failed to save user");
+
+
         }
     }
 }
