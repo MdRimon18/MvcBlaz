@@ -49,10 +49,15 @@
                 <tbody class="list" id="table-customers-body">
                     <!-- Rows will be populated by JavaScript -->
                 </tbody>
+                @* <tbody class="list" id="product-body">
+                </tbody> *@
             </table>
             <div class="text-center d-none" id="customers-table-fallback">
                 <p class="fw-bold fs-8 mt-3">No customers found</p>
             </div>
+
+         
+
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-center">
@@ -62,6 +67,150 @@
         <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next" onclick="changePage(currentPage + 1)"><span class="fas fa-chevron-right"></span></button>
     </div>
 </div>
+
+<script>
+    const products = [
+        {
+            productId: 1,
+            prodName: "Product A",
+            prodCtgName: "Electronics",
+            prodSubCtgName: "Phones",
+            unitName: "Piece",
+            buyingPrice: 500,
+            sellingPrice: 650,
+            discountPercentg: 10,
+            vatPercent: 5,
+            totalPrice: 585,
+            imageUrl: "path/to/image.jpg",
+            productVariantId: 101,
+            variants: [
+                { variantId: 1001, variantName: "Black", sku: "PA-BLK", stock: 10 },
+                { variantId: 1002, variantName: "White", sku: "PA-WHT", stock: 8 }
+            ]
+        },
+        {
+            productId: 2,
+            prodName: "Product B",
+            prodCtgName: "Electronics",
+            prodSubCtgName: "Laptops",
+            unitName: "Piece",
+            buyingPrice: 800,
+            sellingPrice: 1000,
+            discountPercentg: 5,
+            vatPercent: 5,
+            totalPrice: 950,
+            imageUrl: "path/to/image2.jpg",
+            productVariantId: 102,
+              variants: [
+                  { variantId: 1003, variantName: "Black", sku: "PA-BLK", stock: 10 },
+                  { variantId: 1004, variantName: "White", sku: "PA-WHT", stock: 8 }
+              ]
+        }
+    ];
+
+    function generateProductRowHtml(product, index) {
+        const hasVariants = product.variants && product.variants.length > 0;
+        const collapseId = `variantCollapse-${index}`;
+
+        return `
+        <tr data-index="${index}">
+           <td class="align-middle py-2" style="width: 28px;">
+                      <div class="form-check fs-9 mb-0 d-flex align-items-center">
+                               <input class="form-check-input" type="checkbox" id="customer-${product.productId}" data-bulk-select-row="data-bulk-select-row" />
+                       </div>
+          </td>
+            <td>
+                <div class="col-auto">
+                    <div class="avatar avatar-2xl">
+                        <img class="rounded-circle" src="${product.imageUrl}" alt="${product.prodName}" />
+                    </div>
+                </div>
+            </td>
+            <td>${product.prodCtgName}</td>
+            <td>${product.prodSubCtgName}</td>
+            <td>${product.prodName}</td>
+            <td>1</td>
+            <td>${product.unitName}</td>
+            <td>${product.sellingPrice}</td>
+            <td>${product.vatPercent}</td>
+            <td>${product.discountPercentg}</td>
+            <td>${product.totalPrice}</td>
+            <td class="treeview">
+                <div class="treeview-list-item">
+                    ${hasVariants ?
+                        `<a class="text-primary" data-bs-toggle="collapse" href="#${collapseId}" role="button" aria-expanded="false">
+                            <p class="treeview-text mb-0">Variant</p>
+                        </a>` :
+                        `<span class="text-muted small">No Variant</span>`}
+                </div>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-info" title="Details" onclick="showProductDetails(${JSON.stringify(product).replace(/'/g, "&apos;")})">
+                    <i class="fa fa-info-circle"></i>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="deleteDynamicRow(this)">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>
+
+        ${hasVariants ?
+            `<tr>
+                <td colspan="13" class="p-0">
+                    <div class="collapse" id="${collapseId}">
+                        <div class="table-responsive p-2">
+                            <table class="table table-bordered table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Variant Name</th>
+                                        <th>SKU</th>
+                                        <th>Stock</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${product.variants.map((v) => `
+                                        <tr>
+                                            <td>${v.variantName}</td>
+                                            <td>${v.sku}</td>
+                                            <td>${v.stock}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary" onclick="addSerial(${v.variantId})">
+                                                    Add Serial
+                                                </button>
+                                            </td>
+                                        </tr>`).join("")}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>` : ''
+        }
+        `;
+    }
+ 
+
+
+
+
+    //     window.renderProductList = async function () {
+    //     const tbody = document.getElementById("product-body");
+    //     products.forEach((prod, index) => {
+    //         tbody.insertAdjacentHTML("beforeend", generateProductRowHtml(prod, index));
+    //     });
+    // }
+
+        function addSerial(variantId) {
+        alert("Add Serial clicked for Variant ID/SKU: " + variantId);
+        // You can open a modal, send an AJAX call, etc.
+    }
+
+    // Call render function on page load
+  //  document.addEventListener("DOMContentLoaded", renderProductList);
+</script>
 
 <script>
 
@@ -76,10 +225,12 @@
         tbody.innerHTML = "";
 
         try {
-            const response = await fetch(`/api/Invoice/GetAll?page=${currentPage}&pageSize=${pageSize}`);
-            const data = await response.json();
+           // const response = await fetch(`/api/Invoice/GetAll?page=${currentPage}&pageSize=${pageSize}`);
+           const response = await fetch(`/api/GetProducts`);
+           const data = await response.json();
             console.log(data);
-            invoices = data.items;
+          //  invoices = data.product_list;
+             invoices =products;
             totalPages = data.totalPages;
             totalRecords = data.totalRecord;
              renderInvoices();
@@ -127,46 +278,50 @@
         });
 
         console.log(sortedInvoices)
-        sortedInvoices.forEach(item => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td class="align-middle py-2" style="width: 28px;">
-                    <div class="form-check fs-9 mb-0 d-flex align-items-center">
-                        <input class="form-check-input" type="checkbox" id="customer-${item.invoiceId}" data-bulk-select-row="data-bulk-select-row" />
-                    </div>
-                </td>
-                <td class="name align-middle white-space-nowrap py-2">
-                    <a href="../../app/e-commerce/customer-details.html">
-                        <div class="d-flex d-flex align-items-center">
-                            <div class="avatar avatar-xl me-2">
-                                <div class="avatar-name rounded-circle"><span>${item.invoiceNumber}</span></div>
-                            </div>
-
-                        </div>
-                    </a>
-                </td>
-                  <td class="email align-middle py-2"><a href="mailto:${item.customerName}">${item.customerName}</a></td>
-                   <td class="phone align-middle white-space-nowrap py-2"><a href="tel:${item.mobileNo}">${item.mobileNo}</a></td>
-                <td class="email align-middle py-2"><a href="mailto:${item.email}">${item.email}</a></td>
-
-                <td class="address align-middle white-space-nowrap ps-5 py-2">${item.invoiceTypeName}</td>
-                <td class="joined align-middle py-2">${item.totalQnty}</td>
-                 <td class="joined align-middle py-2">${item.totalPayable}</td>
-                  <td class="joined align-middle py-2">${item.recieveAmount}</td>
-                   <td class="joined align-middle py-2">${item.dueAmount}</td>
-                   <td class="align-middle white-space-nowrap py-2 text-end">
-        <button class="btn btn-sm btn-primary me-1" onclick="loadPage('/Invoice/Create?key=${item.invoiceKey}')">
-            <i class="fas fa-edit me-1"></i>
-        </button>
-        <button class="btn btn-sm btn-danger" onclick="handleDelete('${item.customerId}')">
-            <i class="fas fa-trash-alt me-1"></i>
-        </button>
-    </td>
-
-            `;
-            tbody.appendChild(row);
-            document.getElementById(`customer-${item.invoiceId}`).addEventListener("change", toggleBulkActions);
+        // const tbody = document.getElementById("product-body");
+        sortedInvoices.forEach((prod, index) => {
+            tbody.insertAdjacentHTML("beforeend", generateProductRowHtml(prod, index));
         });
+    //     sortedInvoices.forEach(item => {
+    //         const row = document.createElement("tr");
+    //         row.innerHTML = `
+    //             <td class="align-middle py-2" style="width: 28px;">
+    //                 <div class="form-check fs-9 mb-0 d-flex align-items-center">
+    //                     <input class="form-check-input" type="checkbox" id="customer-${item.invoiceId}" data-bulk-select-row="data-bulk-select-row" />
+    //                 </div>
+    //             </td>
+    //             <td class="name align-middle white-space-nowrap py-2">
+    //                 <a href="../../app/e-commerce/customer-details.html">
+    //                     <div class="d-flex d-flex align-items-center">
+    //                         <div class="avatar avatar-xl me-2">
+    //                             <div class="avatar-name rounded-circle"><span>${item.invoiceNumber}</span></div>
+    //                         </div>
+
+    //                     </div>
+    //                 </a>
+    //             </td>
+    //               <td class="email align-middle py-2"><a href="mailto:${item.customerName}">${item.customerName}</a></td>
+    //                <td class="phone align-middle white-space-nowrap py-2"><a href="tel:${item.mobileNo}">${item.mobileNo}</a></td>
+    //             <td class="email align-middle py-2"><a href="mailto:${item.email}">${item.email}</a></td>
+
+    //             <td class="address align-middle white-space-nowrap ps-5 py-2">${item.invoiceTypeName}</td>
+    //             <td class="joined align-middle py-2">${item.totalQnty}</td>
+    //              <td class="joined align-middle py-2">${item.totalPayable}</td>
+    //               <td class="joined align-middle py-2">${item.recieveAmount}</td>
+    //                <td class="joined align-middle py-2">${item.dueAmount}</td>
+    //                <td class="align-middle white-space-nowrap py-2 text-end">
+    //     <button class="btn btn-sm btn-primary me-1" onclick="loadPage('/Invoice/Create?key=${item.invoiceKey}')">
+    //         <i class="fas fa-edit me-1"></i>
+    //     </button>
+    //     <button class="btn btn-sm btn-danger" onclick="handleDelete('${item.customerId}')">
+    //         <i class="fas fa-trash-alt me-1"></i>
+    //     </button>
+    // </td>
+
+    //         `;
+    //         tbody.appendChild(row);
+    //         document.getElementById(`customer-${item.invoiceId}`).addEventListener("change", toggleBulkActions);
+    //     });
     }
 
     function toggleSelectAll() {
