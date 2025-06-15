@@ -25,6 +25,6 @@ namespace Domain.Entity.Settings
         public int total_row { get; set; }
        public string? ProdCtgName { get; set; }
         [NotMapped]
-        public List<ProductCategories> ProductCategory_list { get; set; }
+        public List<ProductCategories> ProductCategory_list { get; set; } = new List<ProductCategories>();
     }
 }

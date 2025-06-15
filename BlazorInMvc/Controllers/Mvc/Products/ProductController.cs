@@ -77,7 +77,17 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _productVariantService = productVariantService;
         }
 
+        public async Task<IActionResult> Products()
+        {
 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("Products"); // Return partial view for AJAX requests
+            }
+
+            return View("Products");
+
+        }
         public async Task<IActionResult> Index(bool isPartial = false)
         {
             var viewModel = new ProductViewModel();

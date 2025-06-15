@@ -15,6 +15,10 @@ const pageInitializers = {
         () => { window.loadInvoices();},
         () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
     ],
+    "/Product/Products": [
+        () => { window.loadInvoices(); },
+        () => { document.getElementById("checkbox-bulk-customers-select").addEventListener("change", toggleSelectAll); }
+    ],
     //"/Customer/Create": [
     //    () => {
     //        if (window.initUserForm) window.initUserForm();
