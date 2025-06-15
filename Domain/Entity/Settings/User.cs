@@ -38,5 +38,7 @@ namespace Domain.Entity.Settings
         public string? RoleName { get; set; }
         [NotMapped]
         public string? PageName { get; set; }
+        [NotMapped]
+        public string?Address { get; set; }
     }
 }

@@ -37,7 +37,7 @@ namespace BlazorInMvc.Controllers.Api
                 pageNumber: page,
                 pageSize: pageSize
             )).ToList();
-
+          //   var test =users.Where(w=>w.Address is not null).ToList();
             if (users.Count == 0)
             {
                 return Ok(new

@@ -8,7 +8,7 @@ namespace Domain.CommonServices
 {
     public static class UserInfo
     {
-        public static long UserId { get; set; } = 0;
+        public static long UserId { get; set; } = 1;
     }
     public static class CompanyInfo
     {
