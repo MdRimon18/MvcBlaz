@@ -30,21 +30,24 @@
                     <tr>
                         <th>
                             <div class="form-check fs-9 mb-0 d-flex align-items-center">
-                                <input class="form-check-input" id="checkbox-bulk-customers-select" type="checkbox" data-bulk-select='{"body":"table-customers-body","actions":"table-customers-actions","replacedElement":"table-customers-replace-element"}' />
+                                <input class="form-check-input" id="checkbox-bulk-customers-select" type="checkbox"
+                                       data-bulk-select='{"body":"table-customers-body","actions":"table-customers-actions","replacedElement":"table-customers-replace-element"}' />
                             </div>
                         </th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="invoiceNumber" onclick="sortTable('invoiceNumber')">Invoice No. <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="customerName" onclick="sortTable('customerName')">Customer Name <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="mobileNo" onclick="sortTable('mobileNo')">Phone <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap ps-5 sortable-header" data-sort="email" style="min-width: 200px;" onclick="sortTable('email')">Email <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="invoiceTypeName" onclick="sortTable('invoiceTypeName')">Invoice Type <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header">Total Qnty.</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header">Total Amount </th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header"> Received Amount</th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header">Due Amount</th>
-
-                        <th class="align-middle no-sort"></th>
+                        <th class="text-900 align-middle white-space-nowrap">Image</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodCtgName" onclick="sortTable('prodCtgName')">Category <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodSubCtgName" onclick="sortTable('prodSubCtgName')">Sub Category <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodName" onclick="sortTable('prodName')">Product Name <i class="fas fa-sort"></i></th>
+                        <th class="text-900 align-middle white-space-nowrap">Quantity</th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="unitName" onclick="sortTable('unitName')">Unit <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="sellingPrice" onclick="sortTable('sellingPrice')">Price <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="vatPercent" onclick="sortTable('vatPercent')">VAT % <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="discountPercentg" onclick="sortTable('discountPercentg')">Discount % <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="totalPrice" onclick="sortTable('totalPrice')">Total <i class="fas fa-sort"></i></th>
+                        <th class="text-900 align-middle white-space-nowrap">Variant</th>
+                        <th class="align-middle no-sort">Action</th>
                     </tr>
+
                 </thead>
                 <tbody class="list" id="table-customers-body">
                     <!-- Rows will be populated by JavaScript -->
@@ -69,47 +72,10 @@
 </div>
 
 <script>
-    const products = [
-        {
-            productId: 1,
-            prodName: "Product A",
-            prodCtgName: "Electronics",
-            prodSubCtgName: "Phones",
-            unitName: "Piece",
-            buyingPrice: 500,
-            sellingPrice: 650,
-            discountPercentg: 10,
-            vatPercent: 5,
-            totalPrice: 585,
-            imageUrl: "path/to/image.jpg",
-            productVariantId: 101,
-            variants: [
-                { variantId: 1001, variantName: "Black", sku: "PA-BLK", stock: 10 },
-                { variantId: 1002, variantName: "White", sku: "PA-WHT", stock: 8 }
-            ]
-        },
-        {
-            productId: 2,
-            prodName: "Product B",
-            prodCtgName: "Electronics",
-            prodSubCtgName: "Laptops",
-            unitName: "Piece",
-            buyingPrice: 800,
-            sellingPrice: 1000,
-            discountPercentg: 5,
-            vatPercent: 5,
-            totalPrice: 950,
-            imageUrl: "path/to/image2.jpg",
-            productVariantId: 102,
-              variants: [
-                  { variantId: 1003, variantName: "Black", sku: "PA-BLK", stock: 10 },
-                  { variantId: 1004, variantName: "White", sku: "PA-WHT", stock: 8 }
-              ]
-        }
-    ];
-
+  
     function generateProductRowHtml(product, index) {
-        const hasVariants = product.variants && product.variants.length > 0;
+                const hasVariants = product.productVariants && product.productVariants.length > 0;
+            console.log(hasVariants)
         const collapseId = `variantCollapse-${index}`;
 
         return `
@@ -144,11 +110,7 @@
                         `<span class="text-muted small">No Variant</span>`}
                 </div>
             </td>
-            <td>
-                <button class="btn btn-sm btn-info" title="Details" onclick="showProductDetails(${JSON.stringify(product).replace(/'/g, "&apos;")})">
-                    <i class="fa fa-info-circle"></i>
-                </button>
-            </td>
+           
             <td>
                 <button class="btn btn-sm btn-danger" onclick="deleteDynamicRow(this)">
                     <i class="far fa-trash-alt"></i>
@@ -171,13 +133,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${product.variants.map((v) => `
+                                        ${product.productVariants.map((v) => `
                                         <tr>
-                                            <td>${v.variantName}</td>
-                                            <td>${v.sku}</td>
-                                            <td>${v.stock}</td>
+                                              <td>${v.color}</td>
+                                              <td>${v.skuNumber}</td>
+                                              <td>${v.stockQuantity}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary" onclick="addSerial(${v.variantId})">
+                                                  <button class="btn btn-sm btn-primary" onclick="addSerial(${v.productVariantId})">
                                                     Add Serial
                                                 </button>
                                             </td>
@@ -225,12 +187,12 @@
         tbody.innerHTML = "";
 
         try {
-           // const response = await fetch(`/api/Invoice/GetAll?page=${currentPage}&pageSize=${pageSize}`);
-           const response = await fetch(`/api/GetProducts`);
+            const response = await fetch(`/api/v1/Product/GetProductsWithExpandingVariants?page=${currentPage}&pageSize=${pageSize}`);
+          // const response = await fetch(`/api/GetProducts`);
            const data = await response.json();
             console.log(data);
           //  invoices = data.product_list;
-             invoices =products;
+             invoices =data.product_list;
             totalPages = data.totalPages;
             totalRecords = data.totalRecord;
              renderInvoices();

@@ -22,14 +22,16 @@ namespace BlazorInMvc.Controllers.Api
         private readonly ProductMediaService _productMediaService;
         private readonly ProductSpecificationService _productSpecificationService;
         private readonly ProductService _productService;
+        private readonly ProductVariantService _productVariantService;
         public ProductController(ProductMediaService productMediaService,
             ProductSpecificationService productSpecificationService,
-            ProductService productService, ILogger<ProductController> logger)
+            ProductService productService, ILogger<ProductController> logger, ProductVariantService productVariantService)
         {
             _productMediaService = productMediaService;
             _productSpecificationService = productSpecificationService;
             _productService = productService;
             _logger = logger;
+            _productVariantService = productVariantService;
         }
         [HttpGet]
         [Route("api/GetProducts")]
@@ -71,7 +73,54 @@ namespace BlazorInMvc.Controllers.Api
                 });
             }
         }
-
+        [HttpGet]
+        [Route("api/v1/Product/GetProductsWithExpandingVariants")]
+        public async Task<IActionResult> GetProductByExpandingVariants(string? search, int page, int pageSize)
+        {
+            try
+            {
+                if (page <= 0) page = 1;
+                if (pageSize <= 0) pageSize = 10;
+                var product_list = (await _productService.Get(null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, page,
+                            pageSize)).ToList();
+                foreach (var item in product_list)
+                {
+                    item.ProductVariants = (await _productVariantService.Get(null, item.ProductId, null, null, null, null, null, 1, 500)).ToList();
+                }
+             
+                
+                //var productImage = await _productMediaService.GetById(productMediaId);
+                //if (productImage == null)
+                //{
+                //    return NotFound(new { isSuccess = false, message = "Product image not found" });
+                //}
+                return Ok(new
+                {
+                    product_list,
+                    code = HttpStatusCode.OK,
+                    message = "Success",
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving Products with");
+                var errorDetails = new
+                {
+                    Message = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                };
+                return StatusCode(500, new
+                {
+                    code = HttpStatusCode.InternalServerError,
+                    message = "An error occurred while processing your request.",
+                    details = errorDetails, // Optional: You can include this for debugging purposes.
+                    isSuccess = false
+                });
+            }
+        }
 
         [HttpGet]
         [Route("api/GetProductsWithVariants")]
