@@ -64,6 +64,13 @@
             }
         });
     }
+
+       const productId = @Model.Product.ProductId;
+
+        if (productId > 0) {
+            LoadEditModeData(productId);
+        }
+
 </script>
 
             <script>

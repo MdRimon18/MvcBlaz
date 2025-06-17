@@ -88,10 +88,15 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             return View("Products");
 
         }
-        public async Task<IActionResult> Index(bool isPartial = false)
+        public async Task<IActionResult> Index(bool isPartial = false, long id = 0)
         {
             var viewModel = new ProductViewModel();
             viewModel.Product = await LoadDDL(new Domain.Entity.Settings.Products());
+            if (id > 0)
+            {
+                viewModel.Product.ProductId = id;
+            }
+           
             viewModel.ProductList = await FetchModelList();
             
             if (isPartial)

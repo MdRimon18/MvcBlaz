@@ -112,6 +112,10 @@
             </td>
            
             <td>
+                             <a class="btn btn-sm btn-primary me-1" href="/Product/Index?id=${product.productId}">
+                   <i class="fas fa-edit me-1"></i>
+                </a>
+
                 <button class="btn btn-sm btn-danger" onclick="deleteDynamicRow(this)">
                     <i class="far fa-trash-alt"></i>
                 </button>
@@ -139,6 +143,7 @@
                                               <td>${v.skuNumber}</td>
                                               <td>${v.stockQuantity}</td>
                                             <td>
+     
                                                   <button class="btn btn-sm btn-primary" onclick="addSerial(${v.productVariantId})">
                                                     Add Serial
                                                 </button>
