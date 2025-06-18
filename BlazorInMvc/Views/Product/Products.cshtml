@@ -38,12 +38,14 @@
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodCtgName" onclick="sortTable('prodCtgName')">Category <i class="fas fa-sort"></i></th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodSubCtgName" onclick="sortTable('prodSubCtgName')">Sub Category <i class="fas fa-sort"></i></th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="prodName" onclick="sortTable('prodName')">Product Name <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="productCode" onclick="sortTable('prodName')">Product Code <i class="fas fa-sort"></i></th>
                         <th class="text-900 align-middle white-space-nowrap">Quantity</th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="unitName" onclick="sortTable('unitName')">Unit <i class="fas fa-sort"></i></th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="sellingPrice" onclick="sortTable('sellingPrice')">Price <i class="fas fa-sort"></i></th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="vatPercent" onclick="sortTable('vatPercent')">VAT % <i class="fas fa-sort"></i></th>
                         <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="discountPercentg" onclick="sortTable('discountPercentg')">Discount % <i class="fas fa-sort"></i></th>
-                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="totalPrice" onclick="sortTable('totalPrice')">Total <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="finalPrice" onclick="sortTable('finalPrice')">Final Price <i class="fas fa-sort"></i></th>
+                        <th class="text-900 sort pe-1 align-middle white-space-nowrap sortable-header" data-sort="previousPrice" onclick="sortTable('previousPrice')">previous Price <i class="fas fa-sort"></i></th>
                         <th class="text-900 align-middle white-space-nowrap">Variant</th>
                         <th class="align-middle no-sort">Action</th>
                     </tr>
@@ -95,12 +97,14 @@
             <td>${product.prodCtgName}</td>
             <td>${product.prodSubCtgName}</td>
             <td>${product.prodName}</td>
-            <td>1</td>
+            <td>${product.productCode}</td>
+            <td>${product.stockQuantity}</td>
             <td>${product.unitName}</td>
             <td>${product.sellingPrice}</td>
             <td>${product.vatPercent}</td>
             <td>${product.discountPercentg}</td>
-            <td>${product.totalPrice}</td>
+             <td>${product.finalPrice}</td>
+             <td>${product.previousPrice}</td>
             <td class="treeview">
                 <div class="treeview-list-item">
                     ${hasVariants ?
@@ -130,8 +134,12 @@
                             <table class="table table-bordered table-sm mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Variant Name</th>
-                                        <th>SKU</th>
+                                         <th>Image</th>
+                                         <th>SKU</th>
+                                         <th>Color</th>
+                                         <th>Size</th>
+                                         <th>Weight</th>
+                                         <th>Width</th>
                                         <th>Stock</th>
                                         <th>Action</th>
                                     </tr>
@@ -139,8 +147,19 @@
                                 <tbody>
                                         ${product.productVariants.map((v) => `
                                         <tr>
-                                              <td>${v.color}</td>
+                                                      <td>
+                                                       <div class="col-auto">
+                                                          <div class="avatar avatar-2xl">
+                                                               <img class="rounded-circle" src="${v.imageUrl}" alt="${v.skuNumber}" />
+                                                          </div>
+                                                       </div>
+                                                    
+                                                      </td>
                                               <td>${v.skuNumber}</td>
+                                                <td>${v.color}</td>
+                                                 <td>${v.size}</td>
+                                                 <td>${v.weight}</td>
+                                                 <td>${v.width}</td>
                                               <td>${v.stockQuantity}</td>
                                             <td>
      
