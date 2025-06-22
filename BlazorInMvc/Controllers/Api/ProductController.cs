@@ -89,20 +89,32 @@ namespace BlazorInMvc.Controllers.Api
                 {
                     item.ProductVariants = (await _productVariantService.Get(null, item.ProductId, null, null, null, null, null, 1, 500)).ToList();
                 }
-             
-                
+                if (product_list.Count == 0)
+                {
+                    return Ok(new
+                    {
+                        items = product_list,
+                        currentPage = page,
+                        totalPages = 0,
+                        totalRecord = 0
+                    });
+                }
+                var totalRecord = product_list[0].total_row;
+                var totalPages = (int)Math.Ceiling((double)totalRecord / pageSize);
+
+                return Ok(new
+                {
+                    items = product_list,
+                    currentPage = page,
+                    totalPages,
+                    totalRecord
+                });
                 //var productImage = await _productMediaService.GetById(productMediaId);
                 //if (productImage == null)
                 //{
                 //    return NotFound(new { isSuccess = false, message = "Product image not found" });
                 //}
-                return Ok(new
-                {
-                    product_list,
-                    code = HttpStatusCode.OK,
-                    message = "Success",
-                    isSuccess = true
-                });
+                 
             }
             catch (Exception ex)
             {

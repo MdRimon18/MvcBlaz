@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div id="table-customers-replace-element">
-                    <a class="btn btn-falcon-default btn-sm" href="/Product/Index" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">New</span></a>
+                    <a class="btn btn-falcon-default btn-sm" href="/Product/Index?id=0" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">New</span></a>
                     <button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">Filter</span></button>
                     <button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">Export</span></button>
                 </div>
@@ -216,7 +216,7 @@
            const data = await response.json();
             console.log(data);
           //  invoices = data.product_list;
-             invoices =data.product_list;
+             invoices =data.items;
             totalPages = data.totalPages;
             totalRecords = data.totalRecord;
              renderInvoices();

@@ -92,12 +92,9 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         {
             var viewModel = new ProductViewModel();
             viewModel.Product = await LoadDDL(new Domain.Entity.Settings.Products());
-            if (id > 0)
-            {
-                viewModel.Product.ProductId = id;
-            }
            
-            viewModel.ProductList = await FetchModelList();
+                viewModel.Product.ProductId = id;
+               viewModel.ProductList = await FetchModelList();
             
             if (isPartial)
             {
