@@ -180,6 +180,14 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 {
                     await LoadDDL(model);
                 }
+                if (model.ProdCtgId > 0)
+                {
+                    var subCategories = await _productSubCategoryService.Get(
+                        null, null, null, model.ProdCtgId, null,
+                        GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize
+                    );
+                    model.ProductSubCategoryList = subCategories?.ToList() ?? new List<Domain.Entity.Settings.ProductSubCategory>();
+                }
                 Response.StatusCode = 400;
 
                 //viewModel.ProductList = await FetchModelList();
@@ -221,7 +229,14 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 {
                     model = await LoadDDL(model);
                 }
-
+                if (model.ProdCtgId > 0)
+                {
+                    var subCategories = await _productSubCategoryService.Get(
+                        null, null, null, model.ProdCtgId, null,
+                        GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize
+                    );
+                    model.ProductSubCategoryList = subCategories?.ToList() ?? new List<Domain.Entity.Settings.ProductSubCategory>();
+                }
 
                 Response.StatusCode = 500;
 
