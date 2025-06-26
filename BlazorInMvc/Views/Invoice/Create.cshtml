@@ -735,12 +735,27 @@
             if (!query) return [];
             query = query.toLowerCase().trim();
             console.log('[DEBUG] Filtering with query:', query);
-            return allProducts.filter(product =>
-                product.prodName?.toLowerCase().includes(query) ||
-                product.sku?.toLowerCase().includes(query) ||
-                product.productCode?.toLowerCase().includes(query)
-            );
-        }
+
+             console.log('allProducts',allProducts);
+               var productCategoryId = $('#categorySelect').val();
+               var productSubCategoryId = $('#subCategorySelect').val();
+                  console.log(productCategoryId,productSubCategoryId)
+              
+                  return allProducts.filter(product => {
+             const matchesText =
+                 (product.prodName && product.prodName.toLowerCase().includes(query)) ||
+                 (product.sku && product.sku.toLowerCase().includes(query)) ||
+                 (product.productCode && product.productCode.toLowerCase().includes(query));
+
+               const matchesCategory =
+                 !productCategoryId || product.prodCtgId == productCategoryId;
+
+             const matchesSubCategory =
+                 !productSubCategoryId || product.prodSubCtgId == productSubCategoryId;
+
+             return matchesText && matchesCategory && matchesSubCategory;
+     });
+      }
  
 
         // Populate dropdown
@@ -794,13 +809,10 @@
                // handleSearch(''); // Optional: re-trigger filtering if needed
                });
         }
-      
-
+        
         // Global handleSearch for oninput
         window.handleSearch = function (query) {
-            console.log('[DEBUG] handleSearch called via oninput with query:', query);
             if (!isInitialized) {
-                console.log('[DEBUG] Products not yet loaded, waiting...');
                 return;
             }
             const elements = getElements();
@@ -809,9 +821,10 @@
                 return;
             }
             console.log('[DEBUG] searchInput value from DOM:', elements.searchInput.value); // Cross-check
-            if (query.length > 0) {
+             const filteredProducts = filterProducts(query);
+             if (filteredProducts.length > 0) {
                 elements.searchDropdown.style.display = 'block';
-                const filteredProducts = filterProducts(query);
+               
                 populateDropdown(filteredProducts, elements);
             } else {
                 elements.searchDropdown.style.display = 'none';
@@ -1623,8 +1636,59 @@
            $("#itemCount_notification").text(totalQty);
      }
 
+       window.loadSubCategories=function(categoryId, selectedSubCategoryId) {
+          var subcategorySelect = $('#subCategorySelect');
 
+         // Clear existing options
+         subcategorySelect.empty();
+         subcategorySelect.append('<option value="">Select Product Sub Category</option>');
 
+         if (categoryId) {
+             // Make AJAX call to fetch subcategories
+             $.ajax({
+                 url: '/api/ProductSubCategory/ByCategoryId?categoryId=' + categoryId,
+                 type: 'GET',
+                 dataType: 'json',
+                 success: function (response) {
+                     if (response.isSuccess && response.list) {
+                         // Populate subcategories
+                         $.each(response.list, function (index, item) {
+                             subcategorySelect.append(
+                                 $('<option></option>').val(item.prodSubCtgId).text(item.prodSubCtgName)
+                             );
+                         });
+
+                         // Set the selected subcategory if provided
+                         if (selectedSubCategoryId) {
+                             subcategorySelect.val(selectedSubCategoryId);
+                         }
+                     } else {
+                         console.error('No subcategories found or API error:', response.message);
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error('Error fetching subcategories:', error);
+                 }
+             });
+         }
+     }
+       // Call on change of category
+         $(document).ready(function () {
+             $('#categorySelect').on('change', function () {
+                 var selectedCategoryId = $(this).val();
+                 loadSubCategories(selectedCategoryId, null);
+                 
+                  
+             });
+
+             // // Optional: auto-load subcategories if editing existing data
+             // var presetCategoryId = $('#categorySelect').val();
+             //  var presetSubCategoryId = $('#subCategorySelect').val();
+             // if (presetCategoryId && presetSubCategoryId) {
+             //     loadSubCategories(presetCategoryId, presetSubCategoryId);
+             // }
+         });
+        
     })();
 
 
