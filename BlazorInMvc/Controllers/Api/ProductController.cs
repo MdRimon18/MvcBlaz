@@ -35,14 +35,17 @@ namespace BlazorInMvc.Controllers.Api
         }
         [HttpGet]
         [Route("api/GetProducts")]
-        public async Task<IActionResult> GetProducts()
+
+        [HttpGet]
+        [Route("api/v1/GetEcomProducts")]
+        public async Task<IActionResult> GetProducts(long? categoryId,int pageNumber=1,int pageSize=500)
         {
             try
             {
-                var product_list = (await _productService.Get(null, null, null, null, null,
+                var product_list = (await _productService.Get(null, null, null, categoryId, null,
                             null, null, null, null, null, null, null,
-                            null, null, null, null, GlobalPageConfig.PageNumber,
-                            GlobalPageConfig.PageSize)).ToList();
+                            null, null, null, null, pageNumber,
+                            pageSize)).ToList();
                 //var productImage = await _productMediaService.GetById(productMediaId);
                 //if (productImage == null)
                 //{
