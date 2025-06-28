@@ -40,7 +40,7 @@ namespace BlazorInMvc.Controllers.Api
 
         [HttpGet]
         [Route("api/v1/GetEcomProducts")]
-        public async Task<IActionResult> GetProducts(long? categoryId,int pageNumber=1,int pageSize=500)
+        public async Task<IActionResult> GetEcomProducts(long? categoryId,int pageNumber=1,int pageSize=500)
         {
             try
             {
@@ -128,6 +128,107 @@ namespace BlazorInMvc.Controllers.Api
             catch (Exception ex)
             {
               return  InternalServerError(ex);
+            }
+        }
+        [HttpGet]
+        [Route("api/v1/GetEcomProductDetails")]
+        public async Task<IActionResult> GetEcomProductsByProductId(long? productId)
+        {
+            try
+            {
+                var product_list = (await _productService.Get(productId, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, 1,
+                            1)).ToList();
+
+                var responseList = new List<EcommerceProductsResponse>();
+
+                foreach (var item in product_list)
+                {
+                    item.ProductVariants = (await _productVariantService.Get(null, item.ProductId,
+                        null, null, null, null,
+                        null, GlobalPageConfig.PageNumber,
+                       GlobalPageConfig.PageSize)).ToList();
+
+                    // Map to response model
+                    var response = new EcommerceProductsResponse
+                    {
+                        ProductId = item.ProductId,
+                        ProductKey = item.ProductKey,
+                        ProdCtgId = item.ProdCtgId,
+                        ProdSubCtgId = item.ProdSubCtgId,
+                        UnitId = item.UnitId,
+                        FinalPrice = item.FinalPrice,
+                        PreviousPrice = item.PreviousPrice,
+                        CurrencyId = item.CurrencyId,
+                        TagWord = item.TagWord,
+                        ProdName = item.ProdName,
+                        ManufacturarName = item.ManufacturarName,
+                        SerialNmbrOrUPC = item.SerialNmbrOrUPC,
+                        Sku = item.Sku,
+                        OpeningQnty = item.OpeningQnty,
+                        AlertQnty = item.AlertQnty,
+                        BuyingPrice = item.BuyingPrice,
+                        SellingPrice = item.SellingPrice,
+                        VatPercent = item.VatPercent,
+                        VatAmount = item.VatAmount,
+                        DiscountPercentg = item.DiscountPercentg,
+                        DiscountAmount = item.DiscountAmount,
+                        BarCode = item.BarCode,
+                        SupplirLinkId = item.SupplirLinkId,
+                        ImportedForm = item.ImportedForm,
+                        ImportStatusId = item.ImportStatusId,
+                        GivenEntryDate = item.GivenEntryDate,
+                        WarrentYear = item.WarrentYear,
+                        WarrentyPolicy = item.WarrentyPolicy,
+                        ColorId = item.ColorId,
+                        SizeId = item.SizeId,
+                        ShippingById = item.ShippingById,
+                        ShippingDays = item.ShippingDays,
+                        ShippingDetails = item.ShippingDetails,
+                        OriginCountryId = item.OriginCountryId,
+                        Rating = item.Rating,
+                        ProdStatusId = item.ProdStatusId,
+                        Remarks = item.Remarks,
+                        ProdDescription = item.ProdDescription,
+                        ReleaseDate = item.ReleaseDate,
+                        BranchId = item.BranchId,
+                        StockQuantity = item.StockQuantity,
+                        ItemWeight = item.ItemWeight,
+                        WarehouseId = item.WarehouseId,
+                        RackNumber = item.RackNumber,
+                        BatchNumber = item.BatchNumber,
+                        PolicyId = item.PolicyId,
+                        ProductCode = item.ProductCode,
+                        ProductHieght = item.ProductHieght,
+                        BrandId = item.BrandId,
+                        ProdCtgName = item.ProdCtgName,
+                        BrandName = item.BrandName,
+                        ProdSubCtgName = item.ProdSubCtgName,
+                        UnitName = item.UnitName,
+                        CurrencySymbol = item.CurrencySymbol,
+                        total_row = item.total_row,
+                        ProductImages = item.ProductImages,
+                        ImageUrl = item.ImageUrl,
+                        ProductVariants = item.ProductVariants
+                    };
+                    responseList.Add(response);
+                }
+
+                if (responseList.Count > 0)
+                {
+                    return SuccessMessage(responseList.FirstOrDefault());
+                }
+                else
+                {
+                    return SuccessMessage(new EcommerceProductsResponse());
+                }
+                   
+
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
         [HttpGet]
