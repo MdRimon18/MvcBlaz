@@ -72,7 +72,7 @@ namespace BlazorInMvc.Controllers.Api
 
         [HttpPost]
         [Route("SaveUser")]
-        public async Task<ActionResult<User>> SaveUser([FromForm] User user, [FromForm] IFormFile? imageFile)
+        public async Task<ActionResult<User>> SaveUser(User user,IFormFile? imageFile)
         {
             try
             {

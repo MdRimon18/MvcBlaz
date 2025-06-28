@@ -57,7 +57,7 @@ namespace BlazorInMvc.Controllers.Api
 
         [HttpPost]
         [Route("SaveCustomer")]
-        public async Task<ActionResult<Customers>> SaveCustomer([FromForm] Customers customer, [FromForm] IFormFile? imageFile)
+        public async Task<ActionResult<Customers>> SaveCustomer(Customers customer,IFormFile? imageFile)
         {
             if (imageFile != null)
             {
