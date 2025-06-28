@@ -3,12 +3,14 @@ using Domain.CommonServices;
 using Domain.Entity.Inventory;
 using Domain.Entity.Settings;
 using Domain.Helper;
+using Domain.ResponseModel;
 using Domain.Services.Inventory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Net;
 
@@ -16,7 +18,7 @@ namespace BlazorInMvc.Controllers.Api
 {
    // [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : BaseController
     {
         private readonly ILogger<ProductController> _logger;
         private readonly ProductMediaService _productMediaService;
@@ -46,34 +48,86 @@ namespace BlazorInMvc.Controllers.Api
                             null, null, null, null, null, null, null,
                             null, null, null, null, pageNumber,
                             pageSize)).ToList();
-                //var productImage = await _productMediaService.GetById(productMediaId);
-                //if (productImage == null)
-                //{
-                //    return NotFound(new { isSuccess = false, message = "Product image not found" });
-                //}
-                return Ok(new
+
+                var responseList = new List<EcommerceProductsResponse>();
+
+                foreach (var item in product_list)
                 {
-                    product_list,
-                    code = HttpStatusCode.OK,
-                    message = "Success",
-                    isSuccess = true
-                });
+                    item.ProductVariants = (await _productVariantService.Get(null, item.ProductId,
+                        null, null, null, null,
+                        null, GlobalPageConfig.PageNumber,
+                       GlobalPageConfig.PageSize)).ToList();
+
+                    // Map to response model
+                    var response = new EcommerceProductsResponse
+                    {
+                        ProductId = item.ProductId,
+                        ProductKey = item.ProductKey,
+                        ProdCtgId = item.ProdCtgId,
+                        ProdSubCtgId = item.ProdSubCtgId,
+                        UnitId = item.UnitId,
+                        FinalPrice = item.FinalPrice,
+                        PreviousPrice = item.PreviousPrice,
+                        CurrencyId = item.CurrencyId,
+                        TagWord = item.TagWord,
+                        ProdName = item.ProdName,
+                        ManufacturarName = item.ManufacturarName,
+                        SerialNmbrOrUPC = item.SerialNmbrOrUPC,
+                        Sku = item.Sku,
+                        OpeningQnty = item.OpeningQnty,
+                        AlertQnty = item.AlertQnty,
+                        BuyingPrice = item.BuyingPrice,
+                        SellingPrice = item.SellingPrice,
+                        VatPercent = item.VatPercent,
+                        VatAmount = item.VatAmount,
+                        DiscountPercentg = item.DiscountPercentg,
+                        DiscountAmount = item.DiscountAmount,
+                        BarCode = item.BarCode,
+                        SupplirLinkId = item.SupplirLinkId,
+                        ImportedForm = item.ImportedForm,
+                        ImportStatusId = item.ImportStatusId,
+                        GivenEntryDate = item.GivenEntryDate,
+                        WarrentYear = item.WarrentYear,
+                        WarrentyPolicy = item.WarrentyPolicy,
+                        ColorId = item.ColorId,
+                        SizeId = item.SizeId,
+                        ShippingById = item.ShippingById,
+                        ShippingDays = item.ShippingDays,
+                        ShippingDetails = item.ShippingDetails,
+                        OriginCountryId = item.OriginCountryId,
+                        Rating = item.Rating,
+                        ProdStatusId = item.ProdStatusId,
+                        Remarks = item.Remarks,
+                        ProdDescription = item.ProdDescription,
+                        ReleaseDate = item.ReleaseDate,
+                        BranchId = item.BranchId,
+                        StockQuantity = item.StockQuantity,
+                        ItemWeight = item.ItemWeight,
+                        WarehouseId = item.WarehouseId,
+                        RackNumber = item.RackNumber,
+                        BatchNumber = item.BatchNumber,
+                        PolicyId = item.PolicyId,
+                        ProductCode = item.ProductCode,
+                        ProductHieght = item.ProductHieght,
+                        BrandId = item.BrandId,
+                        ProdCtgName = item.ProdCtgName,
+                        BrandName = item.BrandName,
+                        ProdSubCtgName = item.ProdSubCtgName,
+                        UnitName = item.UnitName,
+                        CurrencySymbol = item.CurrencySymbol,
+                        total_row = item.total_row,
+                        ProductImages = item.ProductImages,
+                        ImageUrl = item.ImageUrl,
+                        ProductVariants = item.ProductVariants
+                    };
+                    responseList.Add(response);
+                }
+                return   SuccessMessage(responseList);
+          
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving Products with");
-                var errorDetails = new
-                {
-                    Message = ex.Message,
-                    InnerException = ex.InnerException?.Message
-                };
-                return StatusCode(500, new
-                {
-                    code = HttpStatusCode.InternalServerError,
-                    message = "An error occurred while processing your request.",
-                    details = errorDetails, // Optional: You can include this for debugging purposes.
-                    isSuccess = false
-                });
+              return  InternalServerError(ex);
             }
         }
         [HttpGet]

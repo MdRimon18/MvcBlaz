@@ -43,7 +43,7 @@ namespace BlazorInMvc.Controllers.Api
             catch (Exception ex)
             {
                 // Log exception
-                return InternalServerError();
+                return InternalServerError(ex);
             }
         }
 
@@ -71,7 +71,7 @@ namespace BlazorInMvc.Controllers.Api
             catch (Exception ex)
             {
                 // Log exception
-                return InternalServerError();
+                return InternalServerError(ex);
             }
         }
         [HttpGet("UpdateItemQuantity")]
@@ -106,7 +106,7 @@ namespace BlazorInMvc.Controllers.Api
             catch (Exception ex)
             {
                 // Log exception
-                return InternalServerError();
+                return InternalServerError(ex);
             }
         }
         [HttpGet("DeleteItemCart")]
@@ -138,7 +138,7 @@ namespace BlazorInMvc.Controllers.Api
             catch (Exception ex)
             {
                 // Log exception
-                return InternalServerError();
+                return InternalServerError(ex);
             }
         }
     }

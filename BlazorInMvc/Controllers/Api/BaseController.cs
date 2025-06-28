@@ -46,13 +46,19 @@ namespace BlazorInMvc.Controllers.Api
         }
 
         [NonAction]
-        public IActionResult InternalServerError()
+        public IActionResult InternalServerError(Exception ex)
         {
+            var errorDetails = new
+            {
+                Message = ex.Message,
+                InnerException = ex.InnerException?.Message
+            };
             return Ok(new
             {
                 result = new { Result = new { } },
                 code = (int)HttpStatusCode.InternalServerError,
                 message = "An error occurred, please try again later!",
+                details = errorDetails,
                 isSuccess = false
             });
         }
