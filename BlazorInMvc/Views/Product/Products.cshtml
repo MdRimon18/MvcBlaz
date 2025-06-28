@@ -163,9 +163,16 @@
                                               <td>${v.stockQuantity}</td>
                                             <td>
      
-                                                  <button class="btn btn-sm btn-primary" onclick="addSerial(${v.productVariantId})">
+                                               <button class="btn btn-sm btn-primary"
+                                                  type="button"
+
+                                                    data-bs-toggle="offcanvas"
+                                                    data-bs-target="#offcanvasRight-2"
+                                                    aria-controls="offcanvasRight-2"
+                                                    onclick="loadSerials(17,0)" >
                                                     Add Serial
-                                                </button>
+                                             </button>
+                                          
                                             </td>
                                         </tr>`).join("")}
                                 </tbody>
