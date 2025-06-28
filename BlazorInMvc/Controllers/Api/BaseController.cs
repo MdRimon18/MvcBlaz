@@ -8,7 +8,7 @@ namespace BlazorInMvc.Controllers.Api
     [ApiController]
     
     public class BaseController : ControllerBase
-    {
+     {
         [NonAction]
         public IActionResult ErrorMessage(string message)
         {
