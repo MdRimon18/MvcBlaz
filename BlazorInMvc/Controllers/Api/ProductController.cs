@@ -51,52 +51,39 @@ namespace BlazorInMvc.Controllers.Api
 
                 var responseList = new List<EcommerceProductsResponse>();
 
-                foreach (var item in product_list)
-                {
-                    item.ProductVariants = (await _productVariantService.Get(null, item.ProductId,
-                        null, null, null, null,
-                        null, GlobalPageConfig.PageNumber,
-                       GlobalPageConfig.PageSize)).ToList();
+                var request = HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
 
+                foreach (var item in product_list)
+                { 
                     // Map to response model
                     var response = new EcommerceProductsResponse
                     {
                         ProductId = item.ProductId,
                         ProductKey = item.ProductKey,
-                        ProdCtgId = item.ProdCtgId,
-                        ProdSubCtgId = item.ProdSubCtgId,
-                        UnitId = item.UnitId,
+                     
                         FinalPrice = item.FinalPrice,
                         PreviousPrice = item.PreviousPrice,
-                        CurrencyId = item.CurrencyId,
-                        TagWord = item.TagWord,
+                     
                         ProdName = item.ProdName,
                         ManufacturarName = item.ManufacturarName,
                         SerialNmbrOrUPC = item.SerialNmbrOrUPC,
                         Sku = item.Sku,
-                        OpeningQnty = item.OpeningQnty,
-                        AlertQnty = item.AlertQnty,
-                        BuyingPrice = item.BuyingPrice,
+                   
                         SellingPrice = item.SellingPrice,
                         VatPercent = item.VatPercent,
                         VatAmount = item.VatAmount,
                         DiscountPercentg = item.DiscountPercentg,
                         DiscountAmount = item.DiscountAmount,
-                        BarCode = item.BarCode,
-                        SupplirLinkId = item.SupplirLinkId,
-                        ImportedForm = item.ImportedForm,
-                        ImportStatusId = item.ImportStatusId,
-                        GivenEntryDate = item.GivenEntryDate,
+                     
                         WarrentYear = item.WarrentYear,
                         WarrentyPolicy = item.WarrentyPolicy,
-                        ColorId = item.ColorId,
-                        SizeId = item.SizeId,
-                        ShippingById = item.ShippingById,
+                     
                         ShippingDays = item.ShippingDays,
                         ShippingDetails = item.ShippingDetails,
-                        OriginCountryId = item.OriginCountryId,
+                       
                         Rating = item.Rating,
-                        ProdStatusId = item.ProdStatusId,
+                     
                         Remarks = item.Remarks,
                         ProdDescription = item.ProdDescription,
                         ReleaseDate = item.ReleaseDate,
@@ -104,12 +91,12 @@ namespace BlazorInMvc.Controllers.Api
                         StockQuantity = item.StockQuantity,
                         ItemWeight = item.ItemWeight,
                         WarehouseId = item.WarehouseId,
-                        RackNumber = item.RackNumber,
+                      
                         BatchNumber = item.BatchNumber,
                         PolicyId = item.PolicyId,
                         ProductCode = item.ProductCode,
                         ProductHieght = item.ProductHieght,
-                        BrandId = item.BrandId,
+                     
                         ProdCtgName = item.ProdCtgName,
                         BrandName = item.BrandName,
                         ProdSubCtgName = item.ProdSubCtgName,
@@ -117,7 +104,9 @@ namespace BlazorInMvc.Controllers.Api
                         CurrencySymbol = item.CurrencySymbol,
                         total_row = item.total_row,
                         ProductImages = item.ProductImages,
-                        ImageUrl = item.ImageUrl,
+                        ImageUrl = !string.IsNullOrWhiteSpace(item.ImageUrl) && !item.ImageUrl.StartsWith(baseUrl)
+                        ? baseUrl + item.ImageUrl
+                        : item.ImageUrl,
                         ProductVariants = item.ProductVariants
                     };
                     responseList.Add(response);
@@ -143,52 +132,62 @@ namespace BlazorInMvc.Controllers.Api
 
                 var responseList = new List<EcommerceProductsResponse>();
 
+                var request = HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
+
+
                 foreach (var item in product_list)
                 {
                     item.ProductVariants = (await _productVariantService.Get(null, item.ProductId,
                         null, null, null, null,
                         null, GlobalPageConfig.PageNumber,
                        GlobalPageConfig.PageSize)).ToList();
-
+                    foreach (var variant in item.ProductVariants)
+                    {
+                        if (!string.IsNullOrWhiteSpace(variant.ImageUrl) && !variant.ImageUrl.StartsWith(baseUrl))
+                        {
+                            variant.ImageUrl = baseUrl + variant.ImageUrl;
+                        }
+                    }
                     // Map to response model
                     var response = new EcommerceProductsResponse
                     {
                         ProductId = item.ProductId,
                         ProductKey = item.ProductKey,
-                        ProdCtgId = item.ProdCtgId,
-                        ProdSubCtgId = item.ProdSubCtgId,
-                        UnitId = item.UnitId,
+                      //  ProdCtgId = item.ProdCtgId,
+                      //  ProdSubCtgId = item.ProdSubCtgId,
+                       // UnitId = item.UnitId,
                         FinalPrice = item.FinalPrice,
                         PreviousPrice = item.PreviousPrice,
-                        CurrencyId = item.CurrencyId,
-                        TagWord = item.TagWord,
+                       // CurrencyId = item.CurrencyId,
+                        //TagWord = item.TagWord,
                         ProdName = item.ProdName,
                         ManufacturarName = item.ManufacturarName,
                         SerialNmbrOrUPC = item.SerialNmbrOrUPC,
                         Sku = item.Sku,
-                        OpeningQnty = item.OpeningQnty,
-                        AlertQnty = item.AlertQnty,
-                        BuyingPrice = item.BuyingPrice,
+                      //  OpeningQnty = item.OpeningQnty,
+                      //  AlertQnty = item.AlertQnty,
+                     //   BuyingPrice = item.BuyingPrice,
                         SellingPrice = item.SellingPrice,
                         VatPercent = item.VatPercent,
                         VatAmount = item.VatAmount,
                         DiscountPercentg = item.DiscountPercentg,
                         DiscountAmount = item.DiscountAmount,
-                        BarCode = item.BarCode,
-                        SupplirLinkId = item.SupplirLinkId,
-                        ImportedForm = item.ImportedForm,
-                        ImportStatusId = item.ImportStatusId,
-                        GivenEntryDate = item.GivenEntryDate,
+                  //      BarCode = item.BarCode,
+                    //    SupplirLinkId = item.SupplirLinkId,
+                       // ImportedForm = item.ImportedForm,
+                     //   ImportStatusId = item.ImportStatusId,
+                    //    GivenEntryDate = item.GivenEntryDate,
                         WarrentYear = item.WarrentYear,
                         WarrentyPolicy = item.WarrentyPolicy,
-                        ColorId = item.ColorId,
-                        SizeId = item.SizeId,
-                        ShippingById = item.ShippingById,
+                    //    ColorId = item.ColorId,
+                      //  SizeId = item.SizeId,
+                    //    ShippingById = item.ShippingById,
                         ShippingDays = item.ShippingDays,
                         ShippingDetails = item.ShippingDetails,
-                        OriginCountryId = item.OriginCountryId,
+                    //    OriginCountryId = item.OriginCountryId,
                         Rating = item.Rating,
-                        ProdStatusId = item.ProdStatusId,
+                    //    ProdStatusId = item.ProdStatusId,
                         Remarks = item.Remarks,
                         ProdDescription = item.ProdDescription,
                         ReleaseDate = item.ReleaseDate,
@@ -196,12 +195,12 @@ namespace BlazorInMvc.Controllers.Api
                         StockQuantity = item.StockQuantity,
                         ItemWeight = item.ItemWeight,
                         WarehouseId = item.WarehouseId,
-                        RackNumber = item.RackNumber,
+                       // RackNumber = item.RackNumber,
                         BatchNumber = item.BatchNumber,
                         PolicyId = item.PolicyId,
                         ProductCode = item.ProductCode,
                         ProductHieght = item.ProductHieght,
-                        BrandId = item.BrandId,
+                      //  BrandId = item.BrandId,
                         ProdCtgName = item.ProdCtgName,
                         BrandName = item.BrandName,
                         ProdSubCtgName = item.ProdSubCtgName,
@@ -209,7 +208,9 @@ namespace BlazorInMvc.Controllers.Api
                         CurrencySymbol = item.CurrencySymbol,
                         total_row = item.total_row,
                         ProductImages = item.ProductImages,
-                        ImageUrl = item.ImageUrl,
+                        ImageUrl = !string.IsNullOrWhiteSpace(item.ImageUrl) && !item.ImageUrl.StartsWith(baseUrl)
+                        ? baseUrl + item.ImageUrl
+                       : item.ImageUrl,
                         ProductVariants = item.ProductVariants
                     };
                     responseList.Add(response);
@@ -343,8 +344,9 @@ namespace BlazorInMvc.Controllers.Api
             if (model.file != null || model.file?.Length> 0)
             {
                 // Get the base URL
-                var request = HttpContext.Request;
-                var baseUrl = $"{request.Scheme}://{request.Host}";
+
+                //var request = HttpContext.Request;
+                //var baseUrl = $"{request.Scheme}://{request.Host}";
 
                 string extension = Path.GetExtension(model.file.FileName);
                 var bytes = await new MediaHelper().GetBytes(model.file);
@@ -352,7 +354,7 @@ namespace BlazorInMvc.Controllers.Api
                 // Upload file and get its relative path
                 var relativePath = MediaHelper.UploadAnyFile(bytes, "/Content/Images", extension);
 
-                model.ImageUrl = baseUrl + relativePath;
+                model.ImageUrl =relativePath;
                 
             }
 
