@@ -50,5 +50,11 @@ namespace Domain.Entity
         public string? ImageUrl { get; set; }
         [NotMapped]
         public string? ProductName { get; set; }
+        [NotMapped]
+        public decimal? BuyingPrice { get; set; }
+         [NotMapped]
+        public decimal? SellingPrice { get; set; }
+        [NotMapped]
+        public long? ProductVariantId { get; set; }
     }
 }
