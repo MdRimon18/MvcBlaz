@@ -48,7 +48,7 @@ namespace Domain.Migrations
 
                     b.HasKey("InvoiceItemSerialId");
 
-                    b.ToTable("InvoiceItemSerials");
+                    b.ToTable("InvoiceItemSerials", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.Customers", b =>
@@ -133,7 +133,7 @@ namespace Domain.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.Suppliers", b =>
@@ -219,7 +219,7 @@ namespace Domain.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.User", b =>
@@ -297,7 +297,7 @@ namespace Domain.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserAddressBook", b =>
@@ -370,7 +370,7 @@ namespace Domain.Migrations
 
                     b.HasKey("AddressID");
 
-                    b.ToTable("UserAddressBooks");
+                    b.ToTable("UserAddressBooks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserDetails", b =>
@@ -431,7 +431,7 @@ namespace Domain.Migrations
 
                     b.HasKey("UserDetailId");
 
-                    b.ToTable("UserDetails");
+                    b.ToTable("UserDetails", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserPhoneNumbers", b =>
@@ -475,7 +475,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserPhoneNumbers");
+                    b.ToTable("UserPhoneNumbers", (string)null);
                 });
 #pragma warning restore 612, 618
         }

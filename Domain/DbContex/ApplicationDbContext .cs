@@ -19,7 +19,8 @@ namespace Domain.DbContex
         }
 
         // Define your DbSet properties for each entity you want to include in the database.
-       
+        
+        
         public DbSet<UserPhoneNumbers> UserPhoneNumbers { get; set; }
         public DbSet<InvoiceItemSerials> InvoiceItemSerials { get; set; }
         public DbSet<Suppliers> Suppliers { get; set; }

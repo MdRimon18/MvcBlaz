@@ -78,6 +78,7 @@ namespace Domain.Services.Inventory
                 parameters.Add("@ProdCtgId", dbType: DbType.Int64, direction: ParameterDirection.Output);
                 parameters.Add("@branchId", productCategories.BranchId);
                 parameters.Add("@ProdCtgName", productCategories.ProdCtgName);
+                parameters.Add("@ImageUrl", productCategories.ImageUrl);
                 parameters.Add("@entryDateTime", productCategories.EntryDateTime);
                 parameters.Add("@entryBy", productCategories.EntryBy);
                 await _db.ExecuteAsync("Product_Ctg_Insert_SP", parameters, commandType: CommandType.StoredProcedure);
@@ -102,7 +103,7 @@ namespace Domain.Services.Inventory
             parameters.Add("@ProdCtgId", productCategories.ProdCtgId);
             parameters.Add("@branchId", productCategories.BranchId);
             parameters.Add("@ProdCtgName", productCategories.ProdCtgName);
-          
+            parameters.Add("@ImageUrl", productCategories.ImageUrl);
             parameters.Add("@Status", productCategories.Status);
             parameters.Add("@success", dbType: DbType.Int32, direction: ParameterDirection.Output);
             await _db.ExecuteAsync("Product_Ctg_Update_SP",

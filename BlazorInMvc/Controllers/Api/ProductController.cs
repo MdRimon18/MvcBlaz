@@ -35,8 +35,8 @@ namespace BlazorInMvc.Controllers.Api
             _logger = logger;
             _productVariantService = productVariantService;
         }
-        [HttpGet]
-        [Route("api/GetProducts")]
+        //[HttpGet]
+        //[Route("api/GetProducts")]
 
         [HttpGet]
         [Route("api/v1/GetEcomProducts")]

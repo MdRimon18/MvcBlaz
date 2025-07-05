@@ -26,6 +26,7 @@ namespace BlazorInMvc.Controllers.Api
             
             // Sending null for all filters
             var users = await _productCategoryService.FetchModelList();
+
             //   var test =users.Where(w=>w.Address is not null).ToList();
             if (users.Count == 0)
             {
