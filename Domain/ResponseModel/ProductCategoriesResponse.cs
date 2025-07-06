@@ -12,5 +12,6 @@ namespace Domain.ResponseModel
         public long ProdCtgId { get; set; }
         public string ProdCtgName { get; set; }
         public string? ImageUrl { get; set; }
+        public int total_row { get; set; }
     }
 }

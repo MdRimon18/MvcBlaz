@@ -51,6 +51,7 @@
         <div class="col-12 text-end">
              
             <input type="hidden" asp-for="ProdCtgId" />
+            <input type="hidden" asp-for="ImageUrl" />
             
             <button type="submit" class="btn btn-primary btn-sm me-2">@(Model.ProdCtgId > 0 ? "Update" : "Save")</button>
             <button type="button" onclick="OnRefresh()" class="btn btn-secondary btn-sm me-2">Refresh</button>

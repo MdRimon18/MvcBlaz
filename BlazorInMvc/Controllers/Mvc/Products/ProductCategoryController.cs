@@ -56,6 +56,17 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
                 if (ImageFile != null && ImageFile.Length > 0)
                 {
+
+                    // Delete old file if it exists
+                    if (!string.IsNullOrEmpty(model.ImageUrl))
+                    {
+                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", model.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/Uploads");
                     if (!Directory.Exists(uploadsFolder))
                         Directory.CreateDirectory(uploadsFolder);
