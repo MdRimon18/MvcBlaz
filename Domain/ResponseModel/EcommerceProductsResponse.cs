@@ -76,8 +76,20 @@ namespace Domain.ResponseModel
         public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public string? ImageUrl { get; set; }
         public List<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
+     
+        public List<SpecificationGroupResponse> Specificationlist { get; set; } = new List<SpecificationGroupResponse>();
 
-      
- 
+
+    }
+    public class SpecificationGroupResponse
+    {
+        public string HeaderName { get; set; }
+        public List<ProductSpecificationResponse> Specifications { get; set; }
+    }
+    public class ProductSpecificationResponse
+    {
+        public long ProdSpcfctnId { get; set; }
+        public string SpecificationName { get; set; }
+        public string SpecificationDtls { get; set; }
     }
 }

@@ -117,26 +117,7 @@ namespace Domain.Services.Inventory
             }
         }
 
-        public async Task<bool> Delete(long ProdSerialNmbrId)
-        {
-            try
-            {
-                // Define the SQL query for deletion
-                string query = "delete from [invnt].[ProductSpecifications] where [ProdSpcfctnId]=@ProdSerialNmbrId";
-
-                // Execute the query
-                int rowsAffected = await _db.ExecuteAsync(query, new { ProdSerialNmbrId });
-
-                // Return true if at least one row was deleted
-                return rowsAffected > 0;
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (e.g., log the error)
-                Console.WriteLine($"Error during deletion: {ex.Message}");
-                return false;
-            }
-        }
+        
 
     }
 }

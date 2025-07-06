@@ -619,39 +619,54 @@
                 <div class="tab-pane fade" id="tab_product_specification" role="tabpanel" aria-labelledby="product_specification_tab">
                     <div class="card-body" >
                         <div id="specifications-container">
-                            @if (Model.Specification_list != null && Model.Specification_list.Count > 0)
+                            @if (Model.Specification_list != null && Model.Specification_list.Any())
                             {
-                                <div class="row gx-2 flex-between-center mb-3">
-                                    <div class="col-sm-3 w-50">Name</div>
-                                    <div class="col-sm-7 w-50"> Details</div>
-                                   
-                                </div>
-                               
+                                var groupedSpecs = Model.Specification_list
+                                    .GroupBy(x => string.IsNullOrWhiteSpace(x.HeaderName) ? "No Header" : x.HeaderName.Trim());
 
-                                    @foreach (var spec in Model.Specification_list)
+                                foreach (var group in groupedSpecs)
+                                {
+                                    <div class="mt-4">
+                                        <h5 class="text-dark fw-bold">@group.Key</h5>
+                                        <hr />
+                                    </div>
+
+                                    <div class="row gx-2 flex-between-center mb-2">
+                                        <div class="col-sm-3 fw-semibold">Name</div>
+                                        <div class="col-sm-9 fw-semibold">Details</div>
+                                    </div>
+
+                                    @foreach (var spec in group)
                                     {
-                                    <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
-                                        <div class="col-sm-3">
-                                            <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <div class="d-flex flex-between-center">
-                                                <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
-                                                <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
-                                                   onclick="deleteSpecification(@spec.ProdSpcfctnId)">
-                                                    <span class="fs-10 fas fa-trash-alt"></span>
-                                                </a>
+                                        <div class="row gx-2 flex-between-center mb-3" id="spec-@spec.ProdSpcfctnId">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0 text-600">@spec.SpecificationName</h6>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <div class="d-flex flex-between-center">
+                                                    <h6 class="mb-0 text-700">@spec.SpecificationDtls</h6>
+                                                    <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                                       onclick="deleteSpecification(@spec.ProdSpcfctnId)">
+                                                        <span class="fs-10 fas fa-trash-alt"></span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     }
-                                 
-                            
+                                }
                             }
                         </div>
+
                        
 
                         <div class="row gy-3 gx-2">
+                            <div class="col-sm-3">
+                                <input asp-for="productSpecification.HeaderName"
+                                       class="form-control form-control-sm form-label fw-semi-bold"
+                                       id="HeaderName"
+                                       placeholder="Header Name" />
+                                <span asp-validation-for="productSpecification.HeaderName" class="text-danger"></span>
+                            </div>
                             <div class="col-sm-3">
                                 <input asp-for="productSpecification.SpecificationName"
                                        class="form-control form-control-sm form-label fw-semi-bold"
@@ -659,7 +674,7 @@
                                        placeholder="Specification Name" />
                                 <span asp-validation-for="productSpecification.SpecificationName" class="text-danger"></span>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-6">
                                 <div class="d-flex gap-2 flex-between-center">
                                     <input asp-for="productSpecification.SpecificationDtls"
                                            id="SpecificationDtls"
@@ -849,7 +864,7 @@
                             <!-- Final Price -->
                             <div class="col-12">
                                 <label class="form-label fw-semi-bold" for="final-price">Final price:</label>
-                                <input asp-for="FinalPrice" class="form-control" type="number" disabled />
+                                <input asp-for="FinalPrice" class="form-control" type="number"  />
                             </div>
 
                             <!-- Previous Price -->
@@ -1524,6 +1539,7 @@
         }
         // Collect values from the input fields
         const specification = {
+             HeaderName: $("#HeaderName").val(),
             SpecificationName: $("#SpecificationName").val(),
             SpecificationDtls: $("#SpecificationDtls").val(),
             ProdSpcfctnId: $("#ProdSpcfctnId").val(),
@@ -1544,28 +1560,57 @@
                     }
                     if (response.isSuccess) {
                    // alert(response.message);
+
+                       // Group specifications by headerName
+                    const groupedSpecs = {};
+
+                    response.data.specification_list.forEach(spec => {
+                        const header = spec.headerName?.trim() || "No Header";
+                        if (!groupedSpecs[header]) {
+                            groupedSpecs[header] = [];
+                        }
+                        groupedSpecs[header].push(spec);
+                    });
+
+                    console.log(groupedSpecs)
                    const container = document.getElementById('specifications-container');
                     container.innerHTML = ''; // Clear the existing list
 
-                    response.data.specification_list.forEach(spec => {
-                        const specRow = `
-                            <div class="row gx-2 flex-between-center mb-3" id="spec-${spec.prodSpcfctnId}">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0 text-600">${spec.specificationName}</h6>
+
+                    Object.entries(groupedSpecs).forEach(([header, specs]) => {
+                            // Add header section
+                            const headerSection = `
+                                <div class="mb-2 mt-3">
+                                    <h5 class="text-dark fw-bold">${header}</h5>
+                                    <hr />
                                 </div>
-                                <div class="col-sm-9">
-                                    <div class="d-flex flex-between-center">
-                                        <h6 class="mb-0 text-700">${spec.specificationDtls}</h6>
-                                        <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
-                                           onclick="deleteSpecification(${spec.prodSpcfctnId})">
-                                            <span class="fs-10 fas fa-trash-alt"></span>
-                                        </a>
+                            `;
+                           container.insertAdjacentHTML('beforeend', headerSection);
+
+                         // Render each specification under this header
+                            specs.forEach(spec => {
+                                const specRow = `
+                                    <div class="row gx-2 flex-between-center mb-3" id="spec-${spec.prodSpcfctnId}">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0 text-600">${spec.headerName}</h6>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0 text-600">${spec.specificationName}</h6>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="d-flex flex-between-center">
+                                                <h6 class="mb-0 text-700">${spec.specificationDtls}</h6>
+                                                <a class="btn btn-sm btn-link text-danger" href="javascript:void(0);"
+                                                   onclick="deleteSpecification(${spec.prodSpcfctnId})">
+                                                    <span class="fs-10 fas fa-trash-alt"></span>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        `;
-                        container.insertAdjacentHTML('beforeend', specRow);
-                    });
+                                `;
+                                container.insertAdjacentHTML('beforeend', specRow);
+                            });
+                        });
 
                       $("#SpecificationName").val("");
                     $("#SpecificationDtls").val("");
@@ -1581,14 +1626,15 @@
         });
     }
 </script>
-<script>
+@* <script>
         function deleteSpecification(id) {
         if (confirm("Are you sure you want to delete this specification?")) {
             fetch(`/api/Product/DeleteSpecification?id=${id}`, {
-                method: 'DELETE'
+                method: 'GET'
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     if (data.isSuccess) {
                         // Remove the deleted specification row from the DOM
                         const specRow = document.getElementById(`spec-${id}`);
@@ -1607,7 +1653,7 @@
         }
     }
 
-</script>
+</script> *@
 <script>
     function saveProductSerial() {
         if($('#ProductId').val()<=0){
@@ -1741,8 +1787,8 @@
         }
 
         $.ajax({
-            url: `/api/ProductSerial/DeleteSerialNumber/${serialId}`,
-            type: 'DELETE',
+            url: `/api/Product/DeleteSpecification?id=${serialId}`,
+            type: 'GET',
             success: function () {
                 $(`#spec-${serialId}`).remove();
                 //alert("Serial number deleted successfully.");

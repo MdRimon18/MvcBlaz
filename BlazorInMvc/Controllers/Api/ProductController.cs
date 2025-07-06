@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlazorInMvc.Controllers.Api
 {
@@ -149,7 +150,31 @@ namespace BlazorInMvc.Controllers.Api
                             variant.ImageUrl = baseUrl + variant.ImageUrl;
                         }
                     }
-                    // Map to response model
+
+                    var items = (await _productSpecificationService.Get(null, null, item.ProductId, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                    var grouped = items
+                     .GroupBy(x => string.IsNullOrWhiteSpace(x.HeaderName) ? "No Header" : x.HeaderName.Trim())
+                     .Select(g => new SpecificationGroupResponse
+                     {
+                         HeaderName = g.Key,
+                         Specifications = g.Select(x => new ProductSpecificationResponse
+                         {
+                             ProdSpcfctnId = x.ProdSpcfctnId,
+                             SpecificationName = x.SpecificationName,
+                             SpecificationDtls = x.SpecificationDtls
+                         }).ToList()
+                     }).ToList();
+
+
+                    var ProductImages = (await _productMediaService.Get(null, null, item.ProductId, null)).ToList();
+
+                    foreach (var img in ProductImages)
+                    {
+                        if (!string.IsNullOrWhiteSpace(img.ImageUrl) && !img.ImageUrl.StartsWith(baseUrl))
+                        {
+                            img.ImageUrl = baseUrl + img.ImageUrl;
+                        }
+                    }
                     var response = new EcommerceProductsResponse
                     {
                         ProductId = item.ProductId,
@@ -207,11 +232,13 @@ namespace BlazorInMvc.Controllers.Api
                         UnitName = item.UnitName,
                         CurrencySymbol = item.CurrencySymbol,
                         total_row = item.total_row,
-                        ProductImages = item.ProductImages,
+                        ProductImages = ProductImages,
                         ImageUrl = !string.IsNullOrWhiteSpace(item.ImageUrl) && !item.ImageUrl.StartsWith(baseUrl)
                         ? baseUrl + item.ImageUrl
                        : item.ImageUrl,
-                        ProductVariants = item.ProductVariants
+                        ProductVariants = item.ProductVariants,
+                        Specificationlist = grouped
+
                     };
                     responseList.Add(response);
                 }
@@ -219,6 +246,7 @@ namespace BlazorInMvc.Controllers.Api
                 if (responseList.Count > 0)
                 {
                     return SuccessMessage(responseList.FirstOrDefault());
+                     
                 }
                 else
                 {
@@ -443,7 +471,8 @@ namespace BlazorInMvc.Controllers.Api
                 List<ProductSpecifications> specification_list = new List<ProductSpecifications>();
                 try
                 {
-                    responseId= await _productSpecificationService.SaveOrUpdate(specification);
+                     specification.HeaderName = specification.HeaderName?.Trim() ?? string.Empty;
+                     responseId = await _productSpecificationService.SaveOrUpdate(specification);
                   specification_list= (await _productSpecificationService.Get(null, null, specification.ProductId, null, null,GlobalPageConfig.PageNumber,
                         GlobalPageConfig.PageSize)).ToList();
 
@@ -479,7 +508,7 @@ namespace BlazorInMvc.Controllers.Api
             return BadRequest(new { success = false, message = "Invalid data!" });
         }
 
-        [HttpDelete]
+        [HttpGet]
         [Route("api/Product/DeleteSpecification")]
         public async Task<IActionResult> DeleteSpecification(long id)
         {
