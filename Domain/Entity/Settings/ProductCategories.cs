@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Settings
@@ -15,6 +16,7 @@ namespace Domain.Entity.Settings
         public string ProdCtgName { get; set; }
         [StringLength(250)]
         public string? ImageUrl { get; set; }
+     
         public int total_row { get; set; }  
     }
 }

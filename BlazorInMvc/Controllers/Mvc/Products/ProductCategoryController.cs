@@ -42,7 +42,7 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveOrUpdate(ProductCategories model)
+        public async Task<IActionResult> SaveOrUpdate(ProductCategories model, IFormFile? ImageFile)
         {
             if (!ModelState.IsValid)
             {
@@ -53,6 +53,25 @@ namespace BlazorInMvc.Controllers.Mvc.Products
 
             try
             {
+
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/Uploads");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    model.ImageUrl = "/assets/uploads/" + fileName;
+                }
+
+
                 if (model.ProdCtgId > 0)
                 {
                     await _productCategoryService.Update(model);

@@ -22,9 +22,10 @@
 </div>
 
 
-<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProductCtgry" id="ProductCtgryForm">
+<form asp-action="SaveOrUpdate" method="post" name="SaveOrUpdateProductCtgry" id="ProductCtgryForm" enctype="multipart/form-data" >
     @Html.AntiForgeryToken()
     <div class="row gx-2">
+        
         <!-- Event Title -->
         <div class="col-12 mb-3">
             <label class="form-label text-dark dark__text-light" for="event-name">Category Name</label>
@@ -35,6 +36,11 @@
             <span class="text-danger" asp-validation-for="ProdCtgName"></span>
         </div>
 
+        <div class="col-12 mb-3">
+            <label class="form-label" for="ImageFile">Upload Image</label>
+            <input type="file" id="fileInput" class="form-control" name="ImageFile" />
+            <img id="previewImage" style="max-width: 200px; margin-top: 10px; display:none;" />
+        </div>
 
         <!-- Divider -->
         <div class="col-12">
@@ -69,7 +75,7 @@
 
 <script>
    
-    $(document).ready(function () {
+       $(document).ready(function () {
        
         $('form[name="SaveOrUpdateProductCtgry"]').submit(function (e) {
             
@@ -78,11 +84,17 @@
               $(loaderSelector).show();
                 const submitButton = $(this).find('button[type="submit"]');
                    submitButton.prop('disabled', true);
+
+                     const form = $(this)[0]; // Get raw DOM form element
+                  const formData = new FormData(form); // Create FormData from form
             $.ajax({
                 
                 url: $(this).attr('action'),
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false, // Required for FormData
+                contentType: false, // Required for FormData
+
                 success: function (result) {
                     // Check if Model.Id is not an empty GUID correctly in JavaScript
                     console.log(result)
@@ -191,4 +203,16 @@
             }
         });
     }
+</script>
+<script>
+    $('#fileInput').on('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#previewImage').attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
