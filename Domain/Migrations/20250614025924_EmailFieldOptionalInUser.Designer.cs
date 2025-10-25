@@ -4,6 +4,7 @@ using Domain.DbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250614025924_EmailFieldOptionalInUser")]
+    partial class EmailFieldOptionalInUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace Domain.Migrations
 
                     b.HasKey("InvoiceItemSerialId");
 
-                    b.ToTable("InvoiceItemSerials", (string)null);
+                    b.ToTable("InvoiceItemSerials");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.Customers", b =>
@@ -133,7 +136,7 @@ namespace Domain.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.Suppliers", b =>
@@ -219,7 +222,7 @@ namespace Domain.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.User", b =>
@@ -297,7 +300,7 @@ namespace Domain.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserAddressBook", b =>
@@ -370,7 +373,7 @@ namespace Domain.Migrations
 
                     b.HasKey("AddressID");
 
-                    b.ToTable("UserAddressBooks", (string)null);
+                    b.ToTable("UserAddressBooks");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserDetails", b =>
@@ -431,7 +434,7 @@ namespace Domain.Migrations
 
                     b.HasKey("UserDetailId");
 
-                    b.ToTable("UserDetails", (string)null);
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("Domain.Entity.Settings.UserPhoneNumbers", b =>
@@ -475,7 +478,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserPhoneNumbers", (string)null);
+                    b.ToTable("UserPhoneNumbers");
                 });
 #pragma warning restore 612, 618
         }

@@ -51,19 +51,25 @@ namespace BlazorInMvc.Controllers.Mvc.Products
         {
             if (!ModelState.IsValid)
             {
+                SubCategoryViewModel viewModel = new SubCategoryViewModel();
+                viewModel.ProductSubCategory.ProductCategory_list = (await _productCategoryService.Get(null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                viewModel.ProductSubCategories = await FetchModelList();
                 Response.StatusCode = 400;
-                // Return the AddForm partial view with validation errors
-                return PartialView("_AddForm", model); // Returning partial view directly
+                
+                return PartialView("_AddForm", viewModel); // Returning partial view directly
             }
 
             try
             {
                 long responseId = await _productSubCategoryService.SaveOrUpdate(model);
                 if (responseId == -1)
-                { 
+                {
+                    SubCategoryViewModel viewModel = new SubCategoryViewModel();
+                    viewModel.ProductSubCategory.ProductCategory_list = (await _productCategoryService.Get(null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                    viewModel.ProductSubCategories = await FetchModelList();
                     model.ProdSubCtgId = 0;
                     Response.StatusCode = 409;
-                    return PartialView("_AddForm", model); // Returning partial view directly
+                    return PartialView("_AddForm", viewModel); // Returning partial view directly
 
                 }
 
@@ -74,8 +80,11 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
+                SubCategoryViewModel viewModel = new SubCategoryViewModel();
+                viewModel.ProductSubCategory.ProductCategory_list = (await _productCategoryService.Get(null, null, null, null, GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize)).ToList();
+                viewModel.ProductSubCategories = await FetchModelList();
                 // In case of an error, render the AddForm partial view again
-                return PartialView("_AddForm", model); // Returning partial view directly
+                return PartialView("_AddForm", viewModel); // Returning partial view directly
             }
         }
 

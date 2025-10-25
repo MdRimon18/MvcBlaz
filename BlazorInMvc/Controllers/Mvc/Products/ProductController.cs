@@ -77,12 +77,24 @@ namespace BlazorInMvc.Controllers.Mvc.Products
             _productVariantService = productVariantService;
         }
 
+        public async Task<IActionResult> Products()
+        {
 
-        public async Task<IActionResult> Index(bool isPartial = false)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("Products"); // Return partial view for AJAX requests
+            }
+
+            return View("Products");
+
+        }
+        public async Task<IActionResult> Index(bool isPartial = false, long id = 0)
         {
             var viewModel = new ProductViewModel();
             viewModel.Product = await LoadDDL(new Domain.Entity.Settings.Products());
-            viewModel.ProductList = await FetchModelList();
+           
+                viewModel.Product.ProductId = id;
+               viewModel.ProductList = await FetchModelList();
             
             if (isPartial)
             {
@@ -168,6 +180,14 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 {
                     await LoadDDL(model);
                 }
+                if (model.ProdCtgId > 0)
+                {
+                    var subCategories = await _productSubCategoryService.Get(
+                        null, null, null, model.ProdCtgId, null,
+                        GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize
+                    );
+                    model.ProductSubCategoryList = subCategories?.ToList() ?? new List<Domain.Entity.Settings.ProductSubCategory>();
+                }
                 Response.StatusCode = 400;
 
                 //viewModel.ProductList = await FetchModelList();
@@ -209,7 +229,14 @@ namespace BlazorInMvc.Controllers.Mvc.Products
                 {
                     model = await LoadDDL(model);
                 }
-
+                if (model.ProdCtgId > 0)
+                {
+                    var subCategories = await _productSubCategoryService.Get(
+                        null, null, null, model.ProdCtgId, null,
+                        GlobalPageConfig.PageNumber, GlobalPageConfig.PageSize
+                    );
+                    model.ProductSubCategoryList = subCategories?.ToList() ?? new List<Domain.Entity.Settings.ProductSubCategory>();
+                }
 
                 Response.StatusCode = 500;
 

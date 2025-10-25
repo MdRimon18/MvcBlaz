@@ -1,8 +1,9 @@
 ﻿using Dapper;
-using System.Data;
-using Domain.Entity.Settings;
+using Domain.CommonServices;
 using Domain.DbContex;
 using Domain.Entity;
+using Domain.Entity.Settings;
+using System.Data;
 
 namespace Domain.Services.Inventory
 {
@@ -40,7 +41,20 @@ namespace Domain.Services.Inventory
                 return Enumerable.Empty<ProductSubCategory>();
             }
         }
+        public async Task<List<ProductSubCategory>> FetchModelList()
+        {
+            var list = await Get(
+                null,
+                null,
+                null,
+                null,
+                null,
+                GlobalPageConfig.PageNumber,
+                GlobalPageConfig.PageSize
+            );
 
+            return list.ToList(); // Convert and return as List<Unit>
+        }
         public async Task<ProductSubCategory> GetById(long ProdSubCtgId)
 
         {

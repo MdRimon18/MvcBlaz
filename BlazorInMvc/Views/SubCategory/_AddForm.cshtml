@@ -27,7 +27,7 @@
     <div class="row gx-2">
         <div class="col-12 mb-3">
             <label class="form-label text-dark dark__text-light" for="event-name">Category Name</label>
-            <select asp-for="ProdCtgId" class="form-select form-rounded form-select-sm">
+            <select asp-for="ProdCtgId" class="form-select form-rounded form-select-sm" required>
                 <option value="">Select Category</option>
                 @foreach (var item in Model.ProductCategory_list)
                 {
@@ -40,10 +40,11 @@
         <div class="col-12 mb-3">
             <label class="form-label text-dark dark__text-light" for="event-name">Category Name</label>
             <input class="form-control shadow-none bg-white dark__bg-1100 text-dark dark__text-light"
-                   asp-for="ProdCtgName"
+                   asp-for="ProdSubCtgName"
                    type="text"
-                   placeholder="Color Name" />
-            <span class="text-danger" asp-validation-for="ProdCtgName"></span>
+                   placeholder="Sub Category Name"
+                   required/>
+            <span class="text-danger" asp-validation-for="ProdSubCtgName"></span>
         </div>
 
        

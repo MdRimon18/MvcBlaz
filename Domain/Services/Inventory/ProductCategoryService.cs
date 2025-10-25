@@ -1,8 +1,9 @@
 ﻿using Dapper;
-using System.Data;
-using Domain.Entity.Settings;
+using Domain.CommonServices;
 using Domain.DbContex;
 using Domain.Entity;
+using Domain.Entity.Settings;
+using System.Data;
 
 namespace Domain.Services.Inventory
 {
@@ -38,7 +39,19 @@ namespace Domain.Services.Inventory
                 return Enumerable.Empty<ProductCategories>();
             }
         }
+        public async Task<List<ProductCategories>> FetchModelList()
+        {
+            var list = await Get(
+                null,
+                null,
+                null,
+                null,
+                GlobalPageConfig.PageNumber,
+                GlobalPageConfig.PageSize
+            );
 
+            return list.ToList(); // Convert and return as List<Unit>
+        }
         public async Task<ProductCategories> GetById(long ProdCtgId)
 
         {
@@ -65,6 +78,7 @@ namespace Domain.Services.Inventory
                 parameters.Add("@ProdCtgId", dbType: DbType.Int64, direction: ParameterDirection.Output);
                 parameters.Add("@branchId", productCategories.BranchId);
                 parameters.Add("@ProdCtgName", productCategories.ProdCtgName);
+                parameters.Add("@ImageUrl", productCategories.ImageUrl);
                 parameters.Add("@entryDateTime", productCategories.EntryDateTime);
                 parameters.Add("@entryBy", productCategories.EntryBy);
                 await _db.ExecuteAsync("Product_Ctg_Insert_SP", parameters, commandType: CommandType.StoredProcedure);
@@ -89,7 +103,7 @@ namespace Domain.Services.Inventory
             parameters.Add("@ProdCtgId", productCategories.ProdCtgId);
             parameters.Add("@branchId", productCategories.BranchId);
             parameters.Add("@ProdCtgName", productCategories.ProdCtgName);
-          
+            parameters.Add("@ImageUrl", productCategories.ImageUrl);
             parameters.Add("@Status", productCategories.Status);
             parameters.Add("@success", dbType: DbType.Int32, direction: ParameterDirection.Output);
             await _db.ExecuteAsync("Product_Ctg_Update_SP",

@@ -169,74 +169,7 @@
 
     </div> *@
 </div>
-
-<div class="offcanvas offcanvas-end" id="offcanvasRight-2" tabindex="-1" aria-labelledby="offcanvasRightLabel" style="width: 50%;">
-    <div class="offcanvas-header">
-        <div class="card-header">
-            <h5 class="mb-0">
-                @*  <i class="fas fa-arrow-left"></i> *@
-                Choose Serial Number
-            </h5>
-        </div>
-        <button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content border-0">
-                <div class="modal-body p-0">
-                    <div class="d-lg-flex justify-content-between">
-                        <div class="row flex-between-center gy-2 px-1 mb-2">
-                            <div class="col-auto pe-0">
-                                <div class="input-group" style="max-width: 350px; width: 100%;">
-                                    <input class="form-control form-control-sm shadow-none"
-                                           type="search"
-                                           placeholder="Search by Serial Number"
-                                           aria-label="search"
-                                           oninput="OnProductSerialSearchInOffCanva(event)" />
-
-                                    <button type="button" class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
-                                        <span class="fa fa-search fs-10"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-0" id="product-serial-container">
-                         
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @* <div class="card-footer">
-    <div class="row">
-    <div class="pagination d-none"></div>
-    <div class="col-md-8">
-    <div class="row">
-    <div class="col-md-6">
-    <span class="d-none d-sm-inline-block me-2 fs-10">page 1 of 1, Total Record 9 </span>
-
-    </div>
-    <div class="col-md-2">
-
-    <PageSizeSelection SelectedPageSize="1" SelectedPageSizeChanged="HandlePageSizeChanged" />
-    </div>
-    </div>
-    </div>
-    <div class="col-md-4">
-    <div class="col-auto d-flex justify-content-end">
-
-    <PaginationV2 TotalPages="1" CurrentPage="5" OnPageChange="ChangePage" />
-
-    </div>
-    </div>
-
-    </div>
-
-    </div> *@
-</div>
+ 
 
 @foreach (var tp in Model.InvoiceTypeList.OrderBy(o=>o.InvoiceTypeId))
 {
@@ -735,12 +668,27 @@
             if (!query) return [];
             query = query.toLowerCase().trim();
             console.log('[DEBUG] Filtering with query:', query);
-            return allProducts.filter(product =>
-                product.prodName?.toLowerCase().includes(query) ||
-                product.sku?.toLowerCase().includes(query) ||
-                product.productCode?.toLowerCase().includes(query)
-            );
-        }
+
+             console.log('allProducts',allProducts);
+               var productCategoryId = $('#categorySelect').val();
+               var productSubCategoryId = $('#subCategorySelect').val();
+                  console.log(productCategoryId,productSubCategoryId)
+              
+                  return allProducts.filter(product => {
+             const matchesText =
+                 (product.prodName && product.prodName.toLowerCase().includes(query)) ||
+                 (product.sku && product.sku.toLowerCase().includes(query)) ||
+                 (product.productCode && product.productCode.toLowerCase().includes(query));
+
+               const matchesCategory =
+                 !productCategoryId || product.prodCtgId == productCategoryId;
+
+             const matchesSubCategory =
+                 !productSubCategoryId || product.prodSubCtgId == productSubCategoryId;
+
+             return matchesText && matchesCategory && matchesSubCategory;
+     });
+      }
  
 
         // Populate dropdown
@@ -794,13 +742,10 @@
                // handleSearch(''); // Optional: re-trigger filtering if needed
                });
         }
-      
-
+        
         // Global handleSearch for oninput
         window.handleSearch = function (query) {
-            console.log('[DEBUG] handleSearch called via oninput with query:', query);
             if (!isInitialized) {
-                console.log('[DEBUG] Products not yet loaded, waiting...');
                 return;
             }
             const elements = getElements();
@@ -809,9 +754,10 @@
                 return;
             }
             console.log('[DEBUG] searchInput value from DOM:', elements.searchInput.value); // Cross-check
-            if (query.length > 0) {
+             const filteredProducts = filterProducts(query);
+             if (filteredProducts.length > 0) {
                 elements.searchDropdown.style.display = 'block';
-                const filteredProducts = filterProducts(query);
+               
                 populateDropdown(filteredProducts, elements);
             } else {
                 elements.searchDropdown.style.display = 'none';
@@ -1492,63 +1438,6 @@
         });
     }
 
-      window.loadSerials = function (productId,index) {
-        fetch(`/api/ProductSerial/GetSerialNumbersByProductId/${productId}`)
-            .then(response => response.json())
-            .then(serials => {
-             
-                 serialsByProductId=serials.data;
-                 serialCurrentIndex=index;
-                  window.rendarOffCanfvaSerial(serialsByProductId,index);
-            })
-            .catch(error => {
-                console.error('Error fetching serials:', error);
-            });
-    }
-     window.rendarOffCanfvaSerial=function(filterdSerials,index){
-          const container = document.getElementById("product-serial-container"); // Ensure this div exists in your HTML
-                 container.innerHTML = ""; // Clear existing content
-                 console.log('hl',filterdSerials)
-                  filterdSerials.forEach(item => {
-                     const col = document.createElement("div");
-                     col.className = "col-md-4 ps-md-2";
-
-                     col.innerHTML = `
-                         <div class="card mb-3 zoom-card">
-                             <div class="card-body bg-body-tertiary">
-                                 <div class="tab-content">
-                                     <div class="tab-pane preview-tab-pane active" role="tabpanel">
-                                         <div class="avatar avatar-4xl mb-3">
-                                             <img class="rounded-soft" src="../../assets/img/default-product.jpg" alt="" />
-                                         </div>
-                                         <div class="product-info">
-                                             <p class="mb-1"><strong>Serial Number:</strong> ${item.serialNumber}</p>
-                                               <p class="mb-1"><strong>Rate:</strong>  ${item.rate}</p>
-                                             <p class="mb-1"><strong>Supplier Name:</strong> ${item.supplierName}</p>
-                                                <p class="mb-1"><strong>Status:</strong> ${item.serialStatus}</p>
-                                               <p class="mb-1"><strong>Purchase Date:</strong>
-                                                      ${new Date(item.date).toLocaleDateString('en-GB', {
-                                                          day: 'numeric',
-                                                          month: 'long',
-                                                          year: 'numeric'
-                                                        })}
-                                               </p>
-                                              <p class="mb-1"><strong>Remarks:</strong> ${item.remarks}</p>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="d-flex justify-content-end mt-3">
-                                     <button class="btn btn-sm btn-falcon-primary" type="button" onclick="appendSingleSerialRow(${JSON.stringify(item).replace(/"/g, '&quot;')},${index})">
-                                         Add
-                                     </button>
-                                 </div>
-                             </div>
-                         </div>
-                     `;
-
-                     container.appendChild(col);
-          });
-    }
    window.updateRow= function (input) {
          const row = input.closest('tr');
          if (!row) return;
@@ -1623,8 +1512,59 @@
            $("#itemCount_notification").text(totalQty);
      }
 
+       window.loadSubCategories=function(categoryId, selectedSubCategoryId) {
+          var subcategorySelect = $('#subCategorySelect');
 
+         // Clear existing options
+         subcategorySelect.empty();
+         subcategorySelect.append('<option value="">Select Product Sub Category</option>');
 
+         if (categoryId) {
+             // Make AJAX call to fetch subcategories
+             $.ajax({
+                 url: '/api/ProductSubCategory/ByCategoryId?categoryId=' + categoryId,
+                 type: 'GET',
+                 dataType: 'json',
+                 success: function (response) {
+                     if (response.isSuccess && response.list) {
+                         // Populate subcategories
+                         $.each(response.list, function (index, item) {
+                             subcategorySelect.append(
+                                 $('<option></option>').val(item.prodSubCtgId).text(item.prodSubCtgName)
+                             );
+                         });
+
+                         // Set the selected subcategory if provided
+                         if (selectedSubCategoryId) {
+                             subcategorySelect.val(selectedSubCategoryId);
+                         }
+                     } else {
+                         console.error('No subcategories found or API error:', response.message);
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error('Error fetching subcategories:', error);
+                 }
+             });
+         }
+     }
+       // Call on change of category
+         $(document).ready(function () {
+             $('#categorySelect').on('change', function () {
+                 var selectedCategoryId = $(this).val();
+                 loadSubCategories(selectedCategoryId, null);
+                 
+                  
+             });
+
+             // // Optional: auto-load subcategories if editing existing data
+             // var presetCategoryId = $('#categorySelect').val();
+             //  var presetSubCategoryId = $('#subCategorySelect').val();
+             // if (presetCategoryId && presetSubCategoryId) {
+             //     loadSubCategories(presetCategoryId, presetSubCategoryId);
+             // }
+         });
+        
     })();
 
 

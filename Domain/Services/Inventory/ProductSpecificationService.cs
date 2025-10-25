@@ -75,7 +75,8 @@ namespace Domain.Services.Inventory
 				parameters.Add("@ProdSpcfctnId", _productSpecifications.ProdSpcfctnId);
 				parameters.Add("@ProdSpcfctnKey", _productSpecifications.ProdSpcfctnKey);
 				parameters.Add("@ProductId", _productSpecifications.ProductId);
-				parameters.Add("@SpecificationName", _productSpecifications.SpecificationName);
+                parameters.Add("@HeaderName", _productSpecifications.HeaderName);
+                parameters.Add("@SpecificationName", _productSpecifications.SpecificationName);
 				parameters.Add("@SpecificationDtls", _productSpecifications.SpecificationDtls);
 
                 ParameterHelper.AddAuditParameters(_productSpecifications, parameters);
@@ -92,18 +93,38 @@ namespace Domain.Services.Inventory
 			}
 		}
 
-		public async Task<bool> Delete(long ProdSpcfctnId)
-		{
-			var _productSpecifications = await (Get(ProdSpcfctnId, null,null, null, null, 1, 1));
-			var deleteObj = _productSpecifications.FirstOrDefault();
-			long DeletedSatatus = 0;
-			if (deleteObj != null)
-			{
-                EntityHelper.SetDeleteAuditFields(deleteObj);
-                DeletedSatatus = await SaveOrUpdate(deleteObj);
-			}
+		//public async Task<bool> Delete(long ProdSpcfctnId)
+		//{
+		//	var _productSpecifications = await (Get(ProdSpcfctnId, null,null, null, null, 1, 1));
+		//	var deleteObj = _productSpecifications.FirstOrDefault();
+		//	long DeletedSatatus = 0;
+		//	if (deleteObj != null)
+		//	{
+       //              EntityHelper.SetDeleteAuditFields(deleteObj);
+      //              DeletedSatatus = await SaveOrUpdate(deleteObj);
+		//	}
 
-			return DeletedSatatus > 0;
-		}
-	}
+		//	return DeletedSatatus > 0;
+		//}
+        public async Task<bool> Delete(long ProdSerialNmbrId)
+        {
+            try
+            {
+                // Define the SQL query for deletion
+                string query = "delete from [invnt].[ProductSpecifications] where [ProdSpcfctnId]=@ProdSerialNmbrId";
+
+                // Execute the query
+                int rowsAffected = await _db.ExecuteAsync(query, new { ProdSerialNmbrId });
+
+                // Return true if at least one row was deleted
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., log the error)
+                Console.WriteLine($"Error during deletion: {ex.Message}");
+                return false;
+            }
+        }
+    }
 }

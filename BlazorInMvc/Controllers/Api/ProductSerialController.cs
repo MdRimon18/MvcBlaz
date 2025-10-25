@@ -91,25 +91,7 @@ namespace BlazorInMvc.Controllers.Api
                 data = serialNumbers
             });
         }
-        [HttpDelete("DeleteSerialNumber")]
-        public async Task<IActionResult> DeleteSerialNumber(long id)
-        {
-            var isDeleted = await _productSerialNumbersService.Delete(id);
-            if (!isDeleted)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "Failed to delete serial number. Please try again!"
-                });
-            }
-
-            return Ok(new
-            {
-                success = true,
-                message = "Serial number deleted successfully!"
-            });
-        }
+        
 
     }
 }

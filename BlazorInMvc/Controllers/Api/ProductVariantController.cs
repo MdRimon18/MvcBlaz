@@ -35,8 +35,8 @@ namespace BlazorInMvc.Controllers.Api
             if (model.file != null || model.file?.Length > 0)
             {
                 // Get the base URL
-                var request = HttpContext.Request;
-                var baseUrl = $"{request.Scheme}://{request.Host}";
+                //var request = HttpContext.Request;
+                //var baseUrl = $"{request.Scheme}://{request.Host}";
 
                 string extension = Path.GetExtension(model.file.FileName);
                 var bytes = await new MediaHelper().GetBytes(model.file);
@@ -44,7 +44,7 @@ namespace BlazorInMvc.Controllers.Api
                 // Upload file and get its relative path
                 var relativePath = MediaHelper.UploadAnyFile(bytes, "/Content/Images", extension);
 
-                model.ImageUrl = baseUrl + relativePath;
+                model.ImageUrl =relativePath;
 
             }
 

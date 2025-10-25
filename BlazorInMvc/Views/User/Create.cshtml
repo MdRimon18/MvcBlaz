@@ -45,7 +45,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="PhoneNo" class="form-label fw-semibold">Phone Number<span class="error-star">*</span></label>
-                                <input id="PhoneNo" name="PhoneNo" class="form-control form-control-sm" placeholder="Enter Mobile Number">
+                                <input type="text" id="PhoneNo" name="PhoneNo"
+                                       class="form-control form-control-sm"
+                                       placeholder="Enter Mobile Number"
+                                       inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                             <div class="mb-3">
                                 <label for="Email" class="form-label fw-semibold">Email</label>
@@ -55,10 +60,9 @@
                                 <label for="Password" class="form-label fw-semibold">Password</label>
                                 <input id="Password" name="Password" type="password" class="form-control form-control-sm" placeholder="Enter Password">
                             </div>
-                            <div class="mb-3">
-                                <label for="RoleId" class="form-label fw-semibold">Role ID<span class="error-star">*</span></label>
-                                <input id="RoleId" name="RoleId" class="form-control form-control-sm" placeholder="Enter Role ID">
-                            </div>
+                           
+                                 
+                              
                             <div class="mb-3">
                                 <label for="CountryId" class="form-label fw-semibold">Country</label>
                                 <select id="CountryId" name="CountryId" class="form-select form-control-sm">
@@ -75,6 +79,10 @@
                             <input type="file" name="imageFile" id="fileInput" class="form-control form-control-sm" accept="image/*">
                         </div>
                     </div>
+
+
+                    <input type="hidden" id="RoleId" name="RoleId" class="form-control form-control-sm" placeholder="Enter Role ID">
+
                 </form>
             </div>
 
@@ -237,7 +245,7 @@
                     PhoneNo: $("#PhoneNo").val().trim(),
                     Email: $("#Email").val().trim(),
                     Password: $("#Password").val(),
-                    RoleId: $("#RoleId").val(),
+                    RoleId: '@Model.RoleId',
                     CountryId: $("#CountryId").val(),
                     ImgLink: ""
                 };
@@ -256,10 +264,14 @@
                     isValid = false;
                     $("#RoleId").addClass("is-invalid").after('<div class="invalid-feedback">Role is required.</div>');
                 }
-                if (user.Email && !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(user.Email)) {
-                    isValid = false;
-                    $("#Email").addClass("is-invalid").after('<div class="invalid-feedback">Invalid email format.</div>');
-                }
+                if (user.Email) {
+                    if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(user.Email)) {
+                        isValid = false;
+                        $("#Email").addClass("is-invalid").after('<div class="invalid-feedback">Invalid email format.</div>');
+                    }
+                  }
+
+                
                 if (!isValid) return;
 
                 const formData = new FormData();
@@ -318,7 +330,13 @@
                         const option = document.createElement('option');
                         option.value = country.countryId;
                         option.textContent = country.countryName;
-                        countrySelect.appendChild(option);
+                        
+                          // Set selected if it matches defaultCountryId
+                            if (country.countryId == @Model.CountryId) {
+                                option.selected = true;
+                            }
+
+                           countrySelect.appendChild(option);
                     });
                 }
             } catch (err) {
@@ -383,41 +401,6 @@
     //     }
     // }
 
-     const addressData = [
-        {
-            name: "John Doe",
-            email: "john@example.com",
-            phone: "1234567890",
-            address: "123 Main St",
-            joined: "2024-01-01"
-        },
-        {
-            name: "Jane Smith",
-            email: "jane@example.com",
-            phone: "9876543210",
-            address: "456 Oak St",
-            joined: "2023-12-15"
-        }
-    ];
-
-    function populateAddressTable() {
-        const tbody = document.getElementById('table-customers-body');
-        tbody.innerHTML = '';
-        addressData.forEach((item, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-               
-                <td>${item.name}</td>
-                <td>${item.email}</td>
-                <td>${item.phone}</td>
-                <td>${item.address}</td>
-                <td>${item.joined}</td>
-                <td><button class="btn btn-sm btn-danger">Delete</button></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', populateAddressTable);
+      
 </script>
  
