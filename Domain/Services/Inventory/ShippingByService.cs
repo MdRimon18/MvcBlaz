@@ -2,6 +2,7 @@
 using System.Data;
 using Domain.Entity.Settings;
 using Domain.DbContex;
+using Domain.Entity;
 using Domain.CommonServices;
 namespace Domain.Services.Inventory
 {
@@ -41,6 +42,55 @@ namespace Domain.Services.Inventory
                     return Enumerable.Empty<ShippingBy>();
                 }
             }
+            public async Task<IEnumerable<ShippingBy>> GetShippingByAsync(int page = 1, int pageSize = 10,
+             string search = "", string sortColumn = "ShippingById",
+             string sortDirection = "desc")
+         {
+            string searchFilter = string.IsNullOrEmpty(search)
+                ? ""
+                : $"AND (LOWER(ShippingByName) LIKE @Search)";
+
+            string validSortColumn = sortColumn switch
+            {
+                "ShippingByName" => "ShippingByName",
+                "EntryDateTime" => "EntryDateTime",
+                "LastModifyDate" => "LastModifyDate",
+                "Status" => "Status",
+                _ => "ShippingById" // Default sorting column
+            };
+
+            string query = $@"
+            WITH ShippingData AS (
+            SELECT 
+            ShippingById,
+            ShippingByKey,
+            LanguageId,
+            ShippingByName,
+            EntryDateTime,
+            EntryBy,
+            LastModifyDate,
+            LastModifyBy,
+            DeletedDate,
+            DeletedBy,
+            Status,
+            COUNT(*) OVER() AS TotalCount 
+        FROM [stt].[ShippingBy]
+        WHERE Status='Active'  {searchFilter}
+        )
+        SELECT * FROM ShippingData
+        ORDER BY {validSortColumn} {sortDirection}
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Search", $"%{search.ToLower()}%");
+            parameters.Add("Offset", (page - 1) * pageSize);
+            parameters.Add("PageSize", pageSize);
+
+            // Use _db for querying
+            var shippingBy = await _db.QueryAsync<ShippingBy>(query, parameters);
+
+            return shippingBy.ToList();
+        }
 
             public async Task<ShippingBy> GetById(long ShippingById)
 
@@ -120,7 +170,22 @@ namespace Domain.Services.Inventory
                 }
 
                 return isDeleted;
+
             }
+           public async Task<bool> DeleteByKey(Guid key)
+        {
+            var shippingBy = await (Get(null, key.ToString(), null, null, 1, 1));
+            var deleteObj = shippingBy.FirstOrDefault();
+            bool isDeleted = false;
+            if (deleteObj != null)
+            {
+                EntityHelper.SetDeleteAuditFields(deleteObj);
+
+                isDeleted = await Update(deleteObj);
+            }
+
+            return isDeleted;
         }
-    }
+        }
+}
 

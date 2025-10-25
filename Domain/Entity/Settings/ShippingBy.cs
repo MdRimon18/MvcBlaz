@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Settings
 {
-    public class ShippingBy
+    public class ShippingBy:BaseEntity
     {
-        public long ShippingById { get; set; }
+        public long ShippingById { get; set; }      
         public Guid? ShippingByKey { get; set; }
         public int LanguageId { get; set; }
         [Required(ErrorMessage = "Shipping Name is required")]
@@ -19,6 +20,9 @@ namespace Domain.Entity.Settings
         public long? DeletedBy { get; set; }
         public string Status { get; set; }
         public int total_row { get; set; }
+
+        [NotMapped]
+        public int TotalCount { get; set; }
     }
 }
 
